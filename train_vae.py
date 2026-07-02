@@ -19,7 +19,7 @@ Outputs (to ~/dissertation_outputs/vae/):
     vae_verify.png     histogram + PSD: observations vs VAE reconstruction
     train_log.json     per-epoch losses (reproducibility)
 """
-import os, glob, json, getpass, argparse, random, contextlib
+import os, glob, json, getpass, argparse, random, contextlib, time
 import numpy as np
 import torch
 import torch.nn as nn
@@ -244,18 +244,33 @@ def main():
     use_amp = device == "cuda"
     def amp():
         return torch.autocast("cuda", dtype=torch.bfloat16) if use_amp else contextlib.nullcontext()
+    if device == "cuda":
+        torch.backends.cudnn.benchmark = True                 # fixed input size -> faster
+        p = torch.cuda.get_device_properties(0)
+        print(f"GPU: {p.name} | {p.total_memory/1e9:.0f} GB total", flush=True)
+    else:
+        print("WARNING: no GPU found — running on CPU (very slow)", flush=True)
 
-    log, best = [], float("inf")
+    nsteps = len(dl_tr)
+    print(f"{nsteps} steps/epoch (batch {args.batch})", flush=True)
+    log, best, t_all = [], float("inf"), time.time()
     for ep in range(1, args.epochs + 1):
-        model.train(); tl = tk = 0.0
-        for x, m in dl_tr:
-            x, m = x.to(device), m.to(device)
+        model.train(); tl = tk = 0.0; seen = 0; t0 = time.time()
+        if device == "cuda":
+            torch.cuda.reset_peak_memory_stats()
+        for i, (x, m) in enumerate(dl_tr, 1):
+            x, m = x.to(device, non_blocking=True), m.to(device, non_blocking=True)
             with amp():
                 rec, mu, lv = model(x)
                 lr_ = recon_loss(rec, x, m); lkl = kl_loss(mu, lv)
                 loss = lr_ + args.beta * lkl
             opt.zero_grad(set_to_none=True); loss.backward(); opt.step()
-            tl += lr_.item(); tk += lkl.item()
+            tl += lr_.item(); tk += lkl.item(); seen += x.size(0)
+            if i % 200 == 0:                                    # live progress every 200 steps
+                ips = seen / (time.time() - t0)
+                print(f"  ep{ep} step {i}/{nsteps} | recon {tl/i:.4f} | {ips:.0f} img/s",
+                      flush=True)
+        dt = time.time() - t0
         model.eval(); vl = 0.0
         with torch.no_grad():
             for x, m in dl_va:
@@ -264,9 +279,12 @@ def main():
                     rec, mu, lv = model(x)
                 vl += recon_loss(rec, x, m).item()
         vl /= max(len(dl_va), 1)
-        rec_tr, kl_tr = tl / len(dl_tr), tk / len(dl_tr)
-        print(f"epoch {ep:3d} | train recon {rec_tr:.4f} KL {kl_tr:.2f} | val recon {vl:.4f}")
-        log.append({"epoch": ep, "train_recon": rec_tr, "kl": kl_tr, "val_recon": vl})
+        rec_tr, kl_tr = tl / nsteps, tk / nsteps
+        gpu = torch.cuda.max_memory_allocated() / 1e9 if device == "cuda" else 0.0
+        print(f"epoch {ep:3d}/{args.epochs} | train recon {rec_tr:.4f} KL {kl_tr:.2f} "
+              f"| val recon {vl:.4f} | {dt:.0f}s/epoch | peak GPU {gpu:.1f} GB", flush=True)
+        log.append({"epoch": ep, "train_recon": rec_tr, "kl": kl_tr, "val_recon": vl,
+                    "epoch_sec": round(dt, 1), "gpu_gb": round(gpu, 2)})
         if vl < best:
             best = vl
             # latent scale: std of latents, so the diffusion sees ~unit-variance latents
@@ -287,7 +305,8 @@ def main():
     # reload best and verify it preserves the distribution + spectrum
     ck = torch.load(os.path.join(OUT, "vae_best.pt"), map_location=device)
     model.load_state_dict(ck["model"])
-    print(f"\nbest val recon {best:.4f} | latent_scale {ck['latent_scale']:.3f}")
+    print(f"\ntotal train time {(time.time()-t_all)/60:.1f} min | "
+          f"best val recon {best:.4f} | latent_scale {ck['latent_scale']:.3f}", flush=True)
     verify(model, va, mean, std, device, os.path.join(OUT, "vae_verify.png"))
     print(f"checkpoint -> {os.path.join(OUT, 'vae_best.pt')}")
 
