@@ -1,0 +1,21 @@
+# Conda environment for the advection-prior stage (Exeter mcrugcomp servers).
+# miniforge is already on the servers, so:
+#     conda env create -f environment.yml
+#     conda activate nowcast
+#
+# CPU-only: the advection prior (pysteps) does not use the GPU. The NVIDIA L4
+# is for the latent-diffusion stage later -- add PyTorch then with, e.g.:
+#     pip install torch --index-url https://download.pytorch.org/whl/cu124
+name: nowcast
+channels:
+  - conda-forge
+dependencies:
+  - python=3.11
+  - numpy
+  - h5py
+  - pysteps
+  - boto3
+  - botocore
+  - matplotlib
+  - tqdm
+  - pip
