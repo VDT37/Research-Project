@@ -152,35 +152,56 @@ cd ~/dissertation
 If the repo is not reachable from JASMIN, `rsync` it from your laptop to an xfer
 server (see 5.3), or just `scp` the handful of `.py` files as in `README_server.md`.
 
-### 5.2 Do you even need to move the big caches?
+### 5.2 Which caches to move for the diffusion stage
 
-Probably not. You are re-splitting the data and rebuilding the advection prior
-anyway (see the split note), and JASMIN can pull the radar straight from S3 over
-HTTPS. So the clean path is: **rebuild the prior on JASMIN from scratch**
-(section 6.2), rather than copying ~40 GB of `.npz` from Exeter. Copy only the
-one thing you cannot regenerate cheaply if you want it: the existing
-`vae_best.pt`, for the v1-vs-v2 comparison.
+For the +60 core run you are training the diffusion model right away, so copy the
+existing Exeter cache rather than rebuilding from S3. The data flow is
+`npz prior cache + vae_best.pt -> pack_latents.py -> latent memmaps ->
+train_diffusion.py`, so the two things you must have on JASMIN are:
 
-### 5.3 If you do want to copy caches from Exeter
+- the **npz prior cache**: `prior/train/` and `prior/val/` (skip `test/` until the
+  final evaluation),
+- the **VAE checkpoint** `vae_best.pt`.
 
-Transfers go through an xfer server. Because JASMIN cannot SSH outward, you push
-from the Exeter side (which can reach the internet) into JASMIN, or pull from
-JASMIN's xfer server. Simplest is to push from Exeter:
+You do NOT need the raw frame cache (`frames/`, only used to build priors) or the
+VAE packed memmaps (`packed/`, only used to train the VAE, which is already done).
+
+**Pack the latents on JASMIN, not on Exeter.** `pack_latents.py` records the
+absolute npz paths it read into the index json, and `train_diffusion.py`'s sampled
+diagnostics read those npz files back for the pixel-space advection baseline. If
+you pack on Exeter and copy only the latents, those paths point at Exeter, do not
+exist on JASMIN, and the in-training baseline comparison silently switches off.
+Packing on JASMIN keeps the paths valid.
+
+Rebuilding from S3 (section 6) is still the right path for the multi-lead
+(+15/30/45) priors and any fuller date range, since those do not exist in the
+Exeter cache yet.
+
+### 5.3 Copying the cache from Exeter
+
+Transfers go through an xfer server. Because JASMIN cannot SSH outward, push from
+the Exeter side (which can reach the internet). Run these **on the Exeter server**:
 
 ```bash
-# ON the Exeter server (mcrugcomp02), push the packed data to JASMIN:
-rsync -avP /scratch/dv321/dissertation/packed/ \
-    <jasmin_user>@xfer-vm-01.jasmin.ac.uk:/work/scratch-nopw2/<jasmin_user>/packed/
+JUSER=<jasmin_user>
+DST=$JUSER@xfer-vm-01.jasmin.ac.uk
+SCR=/work/scratch-pw4/$JUSER/dissertation
 
-# a single checkpoint:
-rsync -avP ~/dissertation_outputs/vae_v2/vae_best.pt \
-    <jasmin_user>@xfer-vm-01.jasmin.ac.uk:/home/users/<jasmin_user>/dissertation_outputs/vae_v2/
+# the npz prior cache (train + val). --mkpath creates the target dirs (rsync >= 3.2.3)
+rsync -avP --mkpath /scratch/dv321/dissertation/prior/train/ $DST:$SCR/prior/train/
+rsync -avP --mkpath /scratch/dv321/dissertation/prior/val/   $DST:$SCR/prior/val/
+
+# the frozen VAE codec (small)
+rsync -avP --mkpath ~/dissertation_outputs/vae_v2/vae_best.pt $DST:dissertation_outputs/vae_v2/
 ```
 
-Use `hpxfer3`/`hpxfer4` (physical, faster) for the large frame or prior cache if
-you go that route. For very large or repeated transfers, JASMIN recommends
-**Globus** over rsync; set up a Globus endpoint if you find yourself moving
-hundreds of GB.
+If your rsync predates 3.2.3 (no `--mkpath`), create the dirs first:
+`ssh $DST "mkdir -p $SCR/prior/train $SCR/prior/val dissertation_outputs/vae_v2"`.
+Use `hpxfer3`/`hpxfer4` (physical, faster) for the prior cache if it is large. For
+hundreds of GB, JASMIN recommends **Globus** over rsync.
+
+Then on JASMIN (section 8): `export DISS_SCRATCH=$SCR`, run `pack_latents.py`
+(the A100 encodes the latents), then `train_diffusion.py`.
 
 ---
 
