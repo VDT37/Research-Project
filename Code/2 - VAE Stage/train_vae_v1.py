@@ -212,12 +212,27 @@ def main():
     ap.add_argument("--width", type=int, default=64, help="base channels (÷8)")
     ap.add_argument("--zc", type=int, default=4, help="latent channels")
     ap.add_argument("--weight-decay", type=float, default=0.0)
-    ap.add_argument("--workers", type=int, default=8)
+    ap.add_argument("--workers", type=int, default=16)
+    ap.add_argument("--patience", type=int, default=6,
+                    help="early stop after N epochs with no val improvement (0 = off)")
     ap.add_argument("--limit", type=int, default=None, help="cap #crops (smoke test)")
     ap.add_argument("--root", default=PRIOR)
+    ap.add_argument("--verify-only", action="store_true",
+                    help="skip training: load vae_best.pt and (re)write vae_verify.png")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
     torch.manual_seed(0); random.seed(0); np.random.seed(0)
+
+    if args.verify_only:
+        va = sorted(glob.glob(os.path.join(args.root, "val", "*", "*.npz")))
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        ck = torch.load(os.path.join(OUT, "vae_best.pt"), map_location=device)
+        model = VAE(w=ck["config"]["width"], zc=ck["config"]["zc"]).to(device)
+        model.load_state_dict(ck["model"])
+        m, s = ck["norm"]["mean"], ck["norm"]["std"]
+        print(f"verify-only: loaded vae_best.pt (latent_scale {ck['latent_scale']:.3f})", flush=True)
+        verify(model, va, m, s, device, os.path.join(OUT, "vae_verify.png"))
+        return
 
     tr = sorted(glob.glob(os.path.join(args.root, "train", "*", "*.npz")))
     va = sorted(glob.glob(os.path.join(args.root, "val", "*", "*.npz")))
@@ -230,10 +245,12 @@ def main():
     mean, std = compute_norm(tr)
     print(f"dBR normalisation: mean={mean:.3f} std={std:.3f}")
 
+    dl_kw = dict(num_workers=args.workers, pin_memory=True,
+                 persistent_workers=args.workers > 0,
+                 prefetch_factor=4 if args.workers > 0 else None)
     dl_tr = DataLoader(RadarFields(tr, mean, std), batch_size=args.batch, shuffle=True,
-                       num_workers=args.workers, pin_memory=True, drop_last=True)
-    dl_va = DataLoader(RadarFields(va, mean, std), batch_size=args.batch, shuffle=False,
-                       num_workers=args.workers, pin_memory=True)
+                       drop_last=True, **dl_kw)
+    dl_va = DataLoader(RadarFields(va, mean, std), batch_size=args.batch, shuffle=False, **dl_kw)
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
     model = VAE(w=args.width, zc=args.zc).to(device)
@@ -253,7 +270,7 @@ def main():
 
     nsteps = len(dl_tr)
     print(f"{nsteps} steps/epoch (batch {args.batch})", flush=True)
-    log, best, t_all = [], float("inf"), time.time()
+    log, best, best_ep, t_all = [], float("inf"), 0, time.time()
     for ep in range(1, args.epochs + 1):
         model.train(); tl = tk = 0.0; seen = 0; t0 = time.time()
         if device == "cuda":
@@ -286,7 +303,7 @@ def main():
         log.append({"epoch": ep, "train_recon": rec_tr, "kl": kl_tr, "val_recon": vl,
                     "epoch_sec": round(dt, 1), "gpu_gb": round(gpu, 2)})
         if vl < best:
-            best = vl
+            best = vl; best_ep = ep
             # latent scale: std of latents, so the diffusion sees ~unit-variance latents
             with torch.no_grad():
                 xb = next(iter(dl_va))[0].to(device)
@@ -301,6 +318,10 @@ def main():
             save_recons(model, next(iter(dl_va)), mean, std, device,
                         os.path.join(OUT, f"recon_ep{ep:02d}.png"))
         json.dump(log, open(os.path.join(OUT, "train_log.json"), "w"), indent=2)
+        if args.patience and ep - best_ep >= args.patience:
+            print(f"early stop: no val improvement for {args.patience} epochs "
+                  f"(best epoch {best_ep}, val recon {best:.4f})", flush=True)
+            break
 
     # reload best and verify it preserves the distribution + spectrum
     ck = torch.load(os.path.join(OUT, "vae_best.pt"), map_location=device)

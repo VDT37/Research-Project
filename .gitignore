@@ -1,0 +1,42 @@
+# ============================================================
+# .gitignore for the dissertation research repo
+# ============================================================
+
+# --- Kept out of the public GitHub repo (by request) ---
+CLAUDE.md
+docs/
+Dissertation.ipynb
+
+# --- Model weights, checkpoints, packed data: never commit ---
+# Project rule (CLAUDE.md): no data or model weights in the repo; they live on
+# the server. This catches Results/**/vae_*.pt etc. The small figures, logs and
+# metrics JSON under Results/ are still committed.
+*.pt
+*.pth
+*.ckpt
+*.safetensors
+*.npz
+*.npy
+*.h5
+*.hdf5
+*.memmap
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# --- OS / editor cruft ---
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example

@@ -80,3 +80,109 @@ python build_advection_prior.py --start 2024-11-21 --end 2024-11-23   # tiny tes
 python build_advection_prior.py --workers 48 --io-workers 48          # tune parallelism
 python build_advection_prior.py --skip-download                       # offline server
 ```
+
+---
+
+# Stage 2: VAE v2 training (GPU, with full monitoring)
+
+Trains the improved codec (`train_vae_v2.py`, design in
+`docs/VAE_architecture_change.md`). Runs on the **L4 GPU**. Do everything on the
+same server that holds the prior cache (`mcrugcomp02`).
+
+## 2.0 One-time setup
+
+```bash
+# from your laptop, in the project folder:
+scp pack_vae_data.py train_vae_v2.py dv321@mcrugcomp02.ex.ac.uk:~/
+
+# on the server (PyTorch only needed once, ~2.5 GB download):
+conda activate nowcast
+pip install torch --index-url https://download.pytorch.org/whl/cu124
+python -c "import torch; print(torch.__version__, torch.cuda.is_available())"   # expect: <ver> True
+```
+
+## 2.1 Pack the training data (once, ~10-25 min, CPU)
+
+This removes the npz-decompression bottleneck that limited v1 to 52 img/s.
+
+```bash
+tmux new -s pack
+conda activate nowcast
+python pack_vae_data.py
+#   expect: "[train] packing 153487 files -> 306974 rows (40.2 GB)" then a
+#   spot-check line "5/5 rows verified against source npz" per split.
+```
+
+Output: `/scratch/dv321/dissertation/packed/{train,val}_fields.npy` (+ meta and
+index json). Re-running skips existing packs; `--check-only` re-verifies.
+
+## 2.2 Smoke test (~5 min)
+
+```bash
+python train_vae_v2.py --limit 4000 --epochs 2 --disc-start 60 --verify-every 1
+```
+
+Confirms: packed data found, GPU used, the discriminator switches on (g_adv /
+d_loss / lam appear in the step lines), and `verify_ep01.png`,
+`training_curves.png`, `train_log.json` appear in `~/dissertation_outputs/vae_v2/`.
+Note: the smoke run ends with "no vae_best.pt was saved", which is expected
+(best-model selection only starts after the GAN grace period); the full run
+saves it from epoch 4 onward.
+
+## 2.3 Full training run (in tmux)
+
+```bash
+tmux new -s vae2
+conda activate nowcast
+python train_vae_v2.py --epochs 50
+#   detach: Ctrl-b d      reattach: tmux attach -t vae2
+```
+
+Defaults: batch 32, lr 1e-4, discriminator starts after 2 epochs, best-model
+selection from epoch 4, early stop after 8 epochs without improvement. If you
+hit CUDA OOM, rerun with `--batch 24`.
+
+## 2.4 Monitoring while it runs
+
+```bash
+tmux attach -t vae2                      # live step/epoch lines (Ctrl-b d to leave)
+watch -n 2 nvidia-smi                    # GPU util + memory (Ctrl-C to quit)
+python -c "import json;print(json.dumps(json.load(open('/home/links/dv321/dissertation_outputs/vae_v2/train_log.json'))[-1],indent=1))"   # last epoch record
+```
+
+What to watch (full guide: `docs/VAE_architecture_change.md`, section 5):
+
+- `val rec` (plain) should head toward <= 0.022; a small bump when the
+  discriminator starts (epoch 3) is normal.
+- `tail16 / tail32` should climb toward 1.0 (v1 was well below); above ~1.2
+  means hallucination, stop and lower `--disc-weight`.
+- `psd2-8km` should climb toward >= 0.8 (v1 was ~0.1-0.3).
+- `d 0.000` sustained means the discriminator collapsed, restart from
+  `vae_last.pt` with `--disc-weight 0.25`.
+
+Pull the figures to your laptop to inspect (run from the laptop):
+
+```bash
+scp dv321@mcrugcomp02.ex.ac.uk:~/dissertation_outputs/vae_v2/training_curves.png .
+scp dv321@mcrugcomp02.ex.ac.uk:~/dissertation_outputs/vae_v2/verify_ep*.png .
+scp dv321@mcrugcomp02.ex.ac.uk:~/dissertation_outputs/vae_v2/recon_ep*.png .
+scp dv321@mcrugcomp02.ex.ac.uk:~/dissertation_outputs/vae_v2/vae_verify.png .
+```
+
+## 2.5 Interrupt / resume / re-verify
+
+```bash
+# stop cleanly: Ctrl-C inside tmux (vae_last.pt is saved every epoch)
+python train_vae_v2.py --epochs 50 --resume ~/dissertation_outputs/vae_v2/vae_last.pt
+python train_vae_v2.py --verify-only          # regenerate vae_verify.png from vae_best.pt
+```
+
+## 2.6 Acceptance before the diffusion stage
+
+Compare the final `vae_verify.png` (generated from `vae_best.pt`) and the
+`train_log.json` record of the BEST epoch, not the last one (the final summary
+line prints which epoch `vae_best.pt` came from), against the targets in
+`docs/Analysis with VAE v1.md`, section 6 (histogram ratio >= 0.8 to 32 mm/h,
+PSD ratio >= 0.8 to 4 km, csi_8 >= 0.95, tail ratios in [0.8, 1.2], plain val
+recon <= 0.022). If met, the diffusion stage builds on
+`~/dissertation_outputs/vae_v2/vae_best.pt`.

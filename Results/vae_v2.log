@@ -1,0 +1,661 @@
+train rows 306974 | val rows 26562 | packed=True
+dBR normalisation: mean=-11.880 std=6.110
+device=cuda | VAE 3.54M params | disc 2.76M | gan=True
+GPU: NVIDIA L4 | 24 GB total
+12790 steps/epoch (batch 24) | disc starts at step 25580 | best-model selection from epoch 4 | step log every 200
+  ep1 step 200/12790 | rec_w 0.2073 rec 0.1530 | 19 img/s
+  ep1 step 400/12790 | rec_w 0.1641 rec 0.1213 | 20 img/s
+  ep1 step 600/12790 | rec_w 0.1426 rec 0.1059 | 20 img/s
+  ep1 step 800/12790 | rec_w 0.1285 rec 0.0958 | 20 img/s
+  ep1 step 1000/12790 | rec_w 0.1185 rec 0.0886 | 20 img/s
+  ep1 step 1200/12790 | rec_w 0.1108 rec 0.0831 | 20 img/s
+  ep1 step 1400/12790 | rec_w 0.1049 rec 0.0788 | 20 img/s
+  ep1 step 1600/12790 | rec_w 0.1001 rec 0.0753 | 20 img/s
+  ep1 step 1800/12790 | rec_w 0.0962 rec 0.0724 | 20 img/s
+  ep1 step 2000/12790 | rec_w 0.0928 rec 0.0699 | 20 img/s
+  ep1 step 2200/12790 | rec_w 0.0898 rec 0.0677 | 20 img/s
+  ep1 step 2400/12790 | rec_w 0.0873 rec 0.0658 | 20 img/s
+  ep1 step 2600/12790 | rec_w 0.0849 rec 0.0640 | 20 img/s
+  ep1 step 2800/12790 | rec_w 0.0827 rec 0.0624 | 20 img/s
+  ep1 step 3000/12790 | rec_w 0.0809 rec 0.0610 | 20 img/s
+  ep1 step 3200/12790 | rec_w 0.0792 rec 0.0597 | 20 img/s
+  ep1 step 3400/12790 | rec_w 0.0776 rec 0.0585 | 20 img/s
+  ep1 step 3600/12790 | rec_w 0.0763 rec 0.0575 | 20 img/s
+  ep1 step 3800/12790 | rec_w 0.0750 rec 0.0565 | 20 img/s
+  ep1 step 4000/12790 | rec_w 0.0738 rec 0.0556 | 20 img/s
+  ep1 step 4200/12790 | rec_w 0.0727 rec 0.0548 | 20 img/s
+  ep1 step 4400/12790 | rec_w 0.0717 rec 0.0540 | 20 img/s
+  ep1 step 4600/12790 | rec_w 0.0707 rec 0.0532 | 20 img/s
+  ep1 step 4800/12790 | rec_w 0.0698 rec 0.0526 | 20 img/s
+  ep1 step 5000/12790 | rec_w 0.0689 rec 0.0519 | 20 img/s
+  ep1 step 5200/12790 | rec_w 0.0681 rec 0.0513 | 20 img/s
+  ep1 step 5400/12790 | rec_w 0.0673 rec 0.0507 | 20 img/s
+  ep1 step 5600/12790 | rec_w 0.0666 rec 0.0501 | 20 img/s
+  ep1 step 5800/12790 | rec_w 0.0659 rec 0.0496 | 20 img/s
+  ep1 step 6000/12790 | rec_w 0.0653 rec 0.0491 | 20 img/s
+  ep1 step 6200/12790 | rec_w 0.0647 rec 0.0486 | 20 img/s
+  ep1 step 6400/12790 | rec_w 0.0641 rec 0.0481 | 20 img/s
+  ep1 step 6600/12790 | rec_w 0.0635 rec 0.0477 | 20 img/s
+  ep1 step 6800/12790 | rec_w 0.0630 rec 0.0473 | 20 img/s
+  ep1 step 7000/12790 | rec_w 0.0624 rec 0.0469 | 20 img/s
+  ep1 step 7200/12790 | rec_w 0.0620 rec 0.0465 | 20 img/s
+  ep1 step 7400/12790 | rec_w 0.0615 rec 0.0461 | 20 img/s
+  ep1 step 7600/12790 | rec_w 0.0610 rec 0.0458 | 20 img/s
+  ep1 step 7800/12790 | rec_w 0.0606 rec 0.0454 | 20 img/s
+  ep1 step 8000/12790 | rec_w 0.0601 rec 0.0451 | 20 img/s
+  ep1 step 8200/12790 | rec_w 0.0597 rec 0.0448 | 20 img/s
+  ep1 step 8400/12790 | rec_w 0.0594 rec 0.0445 | 20 img/s
+  ep1 step 8600/12790 | rec_w 0.0590 rec 0.0442 | 20 img/s
+  ep1 step 8800/12790 | rec_w 0.0586 rec 0.0439 | 20 img/s
+  ep1 step 9000/12790 | rec_w 0.0582 rec 0.0436 | 20 img/s
+  ep1 step 9200/12790 | rec_w 0.0579 rec 0.0433 | 20 img/s
+  ep1 step 9400/12790 | rec_w 0.0575 rec 0.0431 | 20 img/s
+  ep1 step 9600/12790 | rec_w 0.0572 rec 0.0428 | 20 img/s
+  ep1 step 9800/12790 | rec_w 0.0569 rec 0.0426 | 20 img/s
+  ep1 step 10000/12790 | rec_w 0.0566 rec 0.0424 | 20 img/s
+  ep1 step 10200/12790 | rec_w 0.0563 rec 0.0421 | 20 img/s
+  ep1 step 10400/12790 | rec_w 0.0560 rec 0.0419 | 20 img/s
+  ep1 step 10600/12790 | rec_w 0.0558 rec 0.0417 | 20 img/s
+  ep1 step 10800/12790 | rec_w 0.0555 rec 0.0415 | 20 img/s
+  ep1 step 11000/12790 | rec_w 0.0552 rec 0.0412 | 20 img/s
+  ep1 step 11200/12790 | rec_w 0.0550 rec 0.0410 | 20 img/s
+  ep1 step 11400/12790 | rec_w 0.0547 rec 0.0409 | 20 img/s
+  ep1 step 11600/12790 | rec_w 0.0545 rec 0.0407 | 20 img/s
+  ep1 step 11800/12790 | rec_w 0.0542 rec 0.0405 | 20 img/s
+  ep1 step 12000/12790 | rec_w 0.0540 rec 0.0403 | 20 img/s
+  ep1 step 12200/12790 | rec_w 0.0538 rec 0.0401 | 20 img/s
+  ep1 step 12400/12790 | rec_w 0.0536 rec 0.0400 | 20 img/s
+  ep1 step 12600/12790 | rec_w 0.0534 rec 0.0398 | 20 img/s
+epoch   1/50 | val rec 0.0264 (w 0.0361) | csi8 0.707 csi32 0.629 | tail16 0.85 tail32 0.80 | psd2-8km 0.63 | 15559s | 20 img/s | GPU 21.2 GB
+  ep2 step 200/12790 | rec_w 0.0397 rec 0.0290 | 20 img/s
+  ep2 step 400/12790 | rec_w 0.0401 rec 0.0294 | 20 img/s
+  ep2 step 600/12790 | rec_w 0.0402 rec 0.0295 | 20 img/s
+  ep2 step 800/12790 | rec_w 0.0401 rec 0.0295 | 20 img/s
+  ep2 step 1000/12790 | rec_w 0.0401 rec 0.0295 | 20 img/s
+  ep2 step 1200/12790 | rec_w 0.0401 rec 0.0295 | 20 img/s
+  ep2 step 1400/12790 | rec_w 0.0400 rec 0.0295 | 20 img/s
+  ep2 step 1600/12790 | rec_w 0.0398 rec 0.0293 | 20 img/s
+  ep2 step 1800/12790 | rec_w 0.0397 rec 0.0293 | 20 img/s
+  ep2 step 2000/12790 | rec_w 0.0396 rec 0.0292 | 20 img/s
+  ep2 step 2200/12790 | rec_w 0.0396 rec 0.0291 | 20 img/s
+  ep2 step 2400/12790 | rec_w 0.0396 rec 0.0291 | 20 img/s
+  ep2 step 2600/12790 | rec_w 0.0396 rec 0.0291 | 20 img/s
+  ep2 step 2800/12790 | rec_w 0.0395 rec 0.0291 | 20 img/s
+  ep2 step 3000/12790 | rec_w 0.0395 rec 0.0290 | 20 img/s
+  ep2 step 3200/12790 | rec_w 0.0394 rec 0.0289 | 20 img/s
+  ep2 step 3400/12790 | rec_w 0.0394 rec 0.0289 | 20 img/s
+  ep2 step 3600/12790 | rec_w 0.0393 rec 0.0289 | 20 img/s
+  ep2 step 3800/12790 | rec_w 0.0393 rec 0.0289 | 20 img/s
+  ep2 step 4000/12790 | rec_w 0.0393 rec 0.0288 | 20 img/s
+  ep2 step 4200/12790 | rec_w 0.0392 rec 0.0288 | 20 img/s
+  ep2 step 4400/12790 | rec_w 0.0393 rec 0.0288 | 20 img/s
+  ep2 step 4600/12790 | rec_w 0.0393 rec 0.0289 | 20 img/s
+  ep2 step 4800/12790 | rec_w 0.0393 rec 0.0288 | 20 img/s
+  ep2 step 5000/12790 | rec_w 0.0392 rec 0.0288 | 20 img/s
+  ep2 step 5200/12790 | rec_w 0.0392 rec 0.0288 | 20 img/s
+  ep2 step 5400/12790 | rec_w 0.0392 rec 0.0288 | 20 img/s
+  ep2 step 5600/12790 | rec_w 0.0391 rec 0.0287 | 20 img/s
+  ep2 step 5800/12790 | rec_w 0.0391 rec 0.0286 | 20 img/s
+  ep2 step 6000/12790 | rec_w 0.0390 rec 0.0286 | 20 img/s
+  ep2 step 6200/12790 | rec_w 0.0390 rec 0.0286 | 20 img/s
+  ep2 step 6400/12790 | rec_w 0.0389 rec 0.0285 | 20 img/s
+  ep2 step 6600/12790 | rec_w 0.0389 rec 0.0285 | 20 img/s
+  ep2 step 6800/12790 | rec_w 0.0388 rec 0.0284 | 20 img/s
+  ep2 step 7000/12790 | rec_w 0.0388 rec 0.0284 | 20 img/s
+  ep2 step 7200/12790 | rec_w 0.0388 rec 0.0284 | 20 img/s
+  ep2 step 7400/12790 | rec_w 0.0387 rec 0.0283 | 20 img/s
+  ep2 step 7600/12790 | rec_w 0.0387 rec 0.0283 | 20 img/s
+  ep2 step 7800/12790 | rec_w 0.0386 rec 0.0282 | 20 img/s
+  ep2 step 8000/12790 | rec_w 0.0386 rec 0.0282 | 20 img/s
+  ep2 step 8200/12790 | rec_w 0.0385 rec 0.0282 | 20 img/s
+  ep2 step 8400/12790 | rec_w 0.0385 rec 0.0281 | 20 img/s
+  ep2 step 8600/12790 | rec_w 0.0384 rec 0.0281 | 20 img/s
+  ep2 step 8800/12790 | rec_w 0.0384 rec 0.0280 | 20 img/s
+  ep2 step 9000/12790 | rec_w 0.0384 rec 0.0280 | 20 img/s
+  ep2 step 9200/12790 | rec_w 0.0383 rec 0.0280 | 20 img/s
+  ep2 step 9400/12790 | rec_w 0.0383 rec 0.0279 | 20 img/s
+  ep2 step 9600/12790 | rec_w 0.0383 rec 0.0279 | 20 img/s
+  ep2 step 9800/12790 | rec_w 0.0382 rec 0.0279 | 20 img/s
+  ep2 step 10000/12790 | rec_w 0.0382 rec 0.0278 | 20 img/s
+  ep2 step 10200/12790 | rec_w 0.0382 rec 0.0278 | 20 img/s
+  ep2 step 10400/12790 | rec_w 0.0381 rec 0.0278 | 20 img/s
+  ep2 step 10600/12790 | rec_w 0.0381 rec 0.0278 | 20 img/s
+  ep2 step 10800/12790 | rec_w 0.0381 rec 0.0277 | 20 img/s
+  ep2 step 11000/12790 | rec_w 0.0380 rec 0.0277 | 20 img/s
+  ep2 step 11200/12790 | rec_w 0.0380 rec 0.0277 | 20 img/s
+  ep2 step 11400/12790 | rec_w 0.0379 rec 0.0276 | 20 img/s
+  ep2 step 11600/12790 | rec_w 0.0379 rec 0.0276 | 20 img/s
+  ep2 step 11800/12790 | rec_w 0.0379 rec 0.0276 | 20 img/s
+  ep2 step 12000/12790 | rec_w 0.0379 rec 0.0276 | 20 img/s
+  ep2 step 12200/12790 | rec_w 0.0379 rec 0.0276 | 20 img/s
+  ep2 step 12400/12790 | rec_w 0.0378 rec 0.0275 | 20 img/s
+  ep2 step 12600/12790 | rec_w 0.0378 rec 0.0275 | 20 img/s
+epoch   2/50 | val rec 0.0236 (w 0.0324) | csi8 0.737 csi32 0.684 | tail16 0.96 tail32 0.92 | psd2-8km 0.68 | 15560s | 20 img/s | GPU 19.9 GB
+  ep3 step 200/12790 | rec_w 0.0738 rec 0.0574 | g_adv 0.008 d 1.996 lam 4.656 | 19 img/s
+  ep3 step 400/12790 | rec_w 0.0743 rec 0.0581 | g_adv 0.017 d 2.000 lam 4.708 | 19 img/s
+  ep3 step 600/12790 | rec_w 0.0747 rec 0.0584 | g_adv 0.020 d 2.000 lam 4.305 | 19 img/s
+  ep3 step 800/12790 | rec_w 0.0752 rec 0.0592 | g_adv 0.001 d 1.997 lam 4.125 | 19 img/s
+  ep3 step 1000/12790 | rec_w 0.0739 rec 0.0583 | g_adv 0.005 d 1.994 lam 3.845 | 19 img/s
+  ep3 step 1200/12790 | rec_w 0.0725 rec 0.0572 | g_adv 0.006 d 1.994 lam 3.580 | 19 img/s
+  ep3 step 1400/12790 | rec_w 0.0710 rec 0.0560 | g_adv 0.009 d 1.993 lam 3.309 | 19 img/s
+  ep3 step 1600/12790 | rec_w 0.0698 rec 0.0550 | g_adv 0.007 d 1.993 lam 3.139 | 19 img/s
+  ep3 step 1800/12790 | rec_w 0.0691 rec 0.0544 | g_adv 0.006 d 1.993 lam 3.016 | 19 img/s
+  ep3 step 2000/12790 | rec_w 0.0687 rec 0.0543 | g_adv 0.006 d 1.993 lam 2.918 | 19 img/s
+  ep3 step 2200/12790 | rec_w 0.0681 rec 0.0538 | g_adv 0.007 d 1.992 lam 2.857 | 19 img/s
+  ep3 step 2400/12790 | rec_w 0.0673 rec 0.0532 | g_adv 0.010 d 1.992 lam 2.784 | 19 img/s
+  ep3 step 2600/12790 | rec_w 0.0668 rec 0.0528 | g_adv 0.010 d 1.991 lam 2.687 | 19 img/s
+  ep3 step 2800/12790 | rec_w 0.0667 rec 0.0527 | g_adv 0.008 d 1.991 lam 2.654 | 19 img/s
+  ep3 step 3000/12790 | rec_w 0.0667 rec 0.0527 | g_adv 0.008 d 1.991 lam 2.611 | 19 img/s
+  ep3 step 3200/12790 | rec_w 0.0663 rec 0.0524 | g_adv 0.004 d 1.991 lam 2.562 | 19 img/s
+  ep3 step 3400/12790 | rec_w 0.0659 rec 0.0521 | g_adv 0.005 d 1.991 lam 2.507 | 19 img/s
+  ep3 step 3600/12790 | rec_w 0.0658 rec 0.0520 | g_adv 0.004 d 1.991 lam 2.467 | 19 img/s
+  ep3 step 3800/12790 | rec_w 0.0655 rec 0.0518 | g_adv 0.006 d 1.990 lam 2.423 | 19 img/s
+  ep3 step 4000/12790 | rec_w 0.0653 rec 0.0517 | g_adv 0.008 d 1.990 lam 2.387 | 19 img/s
+  ep3 step 4200/12790 | rec_w 0.0652 rec 0.0517 | g_adv 0.007 d 1.989 lam 2.340 | 19 img/s
+  ep3 step 4400/12790 | rec_w 0.0652 rec 0.0517 | g_adv 0.011 d 1.989 lam 2.318 | 19 img/s
+  ep3 step 4600/12790 | rec_w 0.0652 rec 0.0516 | g_adv 0.014 d 1.988 lam 2.281 | 19 img/s
+  ep3 step 4800/12790 | rec_w 0.0652 rec 0.0517 | g_adv 0.015 d 1.988 lam 2.244 | 19 img/s
+  ep3 step 5000/12790 | rec_w 0.0650 rec 0.0516 | g_adv 0.016 d 1.988 lam 2.215 | 19 img/s
+  ep3 step 5200/12790 | rec_w 0.0651 rec 0.0516 | g_adv 0.017 d 1.988 lam 2.188 | 19 img/s
+  ep3 step 5400/12790 | rec_w 0.0650 rec 0.0516 | g_adv 0.018 d 1.988 lam 2.165 | 19 img/s
+  ep3 step 5600/12790 | rec_w 0.0650 rec 0.0515 | g_adv 0.019 d 1.988 lam 2.134 | 19 img/s
+  ep3 step 5800/12790 | rec_w 0.0647 rec 0.0514 | g_adv 0.019 d 1.988 lam 2.100 | 19 img/s
+  ep3 step 6000/12790 | rec_w 0.0645 rec 0.0512 | g_adv 0.020 d 1.988 lam 2.059 | 19 img/s
+  ep3 step 6200/12790 | rec_w 0.0643 rec 0.0510 | g_adv 0.021 d 1.987 lam 2.033 | 19 img/s
+  ep3 step 6400/12790 | rec_w 0.0642 rec 0.0509 | g_adv 0.022 d 1.987 lam 2.003 | 19 img/s
+  ep3 step 6600/12790 | rec_w 0.0640 rec 0.0507 | g_adv 0.020 d 1.987 lam 1.969 | 19 img/s
+  ep3 step 6800/12790 | rec_w 0.0638 rec 0.0506 | g_adv 0.019 d 1.987 lam 1.938 | 19 img/s
+  ep3 step 7000/12790 | rec_w 0.0636 rec 0.0504 | g_adv 0.018 d 1.987 lam 1.905 | 19 img/s
+  ep3 step 7200/12790 | rec_w 0.0634 rec 0.0503 | g_adv 0.020 d 1.987 lam 1.870 | 19 img/s
+  ep3 step 7400/12790 | rec_w 0.0632 rec 0.0501 | g_adv 0.021 d 1.986 lam 1.833 | 19 img/s
+  ep3 step 7600/12790 | rec_w 0.0630 rec 0.0499 | g_adv 0.021 d 1.986 lam 1.797 | 19 img/s
+  ep3 step 7800/12790 | rec_w 0.0628 rec 0.0497 | g_adv 0.022 d 1.985 lam 1.766 | 19 img/s
+  ep3 step 8000/12790 | rec_w 0.0626 rec 0.0496 | g_adv 0.023 d 1.985 lam 1.736 | 19 img/s
+  ep3 step 8200/12790 | rec_w 0.0624 rec 0.0494 | g_adv 0.022 d 1.985 lam 1.705 | 19 img/s
+  ep3 step 8400/12790 | rec_w 0.0621 rec 0.0492 | g_adv 0.023 d 1.984 lam 1.672 | 19 img/s
+  ep3 step 8600/12790 | rec_w 0.0619 rec 0.0490 | g_adv 0.023 d 1.984 lam 1.645 | 19 img/s
+  ep3 step 8800/12790 | rec_w 0.0618 rec 0.0489 | g_adv 0.024 d 1.984 lam 1.618 | 19 img/s
+  ep3 step 9000/12790 | rec_w 0.0616 rec 0.0488 | g_adv 0.025 d 1.984 lam 1.593 | 19 img/s
+  ep3 step 9200/12790 | rec_w 0.0615 rec 0.0486 | g_adv 0.024 d 1.983 lam 1.566 | 19 img/s
+  ep3 step 9400/12790 | rec_w 0.0613 rec 0.0485 | g_adv 0.024 d 1.983 lam 1.541 | 19 img/s
+  ep3 step 9600/12790 | rec_w 0.0612 rec 0.0484 | g_adv 0.022 d 1.983 lam 1.521 | 19 img/s
+  ep3 step 9800/12790 | rec_w 0.0611 rec 0.0483 | g_adv 0.021 d 1.983 lam 1.505 | 19 img/s
+  ep3 step 10000/12790 | rec_w 0.0610 rec 0.0482 | g_adv 0.020 d 1.983 lam 1.485 | 19 img/s
+  ep3 step 10200/12790 | rec_w 0.0608 rec 0.0481 | g_adv 0.019 d 1.983 lam 1.463 | 19 img/s
+  ep3 step 10400/12790 | rec_w 0.0607 rec 0.0480 | g_adv 0.020 d 1.983 lam 1.447 | 19 img/s
+  ep3 step 10600/12790 | rec_w 0.0606 rec 0.0479 | g_adv 0.021 d 1.982 lam 1.428 | 19 img/s
+  ep3 step 10800/12790 | rec_w 0.0605 rec 0.0478 | g_adv 0.021 d 1.981 lam 1.406 | 19 img/s
+  ep3 step 11000/12790 | rec_w 0.0604 rec 0.0477 | g_adv 0.021 d 1.981 lam 1.389 | 19 img/s
+  ep3 step 11200/12790 | rec_w 0.0603 rec 0.0476 | g_adv 0.021 d 1.981 lam 1.370 | 19 img/s
+  ep3 step 11400/12790 | rec_w 0.0602 rec 0.0475 | g_adv 0.019 d 1.981 lam 1.354 | 19 img/s
+  ep3 step 11600/12790 | rec_w 0.0601 rec 0.0475 | g_adv 0.019 d 1.981 lam 1.338 | 19 img/s
+  ep3 step 11800/12790 | rec_w 0.0600 rec 0.0473 | g_adv 0.019 d 1.981 lam 1.321 | 19 img/s
+  ep3 step 12000/12790 | rec_w 0.0599 rec 0.0473 | g_adv 0.019 d 1.981 lam 1.304 | 19 img/s
+  ep3 step 12200/12790 | rec_w 0.0598 rec 0.0472 | g_adv 0.019 d 1.980 lam 1.287 | 19 img/s
+  ep3 step 12400/12790 | rec_w 0.0597 rec 0.0471 | g_adv 0.019 d 1.980 lam 1.271 | 19 img/s
+  ep3 step 12600/12790 | rec_w 0.0596 rec 0.0470 | g_adv 0.019 d 1.980 lam 1.256 | 19 img/s
+epoch   3/50 | val rec 0.0442 (w 0.0617) | csi8 0.472 csi32 0.279 | tail16 0.41 tail32 0.30 | psd2-8km 0.40 | 16270s | 19 img/s | GPU 20.0 GB
+  ep4 step 200/12790 | rec_w 0.0537 rec 0.0421 | g_adv 0.065 d 1.933 lam 0.229 | 19 img/s
+  ep4 step 400/12790 | rec_w 0.0528 rec 0.0412 | g_adv 0.058 d 1.937 lam 0.228 | 19 img/s
+  ep4 step 600/12790 | rec_w 0.0520 rec 0.0405 | g_adv 0.072 d 1.929 lam 0.214 | 19 img/s
+  ep4 step 800/12790 | rec_w 0.0519 rec 0.0403 | g_adv 0.054 d 1.937 lam 0.207 | 19 img/s
+  ep4 step 1000/12790 | rec_w 0.0525 rec 0.0407 | g_adv 0.053 d 1.947 lam 0.241 | 19 img/s
+  ep4 step 1200/12790 | rec_w 0.0525 rec 0.0407 | g_adv 0.029 d 1.952 lam 0.241 | 19 img/s
+  ep4 step 1400/12790 | rec_w 0.0522 rec 0.0404 | g_adv 0.039 d 1.953 lam 0.236 | 19 img/s
+  ep4 step 1600/12790 | rec_w 0.0522 rec 0.0404 | g_adv 0.038 d 1.956 lam 0.231 | 19 img/s
+  ep4 step 1800/12790 | rec_w 0.0522 rec 0.0403 | g_adv 0.033 d 1.959 lam 0.226 | 19 img/s
+  ep4 step 2000/12790 | rec_w 0.0522 rec 0.0403 | g_adv 0.033 d 1.961 lam 0.220 | 19 img/s
+  ep4 step 2200/12790 | rec_w 0.0520 rec 0.0402 | g_adv 0.032 d 1.961 lam 0.211 | 19 img/s
+  ep4 step 2400/12790 | rec_w 0.0519 rec 0.0401 | g_adv 0.032 d 1.961 lam 0.205 | 19 img/s
+  ep4 step 2600/12790 | rec_w 0.0518 rec 0.0400 | g_adv 0.031 d 1.961 lam 0.199 | 19 img/s
+  ep4 step 2800/12790 | rec_w 0.0516 rec 0.0398 | g_adv 0.030 d 1.959 lam 0.195 | 19 img/s
+  ep4 step 3000/12790 | rec_w 0.0515 rec 0.0397 | g_adv 0.029 d 1.958 lam 0.191 | 19 img/s
+  ep4 step 3200/12790 | rec_w 0.0515 rec 0.0397 | g_adv 0.028 d 1.959 lam 0.186 | 19 img/s
+  ep4 step 3400/12790 | rec_w 0.0513 rec 0.0395 | g_adv 0.028 d 1.959 lam 0.180 | 19 img/s
+  ep4 step 3600/12790 | rec_w 0.0512 rec 0.0393 | g_adv 0.029 d 1.957 lam 0.175 | 19 img/s
+  ep4 step 3800/12790 | rec_w 0.0510 rec 0.0392 | g_adv 0.031 d 1.954 lam 0.169 | 19 img/s
+  ep4 step 4000/12790 | rec_w 0.0509 rec 0.0391 | g_adv 0.032 d 1.953 lam 0.164 | 19 img/s
+  ep4 step 4200/12790 | rec_w 0.0508 rec 0.0390 | g_adv 0.032 d 1.953 lam 0.160 | 19 img/s
+  ep4 step 4400/12790 | rec_w 0.0507 rec 0.0389 | g_adv 0.032 d 1.952 lam 0.156 | 19 img/s
+  ep4 step 4600/12790 | rec_w 0.0506 rec 0.0388 | g_adv 0.033 d 1.953 lam 0.153 | 19 img/s
+  ep4 step 4800/12790 | rec_w 0.0506 rec 0.0387 | g_adv 0.033 d 1.951 lam 0.150 | 19 img/s
+  ep4 step 5000/12790 | rec_w 0.0506 rec 0.0388 | g_adv 0.039 d 1.945 lam 0.147 | 19 img/s
+  ep4 step 5200/12790 | rec_w 0.0505 rec 0.0387 | g_adv 0.039 d 1.945 lam 0.143 | 19 img/s
+  ep4 step 5400/12790 | rec_w 0.0505 rec 0.0386 | g_adv 0.042 d 1.945 lam 0.141 | 19 img/s
+  ep4 step 5600/12790 | rec_w 0.0504 rec 0.0386 | g_adv 0.040 d 1.946 lam 0.139 | 19 img/s
+  ep4 step 5800/12790 | rec_w 0.0503 rec 0.0385 | g_adv 0.039 d 1.945 lam 0.136 | 19 img/s
+  ep4 step 6000/12790 | rec_w 0.0503 rec 0.0384 | g_adv 0.039 d 1.945 lam 0.135 | 19 img/s
+  ep4 step 6200/12790 | rec_w 0.0502 rec 0.0384 | g_adv 0.040 d 1.942 lam 0.132 | 19 img/s
+  ep4 step 6400/12790 | rec_w 0.0502 rec 0.0383 | g_adv 0.040 d 1.940 lam 0.130 | 19 img/s
+  ep4 step 6600/12790 | rec_w 0.0501 rec 0.0382 | g_adv 0.042 d 1.940 lam 0.127 | 19 img/s
+  ep4 step 6800/12790 | rec_w 0.0500 rec 0.0381 | g_adv 0.043 d 1.939 lam 0.124 | 19 img/s
+  ep4 step 7000/12790 | rec_w 0.0499 rec 0.0380 | g_adv 0.043 d 1.937 lam 0.121 | 19 img/s
+  ep4 step 7200/12790 | rec_w 0.0498 rec 0.0380 | g_adv 0.045 d 1.936 lam 0.118 | 19 img/s
+  ep4 step 7400/12790 | rec_w 0.0497 rec 0.0379 | g_adv 0.046 d 1.935 lam 0.116 | 19 img/s
+  ep4 step 7600/12790 | rec_w 0.0497 rec 0.0378 | g_adv 0.047 d 1.934 lam 0.113 | 19 img/s
+  ep4 step 7800/12790 | rec_w 0.0496 rec 0.0377 | g_adv 0.047 d 1.933 lam 0.111 | 19 img/s
+  ep4 step 8000/12790 | rec_w 0.0495 rec 0.0376 | g_adv 0.047 d 1.932 lam 0.109 | 19 img/s
+  ep4 step 8200/12790 | rec_w 0.0494 rec 0.0375 | g_adv 0.049 d 1.931 lam 0.106 | 19 img/s
+  ep4 step 8400/12790 | rec_w 0.0493 rec 0.0375 | g_adv 0.051 d 1.928 lam 0.104 | 19 img/s
+  ep4 step 8600/12790 | rec_w 0.0492 rec 0.0374 | g_adv 0.052 d 1.926 lam 0.102 | 19 img/s
+  ep4 step 8800/12790 | rec_w 0.0491 rec 0.0373 | g_adv 0.053 d 1.924 lam 0.100 | 19 img/s
+  ep4 step 9000/12790 | rec_w 0.0490 rec 0.0372 | g_adv 0.054 d 1.922 lam 0.098 | 19 img/s
+  ep4 step 9200/12790 | rec_w 0.0489 rec 0.0371 | g_adv 0.055 d 1.920 lam 0.096 | 19 img/s
+  ep4 step 9400/12790 | rec_w 0.0489 rec 0.0370 | g_adv 0.057 d 1.918 lam 0.094 | 19 img/s
+  ep4 step 9600/12790 | rec_w 0.0488 rec 0.0369 | g_adv 0.060 d 1.915 lam 0.092 | 19 img/s
+  ep4 step 9800/12790 | rec_w 0.0487 rec 0.0368 | g_adv 0.061 d 1.915 lam 0.091 | 19 img/s
+  ep4 step 10000/12790 | rec_w 0.0486 rec 0.0368 | g_adv 0.061 d 1.914 lam 0.089 | 19 img/s
+  ep4 step 10200/12790 | rec_w 0.0485 rec 0.0367 | g_adv 0.063 d 1.913 lam 0.088 | 19 img/s
+  ep4 step 10400/12790 | rec_w 0.0484 rec 0.0366 | g_adv 0.063 d 1.912 lam 0.086 | 19 img/s
+  ep4 step 10600/12790 | rec_w 0.0483 rec 0.0365 | g_adv 0.064 d 1.911 lam 0.085 | 19 img/s
+  ep4 step 10800/12790 | rec_w 0.0483 rec 0.0365 | g_adv 0.065 d 1.910 lam 0.083 | 19 img/s
+  ep4 step 11000/12790 | rec_w 0.0482 rec 0.0364 | g_adv 0.066 d 1.908 lam 0.082 | 19 img/s
+  ep4 step 11200/12790 | rec_w 0.0481 rec 0.0363 | g_adv 0.068 d 1.906 lam 0.081 | 19 img/s
+  ep4 step 11400/12790 | rec_w 0.0480 rec 0.0362 | g_adv 0.070 d 1.903 lam 0.079 | 19 img/s
+  ep4 step 11600/12790 | rec_w 0.0479 rec 0.0361 | g_adv 0.072 d 1.901 lam 0.078 | 19 img/s
+  ep4 step 11800/12790 | rec_w 0.0478 rec 0.0360 | g_adv 0.075 d 1.898 lam 0.077 | 19 img/s
+  ep4 step 12000/12790 | rec_w 0.0478 rec 0.0360 | g_adv 0.078 d 1.894 lam 0.076 | 19 img/s
+  ep4 step 12200/12790 | rec_w 0.0477 rec 0.0359 | g_adv 0.080 d 1.892 lam 0.074 | 19 img/s
+  ep4 step 12400/12790 | rec_w 0.0476 rec 0.0358 | g_adv 0.082 d 1.890 lam 0.073 | 19 img/s
+  ep4 step 12600/12790 | rec_w 0.0475 rec 0.0357 | g_adv 0.084 d 1.887 lam 0.072 | 19 img/s
+epoch   4/50 | val rec 0.0359 (w 0.0494) | csi8 0.667 csi32 0.644 | tail16 1.26 tail32 1.20 | psd2-8km 1.19 | 16271s | 19 img/s | GPU 19.9 GB
+  new best (val rec_w 0.0494) -> vae_best.pt
+  ep5 step 200/12790 | rec_w 0.0436 rec 0.0319 | g_adv 0.203 d 1.799 lam 0.007 | 19 img/s
+  ep5 step 400/12790 | rec_w 0.0434 rec 0.0316 | g_adv 0.216 d 1.749 lam 0.006 | 19 img/s
+  ep5 step 600/12790 | rec_w 0.0428 rec 0.0312 | g_adv 0.200 d 1.762 lam 0.006 | 19 img/s
+  ep5 step 800/12790 | rec_w 0.0427 rec 0.0312 | g_adv 0.213 d 1.765 lam 0.006 | 19 img/s
+  ep5 step 1000/12790 | rec_w 0.0427 rec 0.0312 | g_adv 0.208 d 1.763 lam 0.006 | 19 img/s
+  ep5 step 1200/12790 | rec_w 0.0427 rec 0.0312 | g_adv 0.205 d 1.765 lam 0.006 | 19 img/s
+  ep5 step 1400/12790 | rec_w 0.0427 rec 0.0311 | g_adv 0.199 d 1.769 lam 0.006 | 19 img/s
+  ep5 step 1600/12790 | rec_w 0.0427 rec 0.0311 | g_adv 0.192 d 1.772 lam 0.006 | 19 img/s
+  ep5 step 1800/12790 | rec_w 0.0428 rec 0.0312 | g_adv 0.197 d 1.768 lam 0.006 | 19 img/s
+  ep5 step 2000/12790 | rec_w 0.0428 rec 0.0312 | g_adv 0.192 d 1.768 lam 0.006 | 19 img/s
+  ep5 step 2200/12790 | rec_w 0.0428 rec 0.0312 | g_adv 0.194 d 1.769 lam 0.006 | 19 img/s
+  ep5 step 2400/12790 | rec_w 0.0427 rec 0.0311 | g_adv 0.194 d 1.773 lam 0.006 | 19 img/s
+  ep5 step 2600/12790 | rec_w 0.0427 rec 0.0311 | g_adv 0.195 d 1.772 lam 0.006 | 19 img/s
+  ep5 step 2800/12790 | rec_w 0.0427 rec 0.0310 | g_adv 0.196 d 1.770 lam 0.006 | 19 img/s
+  ep5 step 3000/12790 | rec_w 0.0426 rec 0.0310 | g_adv 0.196 d 1.766 lam 0.006 | 19 img/s
+  ep5 step 3200/12790 | rec_w 0.0426 rec 0.0310 | g_adv 0.200 d 1.764 lam 0.006 | 19 img/s
+  ep5 step 3400/12790 | rec_w 0.0426 rec 0.0310 | g_adv 0.197 d 1.764 lam 0.006 | 19 img/s
+  ep5 step 3600/12790 | rec_w 0.0426 rec 0.0310 | g_adv 0.198 d 1.764 lam 0.006 | 19 img/s
+  ep5 step 3800/12790 | rec_w 0.0426 rec 0.0310 | g_adv 0.201 d 1.759 lam 0.006 | 19 img/s
+  ep5 step 4000/12790 | rec_w 0.0426 rec 0.0310 | g_adv 0.201 d 1.756 lam 0.006 | 19 img/s
+  ep5 step 4200/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.204 d 1.754 lam 0.006 | 19 img/s
+  ep5 step 4400/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.205 d 1.753 lam 0.006 | 19 img/s
+  ep5 step 4600/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.205 d 1.753 lam 0.006 | 19 img/s
+  ep5 step 4800/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.204 d 1.752 lam 0.006 | 19 img/s
+  ep5 step 5000/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.207 d 1.749 lam 0.006 | 19 img/s
+  ep5 step 5200/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.208 d 1.748 lam 0.006 | 19 img/s
+  ep5 step 5400/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.207 d 1.750 lam 0.006 | 19 img/s
+  ep5 step 5600/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.205 d 1.752 lam 0.006 | 19 img/s
+  ep5 step 5800/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.203 d 1.753 lam 0.006 | 19 img/s
+  ep5 step 6000/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.202 d 1.754 lam 0.006 | 19 img/s
+  ep5 step 6200/12790 | rec_w 0.0426 rec 0.0309 | g_adv 0.200 d 1.755 lam 0.006 | 19 img/s
+  ep5 step 6400/12790 | rec_w 0.0426 rec 0.0309 | g_adv 0.203 d 1.753 lam 0.006 | 19 img/s
+  ep5 step 6600/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.205 d 1.750 lam 0.006 | 19 img/s
+  ep5 step 6800/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.209 d 1.748 lam 0.006 | 19 img/s
+  ep5 step 7000/12790 | rec_w 0.0425 rec 0.0309 | g_adv 0.208 d 1.748 lam 0.006 | 19 img/s
+  ep5 step 7200/12790 | rec_w 0.0425 rec 0.0308 | g_adv 0.210 d 1.745 lam 0.006 | 19 img/s
+  ep5 step 7400/12790 | rec_w 0.0424 rec 0.0308 | g_adv 0.214 d 1.742 lam 0.006 | 19 img/s
+  ep5 step 7600/12790 | rec_w 0.0424 rec 0.0308 | g_adv 0.216 d 1.740 lam 0.006 | 19 img/s
+  ep5 step 7800/12790 | rec_w 0.0424 rec 0.0308 | g_adv 0.217 d 1.739 lam 0.006 | 19 img/s
+  ep5 step 8000/12790 | rec_w 0.0424 rec 0.0307 | g_adv 0.220 d 1.738 lam 0.006 | 19 img/s
+  ep5 step 8200/12790 | rec_w 0.0424 rec 0.0307 | g_adv 0.222 d 1.737 lam 0.006 | 19 img/s
+  ep5 step 8400/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.225 d 1.735 lam 0.006 | 19 img/s
+  ep5 step 8600/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.226 d 1.734 lam 0.006 | 19 img/s
+  ep5 step 8800/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.226 d 1.734 lam 0.006 | 19 img/s
+  ep5 step 9000/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.230 d 1.731 lam 0.005 | 19 img/s
+  ep5 step 9200/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.232 d 1.731 lam 0.005 | 19 img/s
+  ep5 step 9400/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.234 d 1.730 lam 0.005 | 19 img/s
+  ep5 step 9600/12790 | rec_w 0.0423 rec 0.0307 | g_adv 0.235 d 1.729 lam 0.005 | 19 img/s
+  ep5 step 9800/12790 | rec_w 0.0422 rec 0.0306 | g_adv 0.239 d 1.727 lam 0.005 | 19 img/s
+  ep5 step 10000/12790 | rec_w 0.0422 rec 0.0306 | g_adv 0.242 d 1.726 lam 0.005 | 19 img/s
+  ep5 step 10200/12790 | rec_w 0.0422 rec 0.0306 | g_adv 0.244 d 1.725 lam 0.005 | 19 img/s
+  ep5 step 10400/12790 | rec_w 0.0422 rec 0.0306 | g_adv 0.246 d 1.724 lam 0.005 | 19 img/s
+  ep5 step 10600/12790 | rec_w 0.0422 rec 0.0306 | g_adv 0.248 d 1.722 lam 0.005 | 19 img/s
+  ep5 step 10800/12790 | rec_w 0.0422 rec 0.0306 | g_adv 0.250 d 1.720 lam 0.005 | 19 img/s
+  ep5 step 11000/12790 | rec_w 0.0421 rec 0.0306 | g_adv 0.254 d 1.718 lam 0.005 | 19 img/s
+  ep5 step 11200/12790 | rec_w 0.0421 rec 0.0305 | g_adv 0.256 d 1.717 lam 0.005 | 19 img/s
+  ep5 step 11400/12790 | rec_w 0.0421 rec 0.0305 | g_adv 0.257 d 1.717 lam 0.005 | 19 img/s
+  ep5 step 11600/12790 | rec_w 0.0421 rec 0.0305 | g_adv 0.257 d 1.717 lam 0.005 | 19 img/s
+  ep5 step 11800/12790 | rec_w 0.0421 rec 0.0305 | g_adv 0.259 d 1.714 lam 0.005 | 19 img/s
+  ep5 step 12000/12790 | rec_w 0.0420 rec 0.0305 | g_adv 0.262 d 1.712 lam 0.005 | 19 img/s
+  ep5 step 12200/12790 | rec_w 0.0420 rec 0.0304 | g_adv 0.263 d 1.711 lam 0.005 | 19 img/s
+  ep5 step 12400/12790 | rec_w 0.0420 rec 0.0304 | g_adv 0.264 d 1.711 lam 0.005 | 19 img/s
+  ep5 step 12600/12790 | rec_w 0.0420 rec 0.0304 | g_adv 0.264 d 1.711 lam 0.005 | 19 img/s
+epoch   5/50 | val rec 0.0301 (w 0.0409) | csi8 0.722 csi32 0.683 | tail16 0.98 tail32 0.96 | psd2-8km 0.94 | 16270s | 19 img/s | GPU 19.9 GB
+  new best (val rec_w 0.0409) -> vae_best.pt
+  verify -> /home/links/dv321/dissertation_outputs/vae_v2/verify_ep05.png
+  ep6 step 200/12790 | rec_w 0.0415 rec 0.0300 | g_adv 0.306 d 1.683 lam 0.004 | 19 img/s
+  ep6 step 400/12790 | rec_w 0.0415 rec 0.0300 | g_adv 0.282 d 1.676 lam 0.004 | 19 img/s
+  ep6 step 600/12790 | rec_w 0.0414 rec 0.0299 | g_adv 0.277 d 1.686 lam 0.004 | 19 img/s
+  ep6 step 800/12790 | rec_w 0.0412 rec 0.0298 | g_adv 0.296 d 1.683 lam 0.004 | 19 img/s
+  ep6 step 1000/12790 | rec_w 0.0412 rec 0.0298 | g_adv 0.313 d 1.675 lam 0.004 | 19 img/s
+  ep6 step 1200/12790 | rec_w 0.0411 rec 0.0297 | g_adv 0.312 d 1.677 lam 0.004 | 19 img/s
+  ep6 step 1400/12790 | rec_w 0.0411 rec 0.0296 | g_adv 0.321 d 1.680 lam 0.004 | 19 img/s
+  ep6 step 1600/12790 | rec_w 0.0410 rec 0.0296 | g_adv 0.322 d 1.676 lam 0.004 | 19 img/s
+  ep6 step 1800/12790 | rec_w 0.0409 rec 0.0295 | g_adv 0.330 d 1.668 lam 0.004 | 19 img/s
+  ep6 step 2000/12790 | rec_w 0.0409 rec 0.0295 | g_adv 0.339 d 1.661 lam 0.004 | 19 img/s
+  ep6 step 2200/12790 | rec_w 0.0409 rec 0.0295 | g_adv 0.356 d 1.655 lam 0.004 | 19 img/s
+  ep6 step 2400/12790 | rec_w 0.0409 rec 0.0295 | g_adv 0.359 d 1.646 lam 0.004 | 19 img/s
+  ep6 step 2600/12790 | rec_w 0.0409 rec 0.0294 | g_adv 0.361 d 1.640 lam 0.004 | 19 img/s
+  ep6 step 2800/12790 | rec_w 0.0409 rec 0.0294 | g_adv 0.362 d 1.640 lam 0.004 | 19 img/s
+  ep6 step 3000/12790 | rec_w 0.0409 rec 0.0294 | g_adv 0.368 d 1.638 lam 0.004 | 19 img/s
+  ep6 step 3200/12790 | rec_w 0.0409 rec 0.0294 | g_adv 0.365 d 1.642 lam 0.004 | 19 img/s
+  ep6 step 3400/12790 | rec_w 0.0408 rec 0.0294 | g_adv 0.371 d 1.640 lam 0.004 | 19 img/s
+  ep6 step 3600/12790 | rec_w 0.0408 rec 0.0294 | g_adv 0.375 d 1.639 lam 0.004 | 19 img/s
+  ep6 step 3800/12790 | rec_w 0.0408 rec 0.0294 | g_adv 0.376 d 1.639 lam 0.004 | 19 img/s
+  ep6 step 4000/12790 | rec_w 0.0408 rec 0.0294 | g_adv 0.383 d 1.639 lam 0.004 | 19 img/s
+  ep6 step 4200/12790 | rec_w 0.0408 rec 0.0293 | g_adv 0.383 d 1.637 lam 0.004 | 19 img/s
+  ep6 step 4400/12790 | rec_w 0.0408 rec 0.0293 | g_adv 0.389 d 1.632 lam 0.004 | 19 img/s
+  ep6 step 4600/12790 | rec_w 0.0408 rec 0.0293 | g_adv 0.392 d 1.629 lam 0.004 | 19 img/s
+  ep6 step 4800/12790 | rec_w 0.0407 rec 0.0293 | g_adv 0.399 d 1.625 lam 0.004 | 19 img/s
+  ep6 step 5000/12790 | rec_w 0.0407 rec 0.0292 | g_adv 0.404 d 1.621 lam 0.004 | 19 img/s
+  ep6 step 5200/12790 | rec_w 0.0406 rec 0.0292 | g_adv 0.408 d 1.618 lam 0.004 | 19 img/s
+  ep6 step 5400/12790 | rec_w 0.0406 rec 0.0292 | g_adv 0.413 d 1.618 lam 0.004 | 19 img/s
+  ep6 step 5600/12790 | rec_w 0.0406 rec 0.0292 | g_adv 0.418 d 1.615 lam 0.003 | 19 img/s
+  ep6 step 5800/12790 | rec_w 0.0406 rec 0.0292 | g_adv 0.420 d 1.615 lam 0.003 | 19 img/s
+  ep6 step 6000/12790 | rec_w 0.0406 rec 0.0292 | g_adv 0.423 d 1.611 lam 0.003 | 19 img/s
+  ep6 step 6200/12790 | rec_w 0.0406 rec 0.0291 | g_adv 0.426 d 1.610 lam 0.003 | 19 img/s
+  ep6 step 6400/12790 | rec_w 0.0406 rec 0.0291 | g_adv 0.426 d 1.610 lam 0.003 | 19 img/s
+  ep6 step 6600/12790 | rec_w 0.0406 rec 0.0291 | g_adv 0.429 d 1.609 lam 0.003 | 19 img/s
+  ep6 step 6800/12790 | rec_w 0.0405 rec 0.0291 | g_adv 0.432 d 1.609 lam 0.003 | 19 img/s
+  ep6 step 7000/12790 | rec_w 0.0405 rec 0.0291 | g_adv 0.435 d 1.608 lam 0.003 | 19 img/s
+  ep6 step 7200/12790 | rec_w 0.0405 rec 0.0291 | g_adv 0.442 d 1.606 lam 0.003 | 19 img/s
+  ep6 step 7400/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.442 d 1.606 lam 0.003 | 19 img/s
+  ep6 step 7600/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.444 d 1.605 lam 0.003 | 19 img/s
+  ep6 step 7800/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.445 d 1.603 lam 0.003 | 19 img/s
+  ep6 step 8000/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.450 d 1.600 lam 0.003 | 19 img/s
+  ep6 step 8200/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.451 d 1.602 lam 0.003 | 19 img/s
+  ep6 step 8400/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.454 d 1.599 lam 0.003 | 19 img/s
+  ep6 step 8600/12790 | rec_w 0.0404 rec 0.0290 | g_adv 0.455 d 1.598 lam 0.003 | 19 img/s
+  ep6 step 8800/12790 | rec_w 0.0403 rec 0.0289 | g_adv 0.459 d 1.595 lam 0.003 | 19 img/s
+  ep6 step 9000/12790 | rec_w 0.0403 rec 0.0289 | g_adv 0.463 d 1.593 lam 0.003 | 19 img/s
+  ep6 step 9200/12790 | rec_w 0.0403 rec 0.0289 | g_adv 0.465 d 1.593 lam 0.003 | 19 img/s
+  ep6 step 9400/12790 | rec_w 0.0403 rec 0.0289 | g_adv 0.465 d 1.591 lam 0.003 | 19 img/s
+  ep6 step 9600/12790 | rec_w 0.0402 rec 0.0289 | g_adv 0.468 d 1.590 lam 0.003 | 19 img/s
+  ep6 step 9800/12790 | rec_w 0.0402 rec 0.0289 | g_adv 0.467 d 1.592 lam 0.003 | 19 img/s
+  ep6 step 10000/12790 | rec_w 0.0402 rec 0.0289 | g_adv 0.466 d 1.592 lam 0.003 | 19 img/s
+  ep6 step 10200/12790 | rec_w 0.0402 rec 0.0289 | g_adv 0.465 d 1.593 lam 0.003 | 19 img/s
+  ep6 step 10400/12790 | rec_w 0.0402 rec 0.0289 | g_adv 0.465 d 1.593 lam 0.003 | 19 img/s
+  ep6 step 10600/12790 | rec_w 0.0402 rec 0.0289 | g_adv 0.466 d 1.592 lam 0.003 | 19 img/s
+  ep6 step 10800/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.465 d 1.592 lam 0.003 | 19 img/s
+  ep6 step 11000/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.466 d 1.591 lam 0.003 | 19 img/s
+  ep6 step 11200/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.468 d 1.589 lam 0.003 | 19 img/s
+  ep6 step 11400/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.470 d 1.588 lam 0.003 | 19 img/s
+  ep6 step 11600/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.468 d 1.589 lam 0.003 | 19 img/s
+  ep6 step 11800/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.468 d 1.588 lam 0.003 | 19 img/s
+  ep6 step 12000/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.469 d 1.587 lam 0.003 | 19 img/s
+  ep6 step 12200/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.470 d 1.586 lam 0.003 | 19 img/s
+  ep6 step 12400/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.471 d 1.586 lam 0.003 | 19 img/s
+  ep6 step 12600/12790 | rec_w 0.0402 rec 0.0288 | g_adv 0.471 d 1.586 lam 0.003 | 19 img/s
+epoch   6/50 | val rec 0.0272 (w 0.0382) | csi8 0.720 csi32 0.696 | tail16 1.17 tail32 1.14 | psd2-8km 0.96 | 16264s | 19 img/s | GPU 19.9 GB
+  new best (val rec_w 0.0382) -> vae_best.pt
+  ep7 step 200/12790 | rec_w 0.0389 rec 0.0277 | g_adv 0.462 d 1.526 lam 0.003 | 19 img/s
+  ep7 step 400/12790 | rec_w 0.0390 rec 0.0278 | g_adv 0.524 d 1.487 lam 0.003 | 19 img/s
+  ep7 step 600/12790 | rec_w 0.0394 rec 0.0282 | g_adv 0.554 d 1.485 lam 0.003 | 19 img/s
+  ep7 step 800/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.548 d 1.498 lam 0.003 | 19 img/s
+  ep7 step 1000/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.545 d 1.510 lam 0.003 | 19 img/s
+  ep7 step 1200/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.540 d 1.520 lam 0.003 | 19 img/s
+  ep7 step 1400/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.539 d 1.529 lam 0.003 | 19 img/s
+  ep7 step 1600/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.548 d 1.523 lam 0.003 | 19 img/s
+  ep7 step 1800/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.547 d 1.521 lam 0.003 | 19 img/s
+  ep7 step 2000/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.555 d 1.527 lam 0.003 | 19 img/s
+  ep7 step 2200/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.560 d 1.519 lam 0.003 | 19 img/s
+  ep7 step 2400/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.563 d 1.522 lam 0.003 | 19 img/s
+  ep7 step 2600/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.563 d 1.523 lam 0.003 | 19 img/s
+  ep7 step 2800/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.562 d 1.519 lam 0.003 | 19 img/s
+  ep7 step 3000/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.567 d 1.517 lam 0.003 | 19 img/s
+  ep7 step 3200/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.577 d 1.512 lam 0.003 | 19 img/s
+  ep7 step 3400/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.584 d 1.508 lam 0.003 | 19 img/s
+  ep7 step 3600/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.592 d 1.504 lam 0.003 | 19 img/s
+  ep7 step 3800/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.594 d 1.507 lam 0.003 | 19 img/s
+  ep7 step 4000/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.590 d 1.515 lam 0.003 | 19 img/s
+  ep7 step 4200/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.589 d 1.516 lam 0.003 | 19 img/s
+  ep7 step 4400/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.584 d 1.517 lam 0.003 | 19 img/s
+  ep7 step 4600/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.580 d 1.520 lam 0.003 | 19 img/s
+  ep7 step 4800/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.576 d 1.522 lam 0.003 | 19 img/s
+  ep7 step 5000/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.569 d 1.528 lam 0.003 | 19 img/s
+  ep7 step 5200/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.565 d 1.530 lam 0.003 | 19 img/s
+  ep7 step 5400/12790 | rec_w 0.0393 rec 0.0280 | g_adv 0.556 d 1.536 lam 0.003 | 19 img/s
+  ep7 step 5600/12790 | rec_w 0.0393 rec 0.0280 | g_adv 0.550 d 1.541 lam 0.003 | 19 img/s
+  ep7 step 5800/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.542 d 1.545 lam 0.003 | 19 img/s
+  ep7 step 6000/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.540 d 1.548 lam 0.003 | 19 img/s
+  ep7 step 6200/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.538 d 1.549 lam 0.003 | 19 img/s
+  ep7 step 6400/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.538 d 1.546 lam 0.003 | 19 img/s
+  ep7 step 6600/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.538 d 1.545 lam 0.003 | 19 img/s
+  ep7 step 6800/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.542 d 1.546 lam 0.003 | 19 img/s
+  ep7 step 7000/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.542 d 1.546 lam 0.003 | 19 img/s
+  ep7 step 7200/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.542 d 1.547 lam 0.003 | 19 img/s
+  ep7 step 7400/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.541 d 1.546 lam 0.003 | 19 img/s
+  ep7 step 7600/12790 | rec_w 0.0394 rec 0.0281 | g_adv 0.540 d 1.544 lam 0.003 | 19 img/s
+  ep7 step 7800/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.546 d 1.540 lam 0.003 | 19 img/s
+  ep7 step 8000/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.548 d 1.538 lam 0.003 | 19 img/s
+  ep7 step 8200/12790 | rec_w 0.0393 rec 0.0281 | g_adv 0.548 d 1.537 lam 0.003 | 19 img/s
+  ep7 step 8400/12790 | rec_w 0.0393 rec 0.0280 | g_adv 0.552 d 1.534 lam 0.003 | 19 img/s
+  ep7 step 8600/12790 | rec_w 0.0393 rec 0.0280 | g_adv 0.556 d 1.534 lam 0.003 | 19 img/s
+  ep7 step 8800/12790 | rec_w 0.0393 rec 0.0280 | g_adv 0.558 d 1.534 lam 0.003 | 19 img/s
+  ep7 step 9000/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.558 d 1.532 lam 0.003 | 19 img/s
+  ep7 step 9200/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.562 d 1.531 lam 0.003 | 19 img/s
+  ep7 step 9400/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.561 d 1.531 lam 0.003 | 19 img/s
+  ep7 step 9600/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.560 d 1.532 lam 0.003 | 19 img/s
+  ep7 step 9800/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.558 d 1.532 lam 0.003 | 19 img/s
+  ep7 step 10000/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.559 d 1.531 lam 0.003 | 19 img/s
+  ep7 step 10200/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.558 d 1.531 lam 0.003 | 19 img/s
+  ep7 step 10400/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.557 d 1.532 lam 0.003 | 19 img/s
+  ep7 step 10600/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.557 d 1.532 lam 0.003 | 19 img/s
+  ep7 step 10800/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.557 d 1.531 lam 0.003 | 19 img/s
+  ep7 step 11000/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.557 d 1.530 lam 0.003 | 19 img/s
+  ep7 step 11200/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.560 d 1.527 lam 0.003 | 19 img/s
+  ep7 step 11400/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.561 d 1.526 lam 0.003 | 19 img/s
+  ep7 step 11600/12790 | rec_w 0.0392 rec 0.0280 | g_adv 0.563 d 1.524 lam 0.003 | 19 img/s
+  ep7 step 11800/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.570 d 1.522 lam 0.003 | 19 img/s
+  ep7 step 12000/12790 | rec_w 0.0392 rec 0.0279 | g_adv 0.573 d 1.520 lam 0.003 | 19 img/s
+  ep7 step 12200/12790 | rec_w 0.0391 rec 0.0279 | g_adv 0.573 d 1.519 lam 0.003 | 19 img/s
+  ep7 step 12400/12790 | rec_w 0.0391 rec 0.0279 | g_adv 0.573 d 1.520 lam 0.003 | 19 img/s
+  ep7 step 12600/12790 | rec_w 0.0391 rec 0.0279 | g_adv 0.575 d 1.519 lam 0.003 | 19 img/s
+epoch   7/50 | val rec 0.0256 (w 0.0353) | csi8 0.738 csi32 0.690 | tail16 0.90 tail32 0.87 | psd2-8km 0.78 | 16275s | 19 img/s | GPU 19.9 GB
+  new best (val rec_w 0.0353) -> vae_best.pt
+  ep8 step 200/12790 | rec_w 0.0390 rec 0.0279 | g_adv 0.656 d 1.476 lam 0.002 | 19 img/s
+  ep8 step 400/12790 | rec_w 0.0389 rec 0.0278 | g_adv 0.697 d 1.519 lam 0.002 | 19 img/s
+  ep8 step 600/12790 | rec_w 0.0387 rec 0.0276 | g_adv 0.638 d 1.554 lam 0.002 | 19 img/s
+  ep8 step 800/12790 | rec_w 0.0387 rec 0.0276 | g_adv 0.611 d 1.538 lam 0.002 | 19 img/s
+  ep8 step 1000/12790 | rec_w 0.0388 rec 0.0276 | g_adv 0.588 d 1.541 lam 0.002 | 19 img/s
+  ep8 step 1200/12790 | rec_w 0.0388 rec 0.0277 | g_adv 0.550 d 1.560 lam 0.002 | 19 img/s
+  ep8 step 1400/12790 | rec_w 0.0389 rec 0.0277 | g_adv 0.528 d 1.571 lam 0.002 | 19 img/s
+  ep8 step 1600/12790 | rec_w 0.0389 rec 0.0277 | g_adv 0.518 d 1.571 lam 0.003 | 19 img/s
+  ep8 step 1800/12790 | rec_w 0.0391 rec 0.0279 | g_adv 0.482 d 1.598 lam 0.003 | 19 img/s
+  ep8 step 2000/12790 | rec_w 0.0394 rec 0.0282 | g_adv 0.444 d 1.628 lam 0.003 | 19 img/s
+  ep8 step 2200/12790 | rec_w 0.0396 rec 0.0284 | g_adv 0.412 d 1.651 lam 0.003 | 19 img/s
+  ep8 step 2400/12790 | rec_w 0.0399 rec 0.0286 | g_adv 0.381 d 1.672 lam 0.004 | 19 img/s
+  ep8 step 2600/12790 | rec_w 0.0401 rec 0.0288 | g_adv 0.355 d 1.695 lam 0.004 | 19 img/s
+  ep8 step 2800/12790 | rec_w 0.0403 rec 0.0290 | g_adv 0.333 d 1.713 lam 0.005 | 19 img/s
+  ep8 step 3000/12790 | rec_w 0.0406 rec 0.0292 | g_adv 0.309 d 1.729 lam 0.006 | 19 img/s
+  ep8 step 3200/12790 | rec_w 0.0408 rec 0.0294 | g_adv 0.291 d 1.745 lam 0.007 | 19 img/s
+  ep8 step 3400/12790 | rec_w 0.0410 rec 0.0295 | g_adv 0.274 d 1.759 lam 0.007 | 19 img/s
+  ep8 step 3600/12790 | rec_w 0.0412 rec 0.0297 | g_adv 0.260 d 1.771 lam 0.008 | 19 img/s
+  ep8 step 3800/12790 | rec_w 0.0413 rec 0.0298 | g_adv 0.243 d 1.783 lam 0.009 | 19 img/s
+  ep8 step 4000/12790 | rec_w 0.0415 rec 0.0299 | g_adv 0.231 d 1.790 lam 0.009 | 19 img/s
+  ep8 step 4200/12790 | rec_w 0.0417 rec 0.0301 | g_adv 0.219 d 1.800 lam 0.011 | 19 img/s
+  ep8 step 4400/12790 | rec_w 0.0418 rec 0.0302 | g_adv 0.207 d 1.809 lam 0.012 | 19 img/s
+  ep8 step 4600/12790 | rec_w 0.0420 rec 0.0303 | g_adv 0.197 d 1.816 lam 0.013 | 19 img/s
+  ep8 step 4800/12790 | rec_w 0.0422 rec 0.0305 | g_adv 0.189 d 1.823 lam 0.014 | 19 img/s
+  ep8 step 5000/12790 | rec_w 0.0423 rec 0.0306 | g_adv 0.181 d 1.828 lam 0.015 | 19 img/s
+  ep8 step 5200/12790 | rec_w 0.0423 rec 0.0306 | g_adv 0.174 d 1.832 lam 0.015 | 19 img/s
+  ep8 step 5400/12790 | rec_w 0.0424 rec 0.0306 | g_adv 0.168 d 1.836 lam 0.015 | 19 img/s
+  ep8 step 5600/12790 | rec_w 0.0424 rec 0.0307 | g_adv 0.163 d 1.841 lam 0.015 | 19 img/s
+  ep8 step 5800/12790 | rec_w 0.0424 rec 0.0307 | g_adv 0.160 d 1.843 lam 0.016 | 19 img/s
+  ep8 step 6000/12790 | rec_w 0.0425 rec 0.0307 | g_adv 0.154 d 1.847 lam 0.016 | 19 img/s
+  ep8 step 6200/12790 | rec_w 0.0425 rec 0.0308 | g_adv 0.150 d 1.849 lam 0.016 | 19 img/s
+  ep8 step 6400/12790 | rec_w 0.0426 rec 0.0308 | g_adv 0.146 d 1.851 lam 0.016 | 19 img/s
+  ep8 step 6600/12790 | rec_w 0.0426 rec 0.0308 | g_adv 0.143 d 1.852 lam 0.016 | 19 img/s
+  ep8 step 6800/12790 | rec_w 0.0426 rec 0.0308 | g_adv 0.140 d 1.853 lam 0.016 | 19 img/s
+  ep8 step 7000/12790 | rec_w 0.0425 rec 0.0307 | g_adv 0.141 d 1.851 lam 0.016 | 19 img/s
+  ep8 step 7200/12790 | rec_w 0.0425 rec 0.0307 | g_adv 0.143 d 1.847 lam 0.016 | 19 img/s
+  ep8 step 7400/12790 | rec_w 0.0424 rec 0.0306 | g_adv 0.146 d 1.842 lam 0.015 | 19 img/s
+  ep8 step 7600/12790 | rec_w 0.0423 rec 0.0306 | g_adv 0.147 d 1.839 lam 0.015 | 19 img/s
+  ep8 step 7800/12790 | rec_w 0.0423 rec 0.0306 | g_adv 0.150 d 1.835 lam 0.015 | 19 img/s
+  ep8 step 8000/12790 | rec_w 0.0423 rec 0.0305 | g_adv 0.152 d 1.831 lam 0.015 | 19 img/s
+  ep8 step 8200/12790 | rec_w 0.0422 rec 0.0305 | g_adv 0.155 d 1.827 lam 0.014 | 19 img/s
+  ep8 step 8400/12790 | rec_w 0.0422 rec 0.0304 | g_adv 0.158 d 1.823 lam 0.014 | 19 img/s
+  ep8 step 8600/12790 | rec_w 0.0421 rec 0.0304 | g_adv 0.162 d 1.817 lam 0.014 | 19 img/s
+  ep8 step 8800/12790 | rec_w 0.0421 rec 0.0303 | g_adv 0.168 d 1.811 lam 0.014 | 19 img/s
+  ep8 step 9000/12790 | rec_w 0.0420 rec 0.0303 | g_adv 0.173 d 1.804 lam 0.014 | 19 img/s
+  ep8 step 9200/12790 | rec_w 0.0420 rec 0.0302 | g_adv 0.180 d 1.800 lam 0.013 | 19 img/s
+  ep8 step 9400/12790 | rec_w 0.0419 rec 0.0302 | g_adv 0.185 d 1.795 lam 0.013 | 19 img/s
+  ep8 step 9600/12790 | rec_w 0.0418 rec 0.0301 | g_adv 0.190 d 1.790 lam 0.013 | 19 img/s
+  ep8 step 9800/12790 | rec_w 0.0418 rec 0.0301 | g_adv 0.195 d 1.786 lam 0.013 | 19 img/s
+  ep8 step 10000/12790 | rec_w 0.0417 rec 0.0300 | g_adv 0.200 d 1.781 lam 0.013 | 19 img/s
+  ep8 step 10200/12790 | rec_w 0.0417 rec 0.0300 | g_adv 0.206 d 1.777 lam 0.012 | 19 img/s
+  ep8 step 10400/12790 | rec_w 0.0417 rec 0.0300 | g_adv 0.210 d 1.773 lam 0.012 | 19 img/s
+  ep8 step 10600/12790 | rec_w 0.0416 rec 0.0299 | g_adv 0.215 d 1.768 lam 0.012 | 19 img/s
+  ep8 step 10800/12790 | rec_w 0.0416 rec 0.0299 | g_adv 0.219 d 1.764 lam 0.012 | 19 img/s
+  ep8 step 11000/12790 | rec_w 0.0415 rec 0.0298 | g_adv 0.222 d 1.760 lam 0.012 | 19 img/s
+  ep8 step 11200/12790 | rec_w 0.0415 rec 0.0298 | g_adv 0.226 d 1.757 lam 0.012 | 19 img/s
+  ep8 step 11400/12790 | rec_w 0.0414 rec 0.0298 | g_adv 0.230 d 1.753 lam 0.011 | 19 img/s
+  ep8 step 11600/12790 | rec_w 0.0414 rec 0.0297 | g_adv 0.231 d 1.751 lam 0.011 | 19 img/s
+  ep8 step 11800/12790 | rec_w 0.0414 rec 0.0297 | g_adv 0.233 d 1.748 lam 0.011 | 19 img/s
+  ep8 step 12000/12790 | rec_w 0.0413 rec 0.0297 | g_adv 0.235 d 1.745 lam 0.011 | 19 img/s
+  ep8 step 12200/12790 | rec_w 0.0413 rec 0.0296 | g_adv 0.239 d 1.743 lam 0.011 | 19 img/s
+  ep8 step 12400/12790 | rec_w 0.0412 rec 0.0296 | g_adv 0.242 d 1.740 lam 0.011 | 19 img/s
+  ep8 step 12600/12790 | rec_w 0.0412 rec 0.0296 | g_adv 0.245 d 1.737 lam 0.011 | 19 img/s
+epoch   8/50 | val rec 0.0268 (w 0.0375) | csi8 0.719 csi32 0.673 | tail16 0.87 tail32 0.81 | psd2-8km 0.86 | 16288s | 19 img/s | GPU 19.9 GB
+  ep9 step 200/12790 | rec_w 0.0380 rec 0.0269 | g_adv 0.525 d 1.504 lam 0.003 | 19 img/s
+  ep9 step 400/12790 | rec_w 0.0387 rec 0.0274 | g_adv 0.472 d 1.551 lam 0.003 | 19 img/s
+  ep9 step 600/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.438 d 1.607 lam 0.003 | 19 img/s
+  ep9 step 800/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.448 d 1.599 lam 0.003 | 19 img/s
+  ep9 step 1000/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.440 d 1.596 lam 0.003 | 19 img/s
+  ep9 step 1200/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.443 d 1.594 lam 0.003 | 19 img/s
+  ep9 step 1400/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.456 d 1.592 lam 0.003 | 19 img/s
+  ep9 step 1600/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.461 d 1.590 lam 0.003 | 19 img/s
+  ep9 step 1800/12790 | rec_w 0.0391 rec 0.0277 | g_adv 0.452 d 1.591 lam 0.003 | 19 img/s
+  ep9 step 2000/12790 | rec_w 0.0391 rec 0.0277 | g_adv 0.445 d 1.590 lam 0.003 | 19 img/s
+  ep9 step 2200/12790 | rec_w 0.0391 rec 0.0277 | g_adv 0.444 d 1.587 lam 0.003 | 19 img/s
+  ep9 step 2400/12790 | rec_w 0.0391 rec 0.0277 | g_adv 0.449 d 1.580 lam 0.003 | 19 img/s
+  ep9 step 2600/12790 | rec_w 0.0391 rec 0.0277 | g_adv 0.453 d 1.576 lam 0.003 | 19 img/s
+  ep9 step 2800/12790 | rec_w 0.0391 rec 0.0277 | g_adv 0.459 d 1.573 lam 0.003 | 19 img/s
+  ep9 step 3000/12790 | rec_w 0.0390 rec 0.0277 | g_adv 0.461 d 1.567 lam 0.003 | 19 img/s
+  ep9 step 3200/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.469 d 1.565 lam 0.003 | 19 img/s
+  ep9 step 3400/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.473 d 1.568 lam 0.003 | 19 img/s
+  ep9 step 3600/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.470 d 1.571 lam 0.003 | 19 img/s
+  ep9 step 3800/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.467 d 1.572 lam 0.003 | 19 img/s
+  ep9 step 4000/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.464 d 1.574 lam 0.003 | 19 img/s
+  ep9 step 4200/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.459 d 1.575 lam 0.003 | 19 img/s
+  ep9 step 4400/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.457 d 1.574 lam 0.003 | 19 img/s
+  ep9 step 4600/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.464 d 1.571 lam 0.003 | 19 img/s
+  ep9 step 4800/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.466 d 1.569 lam 0.003 | 19 img/s
+  ep9 step 5000/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.467 d 1.569 lam 0.003 | 19 img/s
+  ep9 step 5200/12790 | rec_w 0.0390 rec 0.0276 | g_adv 0.471 d 1.567 lam 0.003 | 19 img/s
+  ep9 step 5400/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.471 d 1.566 lam 0.003 | 19 img/s
+  ep9 step 5600/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.472 d 1.565 lam 0.003 | 19 img/s
+  ep9 step 5800/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.474 d 1.566 lam 0.003 | 19 img/s
+  ep9 step 6000/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.478 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 6200/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.482 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 6400/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.485 d 1.562 lam 0.003 | 19 img/s
+  ep9 step 6600/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.483 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 6800/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.483 d 1.565 lam 0.003 | 19 img/s
+  ep9 step 7000/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.489 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 7200/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.491 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 7400/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.487 d 1.566 lam 0.003 | 19 img/s
+  ep9 step 7600/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.487 d 1.568 lam 0.003 | 19 img/s
+  ep9 step 7800/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.487 d 1.567 lam 0.003 | 19 img/s
+  ep9 step 8000/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.481 d 1.570 lam 0.003 | 19 img/s
+  ep9 step 8200/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.479 d 1.571 lam 0.003 | 19 img/s
+  ep9 step 8400/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.479 d 1.571 lam 0.003 | 19 img/s
+  ep9 step 8600/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.480 d 1.569 lam 0.003 | 19 img/s
+  ep9 step 8800/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.481 d 1.568 lam 0.003 | 19 img/s
+  ep9 step 9000/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.483 d 1.566 lam 0.003 | 19 img/s
+  ep9 step 9200/12790 | rec_w 0.0389 rec 0.0276 | g_adv 0.484 d 1.567 lam 0.003 | 19 img/s
+  ep9 step 9400/12790 | rec_w 0.0389 rec 0.0275 | g_adv 0.484 d 1.566 lam 0.003 | 19 img/s
+  ep9 step 9600/12790 | rec_w 0.0389 rec 0.0275 | g_adv 0.486 d 1.565 lam 0.003 | 19 img/s
+  ep9 step 9800/12790 | rec_w 0.0389 rec 0.0275 | g_adv 0.487 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 10000/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.489 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 10200/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.488 d 1.565 lam 0.003 | 19 img/s
+  ep9 step 10400/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.489 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 10600/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.487 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 10800/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.487 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 11000/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.487 d 1.563 lam 0.003 | 19 img/s
+  ep9 step 11200/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.486 d 1.564 lam 0.003 | 19 img/s
+  ep9 step 11400/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.487 d 1.565 lam 0.003 | 19 img/s
+  ep9 step 11600/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.488 d 1.563 lam 0.003 | 19 img/s
+  ep9 step 11800/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.492 d 1.561 lam 0.003 | 19 img/s
+  ep9 step 12000/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.493 d 1.560 lam 0.003 | 19 img/s
+  ep9 step 12200/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.493 d 1.561 lam 0.003 | 19 img/s
+  ep9 step 12400/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.491 d 1.561 lam 0.003 | 19 img/s
+  ep9 step 12600/12790 | rec_w 0.0388 rec 0.0275 | g_adv 0.491 d 1.560 lam 0.003 | 19 img/s
+epoch   9/50 | val rec 0.0247 (w 0.0351) | csi8 0.727 csi32 0.665 | tail16 0.84 tail32 0.78 | psd2-8km 0.74 | 16287s | 19 img/s | GPU 19.9 GB
+  new best (val rec_w 0.0351) -> vae_best.pt
+  ep10 step 200/12790 | rec_w 0.0380 rec 0.0269 | g_adv 0.738 d 1.393 lam 0.003 | 19 img/s
+  ep10 step 400/12790 | rec_w 0.0380 rec 0.0268 | g_adv 0.696 d 1.434 lam 0.003 | 19 img/s
+  ep10 step 600/12790 | rec_w 0.0382 rec 0.0270 | g_adv 0.644 d 1.475 lam 0.003 | 19 img/s
+  ep10 step 800/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.619 d 1.481 lam 0.003 | 19 img/s
+  ep10 step 1000/12790 | rec_w 0.0384 rec 0.0271 | g_adv 0.603 d 1.471 lam 0.003 | 19 img/s
+  ep10 step 1200/12790 | rec_w 0.0383 rec 0.0271 | g_adv 0.620 d 1.473 lam 0.003 | 19 img/s
+  ep10 step 1400/12790 | rec_w 0.0383 rec 0.0271 | g_adv 0.633 d 1.463 lam 0.003 | 19 img/s
+  ep10 step 1600/12790 | rec_w 0.0383 rec 0.0271 | g_adv 0.627 d 1.466 lam 0.003 | 19 img/s
+  ep10 step 1800/12790 | rec_w 0.0382 rec 0.0270 | g_adv 0.622 d 1.477 lam 0.003 | 19 img/s
+  ep10 step 2000/12790 | rec_w 0.0382 rec 0.0270 | g_adv 0.618 d 1.482 lam 0.003 | 19 img/s
+  ep10 step 2200/12790 | rec_w 0.0382 rec 0.0270 | g_adv 0.609 d 1.486 lam 0.003 | 19 img/s
+  ep10 step 2400/12790 | rec_w 0.0383 rec 0.0270 | g_adv 0.600 d 1.495 lam 0.003 | 19 img/s
+  ep10 step 2600/12790 | rec_w 0.0383 rec 0.0271 | g_adv 0.593 d 1.497 lam 0.003 | 19 img/s
+  ep10 step 2800/12790 | rec_w 0.0384 rec 0.0271 | g_adv 0.569 d 1.512 lam 0.003 | 19 img/s
+  ep10 step 3000/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.559 d 1.520 lam 0.003 | 19 img/s
+  ep10 step 3200/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.545 d 1.526 lam 0.003 | 19 img/s
+  ep10 step 3400/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.542 d 1.528 lam 0.003 | 19 img/s
+  ep10 step 3600/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.541 d 1.530 lam 0.003 | 19 img/s
+  ep10 step 3800/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.536 d 1.531 lam 0.003 | 19 img/s
+  ep10 step 4000/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.534 d 1.535 lam 0.003 | 19 img/s
+  ep10 step 4200/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.529 d 1.541 lam 0.003 | 19 img/s
+  ep10 step 4400/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.525 d 1.541 lam 0.003 | 19 img/s
+  ep10 step 4600/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.525 d 1.543 lam 0.003 | 19 img/s
+  ep10 step 4800/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.522 d 1.546 lam 0.003 | 19 img/s
+  ep10 step 5000/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.521 d 1.550 lam 0.003 | 19 img/s
+  ep10 step 5200/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.518 d 1.552 lam 0.003 | 19 img/s
+  ep10 step 5400/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.517 d 1.553 lam 0.003 | 19 img/s
+  ep10 step 5600/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.514 d 1.554 lam 0.003 | 19 img/s
+  ep10 step 5800/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.510 d 1.559 lam 0.003 | 19 img/s
+  ep10 step 6000/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.506 d 1.560 lam 0.003 | 19 img/s
+  ep10 step 6200/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.505 d 1.561 lam 0.003 | 19 img/s
+  ep10 step 6400/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.502 d 1.564 lam 0.003 | 19 img/s
+  ep10 step 6600/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.500 d 1.567 lam 0.003 | 19 img/s
+  ep10 step 6800/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.499 d 1.567 lam 0.003 | 19 img/s
+  ep10 step 7000/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.496 d 1.569 lam 0.003 | 19 img/s
+  ep10 step 7200/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.495 d 1.569 lam 0.003 | 19 img/s
+  ep10 step 7400/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.492 d 1.572 lam 0.003 | 19 img/s
+  ep10 step 7600/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.488 d 1.573 lam 0.003 | 19 img/s
+  ep10 step 7800/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.486 d 1.575 lam 0.003 | 19 img/s
+  ep10 step 8000/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.485 d 1.576 lam 0.003 | 19 img/s
+  ep10 step 8200/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.485 d 1.576 lam 0.003 | 19 img/s
+  ep10 step 8400/12790 | rec_w 0.0386 rec 0.0273 | g_adv 0.487 d 1.573 lam 0.003 | 19 img/s
+  ep10 step 8600/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.489 d 1.571 lam 0.003 | 19 img/s
+  ep10 step 8800/12790 | rec_w 0.0385 rec 0.0273 | g_adv 0.490 d 1.571 lam 0.003 | 19 img/s
+  ep10 step 9000/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.495 d 1.566 lam 0.003 | 19 img/s
+  ep10 step 9200/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.495 d 1.566 lam 0.003 | 19 img/s
+  ep10 step 9400/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.494 d 1.563 lam 0.003 | 19 img/s
+  ep10 step 9600/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.495 d 1.563 lam 0.003 | 19 img/s
+  ep10 step 9800/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.494 d 1.562 lam 0.003 | 19 img/s
+  ep10 step 10000/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.494 d 1.563 lam 0.003 | 19 img/s
+  ep10 step 10200/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.494 d 1.562 lam 0.003 | 19 img/s
+  ep10 step 10400/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.497 d 1.561 lam 0.003 | 19 img/s
+  ep10 step 10600/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.500 d 1.558 lam 0.003 | 19 img/s
+  ep10 step 10800/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.502 d 1.558 lam 0.003 | 19 img/s
+  ep10 step 11000/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.502 d 1.557 lam 0.003 | 19 img/s
+  ep10 step 11200/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.501 d 1.558 lam 0.003 | 19 img/s
+  ep10 step 11400/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.499 d 1.559 lam 0.003 | 19 img/s
+  ep10 step 11600/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.498 d 1.560 lam 0.003 | 19 img/s
+  ep10 step 11800/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.497 d 1.561 lam 0.003 | 19 img/s
+  ep10 step 12000/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.497 d 1.560 lam 0.003 | 19 img/s
+  ep10 step 12200/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.497 d 1.560 lam 0.003 | 19 img/s
+  ep10 step 12400/12790 | rec_w 0.0385 rec 0.0272 | g_adv 0.498 d 1.560 lam 0.003 | 19 img/s
+  ep10 step 12600/12790 | rec_w 0.0384 rec 0.0272 | g_adv 0.497 d 1.560 lam 0.003 | 19 img/s
+epoch  10/50 | val rec 0.0275 (w 0.0386) | csi8 0.722 csi32 0.691 | tail16 0.90 tail32 0.87 | psd2-8km 0.88 | 16289s | 19 img/s | GPU 19.9 GB
+  verify -> /home/links/dv321/dissertation_outputs/vae_v2/verify_ep10.png
+  ep11 step 200/12790 | rec_w 0.0382 rec 0.0270 | g_adv 0.522 d 1.528 lam 0.003 | 19 img/s
+  ep11 step 400/12790 | rec_w 0.0381 rec 0.0269 | g_adv 0.577 d 1.516 lam 0.003 | 19 img/s
+  ep11 step 600/12790 | rec_w 0.0381 rec 0.0268 | g_adv 0.571 d 1.502 lam 0.003 | 19 img/s
+  ep11 step 800/12790 | rec_w 0.0379 rec 0.0267 | g_adv 0.598 d 1.478 lam 0.003 | 19 img/s
+  ep11 step 1000/12790 | rec_w 0.0379 rec 0.0267 | g_adv 0.603 d 1.484 lam 0.003 | 19 img/s
+  ep11 step 1200/12790 | rec_w 0.0378 rec 0.0266 | g_adv 0.590 d 1.486 lam 0.003 | 19 img/s
+  ep11 step 1400/12790 | rec_w 0.0379 rec 0.0267 | g_adv 0.584 d 1.494 lam 0.003 | 19 img/s
+  ep11 step 1600/12790 | rec_w 0.0379 rec 0.0267 | g_adv 0.572 d 1.497 lam 0.003 | 19 img/s
+  ep11 step 1800/12790 | rec_w 0.0380 rec 0.0268 | g_adv 0.563 d 1.508 lam 0.003 | 19 img/s
