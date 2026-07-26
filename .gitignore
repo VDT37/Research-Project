@@ -6,6 +6,7 @@
 CLAUDE.md
 docs/
 Dissertation.ipynb
+STATE.md
 
 # --- Model weights, checkpoints, packed data: never commit ---
 # Project rule (CLAUDE.md): no data or model weights in the repo; they live on

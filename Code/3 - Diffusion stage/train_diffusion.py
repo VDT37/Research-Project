@@ -42,7 +42,7 @@ Outputs -> ~/dissertation_outputs/diffusion/ (override with --out):
     diff_last.pt, diff_best.pt, train_log.json, config.json, curves.png,
     samples_epXX.png, runs.jsonl, DONE
 """
-import os, json, time, math, glob, random, getpass, hashlib, argparse, contextlib, subprocess
+import os, sys, json, time, math, glob, random, getpass, hashlib, argparse, contextlib, subprocess
 import numpy as np
 import torch
 import torch.nn as nn
@@ -52,7 +52,19 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# Reuse the frozen codec and shared helpers (same directory on the server).
+# Reuse the frozen codec + shared helpers from the VAE stage. train_vae_v2.py sits
+# next to this file when the scripts are deployed flat, or in a sibling Code/ stage
+# folder in the repo layout (Code/2 - VAE Stage/). Make it importable either way,
+# without moving files or touching train_vae_v2.py / pack_latents.py.
+def _ensure_vae_importable():
+    here = os.path.dirname(os.path.abspath(__file__))
+    if os.path.exists(os.path.join(here, "train_vae_v2.py")):
+        return                                       # flat layout: already importable
+    for d in sorted(glob.glob(os.path.join(os.path.dirname(here), "*"))):
+        if os.path.isdir(d) and os.path.exists(os.path.join(d, "train_vae_v2.py")):
+            sys.path.insert(0, d)
+            return
+_ensure_vae_importable()
 from train_vae_v2 import VAE, AttnBlock, from_dbr, radial_psd, atomic_save, atomic_json
 
 USER    = getpass.getuser()

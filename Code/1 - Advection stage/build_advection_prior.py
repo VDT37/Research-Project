@@ -24,6 +24,8 @@ Typical headless run (survives disconnect):
     conda activate nowcast
     python build_advection_prior.py --start 2024-11-21 --end 2025-04-30
     #   detach: Ctrl-b then d      reattach: tmux attach -t prior
+    # multi-lead (+15/30/45/60, one npz per crop-lead) auto-routes to prior_ml/:
+    #   python build_advection_prior.py --start 2024-11-21 --end 2025-12-31 --leads 15,30,45,60
 
 Connectivity self-test only (no data pulled):
     python build_advection_prior.py --check
@@ -179,15 +181,19 @@ def build_availability(start, end, workers):
     return avail
 
 
-def make_temporal_samples(avail):
+def make_temporal_samples(avail, leads):
+    """One sample per issue time t0 whose 4 inputs AND every requested lead target
+    are available. target_time (the max lead) is the split reference; target_times
+    maps each lead to its observed frame time."""
     step = dt.timedelta(minutes=CADENCE_MIN)
-    lead = dt.timedelta(minutes=LEAD_MIN)
+    ref_lead = max(leads)
     out = []
     for t0 in sorted(avail):
         inputs = [t0 - k * step for k in range(N_INPUT - 1, -1, -1)]
-        target = t0 + lead
-        if all(ti in avail for ti in inputs) and target in avail:
-            out.append({"input_times": inputs, "target_time": target})
+        targets = {L: t0 + dt.timedelta(minutes=L) for L in leads}
+        if all(ti in avail for ti in inputs) and all(tt in avail for tt in targets.values()):
+            out.append({"input_times": inputs, "target_times": targets,
+                        "target_time": t0 + dt.timedelta(minutes=ref_lead)})
     return out
 
 
@@ -261,9 +267,11 @@ def from_dbr(R):
     return _TF.dB_transform(R, threshold=DBR_INV_THR, inverse=True)[0]
 
 
-def advection_prior(x_ctx_mmh):
-    """Semi-Lagrangian advection of the input stack to +LEAD_MIN.
-    Returns A_dbr (256), A_mmh (256), V (2,256,256)."""
+def advection_prior(x_ctx_mmh, leads):
+    """Semi-Lagrangian advection of the input stack to each lead in `leads`
+    (minutes). The optical flow and extrapolation run once (the extrapolation
+    already yields every 15-min step), so all leads are essentially free.
+    Returns {lead_min: (A_dbr (256), A_mmh (256))}."""
     _init_pysteps()
     Rd = np.stack([to_dbr(f) for f in x_ctx_mmh], axis=0)
     Rd[~np.isfinite(Rd)] = DBR_ZERO
@@ -273,53 +281,77 @@ def advection_prior(x_ctx_mmh):
             V = np.nan_to_num(V)
     except Exception:
         V = np.zeros((2,) + Rd.shape[-2:], dtype="float32")
-    fc = _EXTRAP(Rd[-1], V, N_LEADTIMES)
-    A_dbr_ctx = np.where(np.isfinite(fc[-1]), fc[-1], DBR_ZERO)
-    A_dbr = center_crop(A_dbr_ctx)
-    return A_dbr, from_dbr(A_dbr), center_crop(V)
+    fc = _EXTRAP(Rd[-1], V, max(leads) // CADENCE_MIN)    # fc[k] = +(k+1)*CADENCE
+    out = {}
+    for L in leads:
+        f = fc[L // CADENCE_MIN - 1]
+        A_dbr = center_crop(np.where(np.isfinite(f), f, DBR_ZERO))
+        out[L] = (A_dbr, from_dbr(A_dbr))
+    return out
 
 
-def prior_path(target_time, window, split):
+def prior_path(target_time, window, split, lead):
+    # All leads of a crop share the reference (max-lead) timestamp + dir and
+    # differ only by the _L tag, so they group together and never collide with
+    # the single-lead +60 cache (which has no _L tag and a different dir).
     sub = os.path.join(PRIOR_DIR, split, f"{target_time:%Y%m%d}")
-    return os.path.join(sub, f"{target_time:%Y%m%d%H%M}_r{window[0]:04d}_c{window[1]:04d}.npz")
+    return os.path.join(sub, f"{target_time:%Y%m%d%H%M}_r{window[0]:04d}_"
+                             f"c{window[1]:04d}_L{lead:02d}.npz")
 
 
 def process_sample(sample):
-    """Worker: read local frames -> crop -> advect -> save (A, r). Returns count."""
-    inputs, target, split = sample["input_times"], sample["target_time"], sample["split"]
-    frames = [read_frame_local(t) for t in inputs] + [read_frame_local(target)]
-    if any(f is None for f in frames):
+    """Worker: read local frames -> crop -> advect to every lead -> save one npz
+    per (crop, lead). One optical-flow/extrapolation per crop covers all leads,
+    and the per-file .part + os.replace keeps stop/resume clean. Returns count.
+
+    Crops are kept or dropped on the MAX-lead (reference) target, so every kept
+    location carries the full set of leads (a uniform, lead-conditioning-friendly
+    set); earlier leads are saved even if drier than the 5% wet floor."""
+    inputs = sample["input_times"]
+    targets = sample["target_times"]             # {lead_min: frame_time}
+    ref_target, split = sample["target_time"], sample["split"]
+    leads = sorted(targets)
+    in_frames = [read_frame_local(t) for t in inputs]
+    tgt_frames = {L: read_frame_local(targets[L]) for L in leads}
+    if any(f is None for f in in_frames) or any(f is None for f in tgt_frames.values()):
         return 0
-    x_full = np.stack(frames[:-1], axis=0)
-    y_full = frames[-1]
+    x_full = np.stack(in_frames, axis=0)
+    ref_full = tgt_frames[leads[-1]]             # max lead = split/filter reference
     n = 0
     for (r, c) in candidate_windows(x_full.shape[-2:]):
-        out = prior_path(target, (r, c), split)
-        if os.path.exists(out):
-            n += 1
+        out_paths = {L: prior_path(ref_target, (r, c), split, L) for L in leads}
+        if all(os.path.exists(p) for p in out_paths.values()):
+            n += len(leads)
             continue
         sl = (slice(r, r + CONTEXT), slice(c, c + CONTEXT))
-        y_ctx = y_full[sl]
-        if not crop_passes(y_ctx):
+        if not crop_passes(ref_full[sl]):
             continue
         x_ctx = x_full[:, sl[0], sl[1]]
-        A_dbr, A_mmh, V = advection_prior(x_ctx)
-        y_mmh = center_crop(y_ctx)
-        valid = np.isfinite(y_mmh)
-        y_dbr = np.where(valid, to_dbr(y_mmh), DBR_ZERO)
-        r_dbr = y_dbr - A_dbr
-        os.makedirs(os.path.dirname(out), exist_ok=True)
-        tmp = out + ".part"                      # write then atomically rename:
-        with open(tmp, "wb") as fh:              # a half-written crop is never
-            np.savez_compressed(                 # seen as a finished .npz, so
-                fh,                              # stop/resume is always clean
-                x_mmh=center_crop(x_ctx).astype("float16"),
-                A_dbr=A_dbr.astype("float16"), A_mmh=A_mmh.astype("float16"),
-                y_mmh=y_mmh.astype("float16"), r_dbr=r_dbr.astype("float16"),
-                valid=valid, split=split, target=target.isoformat(),
-            )
-        os.replace(tmp, out)
-        n += 1
+        adv = advection_prior(x_ctx, leads)      # {lead: (A_dbr, A_mmh)}
+        x_crop = center_crop(x_ctx).astype("float16")   # shared across leads
+        for L in leads:
+            out = out_paths[L]
+            if os.path.exists(out):
+                n += 1
+                continue
+            A_dbr, A_mmh = adv[L]
+            y_mmh = center_crop(tgt_frames[L][sl])
+            valid = np.isfinite(y_mmh)
+            y_dbr = np.where(valid, to_dbr(y_mmh), DBR_ZERO)
+            r_dbr = y_dbr - A_dbr
+            os.makedirs(os.path.dirname(out), exist_ok=True)
+            tmp = out + ".part"                  # write then atomically rename:
+            with open(tmp, "wb") as fh:          # a half-written crop is never
+                np.savez_compressed(             # seen as a finished .npz, so
+                    fh,                          # stop/resume is always clean
+                    x_mmh=x_crop,
+                    A_dbr=A_dbr.astype("float16"), A_mmh=A_mmh.astype("float16"),
+                    y_mmh=y_mmh.astype("float16"), r_dbr=r_dbr.astype("float16"),
+                    valid=valid, split=split,
+                    target=targets[L].isoformat(), lead_min=np.int16(L),
+                )
+            os.replace(tmp, out)
+            n += 1
     return n
 
 
@@ -366,6 +398,28 @@ def evaluate(files, workers):
     return out
 
 
+def parse_lead(path):
+    """Lead (minutes) from a multi-lead filename ..._L45.npz, else None."""
+    base = os.path.basename(path)
+    if "_L" in base:
+        try:
+            return int(base.rsplit("_L", 1)[-1].split(".")[0])
+        except ValueError:
+            return None
+    return None
+
+
+def evaluate_by_lead(files, workers):
+    """Per-lead advection baseline when the files are lead-tagged, else one flat
+    baseline under key 'all'. Returns {lead_min or 'all': scorecard} (the skill
+    vs lead-time curve the lead-conditioned model must beat)."""
+    present = {parse_lead(f) for f in files}
+    if None in present:
+        return {"all": evaluate(files, workers)}
+    return {L: evaluate([f for f in files if parse_lead(f) == L], workers)
+            for L in sorted(present)}
+
+
 # ----------------------------------------------------------------------------
 # Main
 # ----------------------------------------------------------------------------
@@ -391,6 +445,10 @@ def main():
     default_root = f"/scratch/{user}/dissertation"
     ap.add_argument("--start", default="2024-11-21", help="subset start (YYYY-MM-DD)")
     ap.add_argument("--end",   default="2025-04-30", help="subset end (YYYY-MM-DD)")
+    ap.add_argument("--leads", default="15,30,45,60",
+                    help="comma-separated lead times in minutes (multiples of 15); "
+                         "one npz per (crop, lead). Multi-lead defaults into a "
+                         "separate prior_ml/ dir so it never clobbers the +60 prior/.")
     ap.add_argument("--root",  default=default_root, help="scratch root for caches")
     ap.add_argument("--frames-dir", default=None, help="override frame cache dir")
     ap.add_argument("--prior-dir",  default=None, help="override prior cache dir")
@@ -407,9 +465,17 @@ def main():
                          "and (re)write the manifest. No internet needed.")
     args = ap.parse_args()
 
+    leads = sorted({int(x) for x in args.leads.split(",")})
+    for L in leads:
+        if L <= 0 or L % CADENCE_MIN != 0:
+            sys.exit(f"--leads must be positive multiples of {CADENCE_MIN} min; got {L}")
+
     global FRAMES_DIR, PRIOR_DIR
     FRAMES_DIR = args.frames_dir or os.path.join(args.root, "frames")
-    PRIOR_DIR  = args.prior_dir  or os.path.join(args.root, "prior")
+    # multi-lead lands in prior_ml/ by default so it never collides with the
+    # single-lead +60 prior/ cache (override with --prior-dir).
+    PRIOR_DIR  = args.prior_dir or os.path.join(
+        args.root, "prior" if leads == [LEAD_MIN] else "prior_ml")
     os.makedirs(FRAMES_DIR, exist_ok=True)
     os.makedirs(PRIOR_DIR, exist_ok=True)
     os.makedirs(args.out, exist_ok=True)
@@ -425,20 +491,20 @@ def main():
             print("no crops in", PRIOR_DIR); sys.exit(1)
         by_split = dict(Counter(f.split(os.sep)[-3] for f in files))
         print(f"[baseline-only] scoring {len(files)} crops  by split: {by_split}")
-        base = evaluate(files, args.workers)
+        base = evaluate_by_lead(files, args.workers)
         manifest = {
             "created": dt.datetime.now().isoformat(timespec="seconds"),
             "start": args.start, "end": args.end,
             "n_crops": len(files), "by_split": by_split,
             "config": {"crop": CROP, "margin": MARGIN, "n_input": N_INPUT,
-                       "lead_min": LEAD_MIN, "val_days": VAL_DAYS},
-            "prior_dir": PRIOR_DIR, "baseline_advection_only": base,
+                       "leads": leads, "val_days": VAL_DAYS},
+            "prior_dir": PRIOR_DIR, "baseline_advection_only_by_lead": base,
         }
-        print(f"  scored {len(files) - base['n_skipped']} crops "
-              f"({base['n_skipped']} skipped as unreadable)")
-        print(f"  MAE = {base['MAE_mmh']:.4f} mm/h")
-        for t in THRESHOLDS:
-            print(f"  CSI @ {t:>4} mm/h = {base['CSI'][t]:.3f}")
+        for L, sc in base.items():
+            tag = f"+{L} min" if L != "all" else "all"
+            print(f"  [{tag}] {sc['n_crops'] - sc['n_skipped']} crops | "
+                  f"MAE {sc['MAE_mmh']:.4f} | "
+                  + " ".join(f"CSI@{t:g} {sc['CSI'][t]:.3f}" for t in THRESHOLDS))
         for d in (args.out, PRIOR_DIR):
             with open(os.path.join(d, "manifest.json"), "w") as fh:
                 json.dump(manifest, fh, indent=2)
@@ -455,16 +521,17 @@ def main():
     # --- sampling ---------------------------------------------------------
     print(f"\n[1/4] Listing S3 availability {start}..{end} ...", flush=True)
     avail = build_availability(start, end, args.io_workers)
-    temporal = split_samples(make_temporal_samples(avail), avail)
+    temporal = split_samples(make_temporal_samples(avail, leads), avail)
     from collections import Counter
     by_split = Counter(s["split"] for s in temporal)
-    print(f"      {len(avail)} frames -> {len(temporal)} samples  by split: {dict(by_split)}")
+    print(f"      {len(avail)} frames -> {len(temporal)} samples x {len(leads)} leads "
+          f"{leads}  by split: {dict(by_split)}")
 
     # --- download frames once --------------------------------------------
     if not args.skip_download:
         need = set()
         for s in temporal:
-            need.update(s["input_times"]); need.add(s["target_time"])
+            need.update(s["input_times"]); need.update(s["target_times"].values())
         print(f"\n[2/4] Downloading {len(need)} unique frames "
               f"({args.io_workers} threads) ...", flush=True)
         stats = Counter()
@@ -499,16 +566,18 @@ def main():
         "start": args.start, "end": args.end,
         "n_crops": len(files), "by_split": dict(by_split),
         "config": {"crop": CROP, "margin": MARGIN, "n_input": N_INPUT,
-                   "lead_min": LEAD_MIN, "val_days": VAL_DAYS},
+                   "leads": leads, "val_days": VAL_DAYS},
         "prior_dir": PRIOR_DIR,
     }
     if not args.no_baseline and files:
-        print(f"\n[4/4] Advection-only baseline over {len(files)} crops ...", flush=True)
-        base = evaluate(files, args.workers)
-        manifest["baseline_advection_only"] = base
-        print(f"      MAE = {base['MAE_mmh']:.4f} mm/h")
-        for t in THRESHOLDS:
-            print(f"      CSI @ {t:>4} mm/h = {base['CSI'][t]:.3f}")
+        print(f"\n[4/4] Advection-only baseline over {len(files)} crops "
+              f"({len(leads)} leads) ...", flush=True)
+        base = evaluate_by_lead(files, args.workers)
+        manifest["baseline_advection_only_by_lead"] = base
+        for L, sc in base.items():
+            tag = f"+{L} min" if L != "all" else "all"
+            print(f"      [{tag}] MAE {sc['MAE_mmh']:.4f} mm/h | "
+                  + " ".join(f"CSI@{t:g} {sc['CSI'][t]:.3f}" for t in THRESHOLDS))
 
     for d in (args.out, PRIOR_DIR):
         with open(os.path.join(d, "manifest.json"), "w") as fh:

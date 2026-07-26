@@ -49,6 +49,13 @@ python build_advection_prior.py --check
   laptop instead, `rsync` them to `/scratch/<user>/dissertation/frames/`, then run
   step 5 with `--skip-download`.
 
+> Layout note: the stage scripts are organised under `Code/<stage>/`
+> (`Code/1 - Advection stage/build_advection_prior.py`,
+> `Code/2 - VAE Stage/{pack_vae_data,train_vae_v2,pack_latents}.py`). Run them by that
+> path from `~/dissertation`, for example
+> `python "Code/1 - Advection stage/build_advection_prior.py" ...`, or `cd` into the
+> stage folder first. The commands below use the bare script name for brevity.
+
 ## 5. Run the full build (in tmux, so it survives disconnects)
 
 ```bash
@@ -60,6 +67,22 @@ python build_advection_prior.py --start 2024-11-21 --end 2025-12-31
 ```
 
 It is **idempotent** -- if it dies, just re-run the same command and it skips what is already done.
+
+## 5b. Multi-lead build (+15/30/45/60, for the lead-conditioned model)
+
+The same script builds all four lead times in one pass, since the advection
+extrapolation already produces the intermediate frames. It writes one `.npz` per
+(crop, lead) with an added `lead_min` field, and auto-routes to a **separate**
+`prior_ml/` dir so it never touches the `+60` `prior/` cache:
+
+```bash
+python build_advection_prior.py --start 2024-11-21 --end 2025-12-31 --leads 15,30,45,60
+```
+
+Only the new +15/30/45 target frames are downloaded (the rest are reused from
+`frames/`). Expect roughly the same wall time as the +60 build and about 4x the
+storage. The manifest reports a per-lead advection baseline (the skill vs lead-time
+curve the model must beat). The `+60` core run is unaffected, it keeps using `prior/`.
 
 ## 6. Outputs
 
