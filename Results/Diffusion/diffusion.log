@@ -1,0 +1,1323 @@
+resume auto: fresh start
+diagnostics: 16 fixed val crops (rows 0..13280), 8 members, 25 steps
+device=cuda | denoiser 65.7M params | cond=full (20ch) | sigma_data=0.8575 | latent_scale=0.760
+train rows 153487 | val rows 13281 | 2398 steps/epoch (batch 64) | weighted loss starts near 1.0 by construction
+GPU: NVIDIA A100-SXM4-40GB | 42 GB total
+  ep1 step 200/2398 | loss_w 0.9416 raw 0.1557 | lr 1.99e-05 | gn 1.44 | 308 img/s
+  ep1 step 400/2398 | loss_w 0.8851 raw 0.1367 | lr 3.99e-05 | gn 1.24 | 316 img/s
+  ep1 step 600/2398 | loss_w 0.7932 raw 0.1208 | lr 5.99e-05 | gn 1.32 | 319 img/s
+  ep1 step 800/2398 | loss_w 0.7192 raw 0.1083 | lr 7.99e-05 | gn 1.29 | 321 img/s
+  ep1 step 1000/2398 | loss_w 0.6648 raw 0.0993 | lr 9.99e-05 | gn 1.26 | 322 img/s
+  ep1 step 1200/2398 | loss_w 0.6244 raw 0.0925 | lr 1.00e-04 | gn 1.21 | 322 img/s
+  ep1 step 1400/2398 | loss_w 0.5932 raw 0.0874 | lr 1.00e-04 | gn 1.17 | 322 img/s
+  ep1 step 1600/2398 | loss_w 0.5684 raw 0.0835 | lr 1.00e-04 | gn 1.12 | 323 img/s
+  ep1 step 1800/2398 | loss_w 0.5486 raw 0.0804 | lr 1.00e-04 | gn 1.08 | 323 img/s
+  ep1 step 2000/2398 | loss_w 0.5326 raw 0.0779 | lr 1.00e-04 | gn 1.04 | 323 img/s
+  ep1 step 2200/2398 | loss_w 0.5186 raw 0.0757 | lr 1.00e-04 | gn 1.01 | 323 img/s
+epoch   1/100 | train 0.5075 | val 0.4116 (raw 0.0564) | 475s | 323 img/s | GPU 14.1 GB
+  new best (val loss_w 0.4116) -> diff_best.pt
+  ep2 step 200/2398 | loss_w 0.3774 raw 0.0535 | lr 1.00e-04 | gn 0.66 | 324 img/s
+  ep2 step 400/2398 | loss_w 0.3763 raw 0.0532 | lr 1.00e-04 | gn 0.64 | 325 img/s
+  ep2 step 600/2398 | loss_w 0.3755 raw 0.0534 | lr 1.00e-04 | gn 0.62 | 325 img/s
+  ep2 step 800/2398 | loss_w 0.3747 raw 0.0531 | lr 1.00e-04 | gn 0.61 | 325 img/s
+  ep2 step 1000/2398 | loss_w 0.3731 raw 0.0530 | lr 1.00e-04 | gn 0.61 | 325 img/s
+  ep2 step 1200/2398 | loss_w 0.3727 raw 0.0530 | lr 1.00e-04 | gn 0.60 | 325 img/s
+  ep2 step 1400/2398 | loss_w 0.3717 raw 0.0529 | lr 1.00e-04 | gn 0.59 | 325 img/s
+  ep2 step 1600/2398 | loss_w 0.3708 raw 0.0528 | lr 1.00e-04 | gn 0.58 | 325 img/s
+  ep2 step 1800/2398 | loss_w 0.3701 raw 0.0528 | lr 1.00e-04 | gn 0.58 | 325 img/s
+  ep2 step 2000/2398 | loss_w 0.3695 raw 0.0528 | lr 1.00e-04 | gn 0.57 | 325 img/s
+  ep2 step 2200/2398 | loss_w 0.3691 raw 0.0527 | lr 9.99e-05 | gn 0.57 | 325 img/s
+epoch   2/100 | train 0.3682 | val 0.3546 (raw 0.0504) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3546) -> diff_best.pt
+  ep3 step 200/2398 | loss_w 0.3634 raw 0.0516 | lr 9.99e-05 | gn 0.47 | 324 img/s
+  ep3 step 400/2398 | loss_w 0.3615 raw 0.0518 | lr 9.99e-05 | gn 0.48 | 325 img/s
+  ep3 step 600/2398 | loss_w 0.3612 raw 0.0518 | lr 9.99e-05 | gn 0.49 | 325 img/s
+  ep3 step 800/2398 | loss_w 0.3605 raw 0.0514 | lr 9.99e-05 | gn 0.48 | 325 img/s
+  ep3 step 1000/2398 | loss_w 0.3607 raw 0.0513 | lr 9.99e-05 | gn 0.50 | 325 img/s
+  ep3 step 1200/2398 | loss_w 0.3597 raw 0.0513 | lr 9.99e-05 | gn 0.49 | 325 img/s
+  ep3 step 1400/2398 | loss_w 0.3600 raw 0.0513 | lr 9.99e-05 | gn 0.48 | 325 img/s
+  ep3 step 1600/2398 | loss_w 0.3597 raw 0.0513 | lr 9.99e-05 | gn 0.47 | 325 img/s
+  ep3 step 1800/2398 | loss_w 0.3590 raw 0.0513 | lr 9.99e-05 | gn 0.47 | 325 img/s
+  ep3 step 2000/2398 | loss_w 0.3587 raw 0.0512 | lr 9.99e-05 | gn 0.46 | 325 img/s
+  ep3 step 2200/2398 | loss_w 0.3588 raw 0.0513 | lr 9.98e-05 | gn 0.46 | 325 img/s
+epoch   3/100 | train 0.3585 | val 0.3441 (raw 0.0490) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3441) -> diff_best.pt
+  ep4 step 200/2398 | loss_w 0.3547 raw 0.0506 | lr 9.98e-05 | gn 0.42 | 324 img/s
+  ep4 step 400/2398 | loss_w 0.3541 raw 0.0510 | lr 9.98e-05 | gn 0.41 | 325 img/s
+  ep4 step 600/2398 | loss_w 0.3537 raw 0.0510 | lr 9.98e-05 | gn 0.40 | 325 img/s
+  ep4 step 800/2398 | loss_w 0.3536 raw 0.0509 | lr 9.98e-05 | gn 0.40 | 325 img/s
+  ep4 step 1000/2398 | loss_w 0.3536 raw 0.0510 | lr 9.98e-05 | gn 0.40 | 325 img/s
+  ep4 step 1200/2398 | loss_w 0.3533 raw 0.0509 | lr 9.98e-05 | gn 0.39 | 325 img/s
+  ep4 step 1400/2398 | loss_w 0.3533 raw 0.0509 | lr 9.98e-05 | gn 0.39 | 325 img/s
+  ep4 step 1600/2398 | loss_w 0.3529 raw 0.0508 | lr 9.97e-05 | gn 0.39 | 325 img/s
+  ep4 step 1800/2398 | loss_w 0.3526 raw 0.0507 | lr 9.97e-05 | gn 0.39 | 325 img/s
+  ep4 step 2000/2398 | loss_w 0.3525 raw 0.0508 | lr 9.97e-05 | gn 0.38 | 325 img/s
+  ep4 step 2200/2398 | loss_w 0.3521 raw 0.0509 | lr 9.97e-05 | gn 0.38 | 325 img/s
+epoch   4/100 | train 0.3518 | val 0.3384 (raw 0.0483) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3384) -> diff_best.pt
+  ep5 step 200/2398 | loss_w 0.3518 raw 0.0509 | lr 9.97e-05 | gn 0.36 | 324 img/s
+  ep5 step 400/2398 | loss_w 0.3510 raw 0.0508 | lr 9.97e-05 | gn 0.38 | 325 img/s
+  ep5 step 600/2398 | loss_w 0.3496 raw 0.0505 | lr 9.96e-05 | gn 0.35 | 325 img/s
+  ep5 step 800/2398 | loss_w 0.3491 raw 0.0503 | lr 9.96e-05 | gn 0.35 | 325 img/s
+  ep5 step 1000/2398 | loss_w 0.3493 raw 0.0503 | lr 9.96e-05 | gn 0.34 | 325 img/s
+  ep5 step 1200/2398 | loss_w 0.3488 raw 0.0501 | lr 9.96e-05 | gn 0.34 | 325 img/s
+  ep5 step 1400/2398 | loss_w 0.3493 raw 0.0501 | lr 9.96e-05 | gn 0.35 | 325 img/s
+  ep5 step 1600/2398 | loss_w 0.3491 raw 0.0502 | lr 9.96e-05 | gn 0.34 | 325 img/s
+  ep5 step 1800/2398 | loss_w 0.3489 raw 0.0501 | lr 9.95e-05 | gn 0.34 | 325 img/s
+  ep5 step 2000/2398 | loss_w 0.3488 raw 0.0502 | lr 9.95e-05 | gn 0.34 | 325 img/s
+  ep5 step 2200/2398 | loss_w 0.3485 raw 0.0502 | lr 9.95e-05 | gn 0.33 | 325 img/s
+epoch   5/100 | train 0.3482 | val 0.3347 (raw 0.0477) | 472s | 325 img/s | GPU 17.8 GB
+  sampled: MAE 0.422 (adv 0.462) | CSI@1 0.417 (adv 0.369) | CSI@8 0.004 (adv 0.031) | CRPS 0.306 (adv 0.462) | PSD 2-8km 1.26
+  new best (val loss_w 0.3347) -> diff_best.pt
+  ep6 step 200/2398 | loss_w 0.3459 raw 0.0504 | lr 9.95e-05 | gn 0.30 | 325 img/s
+  ep6 step 400/2398 | loss_w 0.3460 raw 0.0501 | lr 9.94e-05 | gn 0.31 | 325 img/s
+  ep6 step 600/2398 | loss_w 0.3464 raw 0.0499 | lr 9.94e-05 | gn 0.31 | 325 img/s
+  ep6 step 800/2398 | loss_w 0.3462 raw 0.0497 | lr 9.94e-05 | gn 0.31 | 325 img/s
+  ep6 step 1000/2398 | loss_w 0.3468 raw 0.0497 | lr 9.94e-05 | gn 0.31 | 325 img/s
+  ep6 step 1200/2398 | loss_w 0.3468 raw 0.0498 | lr 9.94e-05 | gn 0.30 | 325 img/s
+  ep6 step 1400/2398 | loss_w 0.3463 raw 0.0497 | lr 9.93e-05 | gn 0.30 | 325 img/s
+  ep6 step 1600/2398 | loss_w 0.3459 raw 0.0497 | lr 9.93e-05 | gn 0.30 | 325 img/s
+  ep6 step 1800/2398 | loss_w 0.3458 raw 0.0498 | lr 9.93e-05 | gn 0.30 | 325 img/s
+  ep6 step 2000/2398 | loss_w 0.3458 raw 0.0497 | lr 9.93e-05 | gn 0.30 | 325 img/s
+  ep6 step 2200/2398 | loss_w 0.3457 raw 0.0496 | lr 9.92e-05 | gn 0.30 | 325 img/s
+epoch   6/100 | train 0.3455 | val 0.3319 (raw 0.0473) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3319) -> diff_best.pt
+  ep7 step 200/2398 | loss_w 0.3430 raw 0.0497 | lr 9.92e-05 | gn 0.30 | 325 img/s
+  ep7 step 400/2398 | loss_w 0.3438 raw 0.0495 | lr 9.92e-05 | gn 0.29 | 325 img/s
+  ep7 step 600/2398 | loss_w 0.3439 raw 0.0496 | lr 9.92e-05 | gn 0.28 | 325 img/s
+  ep7 step 800/2398 | loss_w 0.3436 raw 0.0494 | lr 9.91e-05 | gn 0.29 | 325 img/s
+  ep7 step 1000/2398 | loss_w 0.3436 raw 0.0494 | lr 9.91e-05 | gn 0.29 | 325 img/s
+  ep7 step 1200/2398 | loss_w 0.3436 raw 0.0495 | lr 9.91e-05 | gn 0.29 | 325 img/s
+  ep7 step 1400/2398 | loss_w 0.3437 raw 0.0493 | lr 9.91e-05 | gn 0.29 | 325 img/s
+  ep7 step 1600/2398 | loss_w 0.3433 raw 0.0493 | lr 9.90e-05 | gn 0.29 | 325 img/s
+  ep7 step 1800/2398 | loss_w 0.3434 raw 0.0494 | lr 9.90e-05 | gn 0.29 | 325 img/s
+  ep7 step 2000/2398 | loss_w 0.3433 raw 0.0495 | lr 9.90e-05 | gn 0.29 | 325 img/s
+  ep7 step 2200/2398 | loss_w 0.3434 raw 0.0494 | lr 9.90e-05 | gn 0.29 | 325 img/s
+epoch   7/100 | train 0.3434 | val 0.3302 (raw 0.0471) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3302) -> diff_best.pt
+  ep8 step 200/2398 | loss_w 0.3412 raw 0.0488 | lr 9.89e-05 | gn 0.27 | 324 img/s
+  ep8 step 400/2398 | loss_w 0.3427 raw 0.0496 | lr 9.89e-05 | gn 0.27 | 325 img/s
+  ep8 step 600/2398 | loss_w 0.3423 raw 0.0493 | lr 9.88e-05 | gn 0.26 | 325 img/s
+  ep8 step 800/2398 | loss_w 0.3421 raw 0.0493 | lr 9.88e-05 | gn 0.27 | 325 img/s
+  ep8 step 1000/2398 | loss_w 0.3422 raw 0.0492 | lr 9.88e-05 | gn 0.27 | 325 img/s
+  ep8 step 1200/2398 | loss_w 0.3421 raw 0.0491 | lr 9.88e-05 | gn 0.26 | 325 img/s
+  ep8 step 1400/2398 | loss_w 0.3418 raw 0.0492 | lr 9.87e-05 | gn 0.26 | 325 img/s
+  ep8 step 1600/2398 | loss_w 0.3419 raw 0.0490 | lr 9.87e-05 | gn 0.26 | 325 img/s
+  ep8 step 1800/2398 | loss_w 0.3417 raw 0.0490 | lr 9.87e-05 | gn 0.27 | 325 img/s
+  ep8 step 2000/2398 | loss_w 0.3416 raw 0.0490 | lr 9.86e-05 | gn 0.27 | 325 img/s
+  ep8 step 2200/2398 | loss_w 0.3414 raw 0.0489 | lr 9.86e-05 | gn 0.27 | 325 img/s
+epoch   8/100 | train 0.3412 | val 0.3285 (raw 0.0469) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3285) -> diff_best.pt
+  ep9 step 200/2398 | loss_w 0.3439 raw 0.0496 | lr 9.85e-05 | gn 0.25 | 325 img/s
+  ep9 step 400/2398 | loss_w 0.3422 raw 0.0493 | lr 9.85e-05 | gn 0.25 | 325 img/s
+  ep9 step 600/2398 | loss_w 0.3406 raw 0.0491 | lr 9.85e-05 | gn 0.24 | 325 img/s
+  ep9 step 800/2398 | loss_w 0.3414 raw 0.0493 | lr 9.84e-05 | gn 0.25 | 325 img/s
+  ep9 step 1000/2398 | loss_w 0.3408 raw 0.0491 | lr 9.84e-05 | gn 0.25 | 325 img/s
+  ep9 step 1200/2398 | loss_w 0.3404 raw 0.0489 | lr 9.84e-05 | gn 0.24 | 325 img/s
+  ep9 step 1400/2398 | loss_w 0.3407 raw 0.0489 | lr 9.83e-05 | gn 0.25 | 325 img/s
+  ep9 step 1600/2398 | loss_w 0.3408 raw 0.0490 | lr 9.83e-05 | gn 0.24 | 325 img/s
+  ep9 step 1800/2398 | loss_w 0.3405 raw 0.0489 | lr 9.83e-05 | gn 0.25 | 325 img/s
+  ep9 step 2000/2398 | loss_w 0.3402 raw 0.0488 | lr 9.82e-05 | gn 0.24 | 325 img/s
+  ep9 step 2200/2398 | loss_w 0.3401 raw 0.0488 | lr 9.82e-05 | gn 0.24 | 325 img/s
+epoch   9/100 | train 0.3402 | val 0.3269 (raw 0.0467) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3269) -> diff_best.pt
+  ep10 step 200/2398 | loss_w 0.3391 raw 0.0494 | lr 9.81e-05 | gn 0.25 | 325 img/s
+  ep10 step 400/2398 | loss_w 0.3393 raw 0.0485 | lr 9.81e-05 | gn 0.25 | 325 img/s
+  ep10 step 600/2398 | loss_w 0.3397 raw 0.0486 | lr 9.81e-05 | gn 0.25 | 325 img/s
+  ep10 step 800/2398 | loss_w 0.3391 raw 0.0486 | lr 9.80e-05 | gn 0.25 | 325 img/s
+  ep10 step 1000/2398 | loss_w 0.3388 raw 0.0485 | lr 9.80e-05 | gn 0.25 | 325 img/s
+  ep10 step 1200/2398 | loss_w 0.3382 raw 0.0485 | lr 9.80e-05 | gn 0.24 | 325 img/s
+  ep10 step 1400/2398 | loss_w 0.3383 raw 0.0484 | lr 9.79e-05 | gn 0.24 | 325 img/s
+  ep10 step 1600/2398 | loss_w 0.3382 raw 0.0484 | lr 9.79e-05 | gn 0.24 | 325 img/s
+  ep10 step 1800/2398 | loss_w 0.3382 raw 0.0485 | lr 9.78e-05 | gn 0.24 | 325 img/s
+  ep10 step 2000/2398 | loss_w 0.3383 raw 0.0487 | lr 9.78e-05 | gn 0.24 | 325 img/s
+  ep10 step 2200/2398 | loss_w 0.3383 raw 0.0487 | lr 9.78e-05 | gn 0.24 | 325 img/s
+epoch  10/100 | train 0.3384 | val 0.3256 (raw 0.0465) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.417 (adv 0.462) | CSI@1 0.425 (adv 0.369) | CSI@8 0.008 (adv 0.031) | CRPS 0.301 (adv 0.462) | PSD 2-8km 1.16
+  new best (val loss_w 0.3256) -> diff_best.pt
+  ep11 step 200/2398 | loss_w 0.3380 raw 0.0486 | lr 9.77e-05 | gn 0.25 | 325 img/s
+  ep11 step 400/2398 | loss_w 0.3381 raw 0.0487 | lr 9.77e-05 | gn 0.24 | 325 img/s
+  ep11 step 600/2398 | loss_w 0.3381 raw 0.0487 | lr 9.76e-05 | gn 0.24 | 325 img/s
+  ep11 step 800/2398 | loss_w 0.3391 raw 0.0487 | lr 9.76e-05 | gn 0.24 | 325 img/s
+  ep11 step 1000/2398 | loss_w 0.3390 raw 0.0485 | lr 9.75e-05 | gn 0.24 | 325 img/s
+  ep11 step 1200/2398 | loss_w 0.3387 raw 0.0484 | lr 9.75e-05 | gn 0.24 | 325 img/s
+  ep11 step 1400/2398 | loss_w 0.3387 raw 0.0485 | lr 9.75e-05 | gn 0.24 | 325 img/s
+  ep11 step 1600/2398 | loss_w 0.3381 raw 0.0486 | lr 9.74e-05 | gn 0.24 | 325 img/s
+  ep11 step 1800/2398 | loss_w 0.3384 raw 0.0486 | lr 9.74e-05 | gn 0.24 | 325 img/s
+  ep11 step 2000/2398 | loss_w 0.3380 raw 0.0485 | lr 9.73e-05 | gn 0.24 | 325 img/s
+  ep11 step 2200/2398 | loss_w 0.3376 raw 0.0485 | lr 9.73e-05 | gn 0.23 | 325 img/s
+epoch  11/100 | train 0.3375 | val 0.3246 (raw 0.0464) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3246) -> diff_best.pt
+  ep12 step 200/2398 | loss_w 0.3350 raw 0.0490 | lr 9.72e-05 | gn 0.22 | 325 img/s
+  ep12 step 400/2398 | loss_w 0.3362 raw 0.0492 | lr 9.72e-05 | gn 0.22 | 325 img/s
+  ep12 step 600/2398 | loss_w 0.3351 raw 0.0492 | lr 9.71e-05 | gn 0.22 | 325 img/s
+  ep12 step 800/2398 | loss_w 0.3363 raw 0.0487 | lr 9.71e-05 | gn 0.23 | 325 img/s
+  ep12 step 1000/2398 | loss_w 0.3364 raw 0.0487 | lr 9.70e-05 | gn 0.23 | 325 img/s
+  ep12 step 1200/2398 | loss_w 0.3365 raw 0.0487 | lr 9.70e-05 | gn 0.23 | 325 img/s
+  ep12 step 1400/2398 | loss_w 0.3366 raw 0.0489 | lr 9.69e-05 | gn 0.23 | 325 img/s
+  ep12 step 1600/2398 | loss_w 0.3364 raw 0.0486 | lr 9.69e-05 | gn 0.23 | 325 img/s
+  ep12 step 1800/2398 | loss_w 0.3366 raw 0.0485 | lr 9.68e-05 | gn 0.22 | 325 img/s
+  ep12 step 2000/2398 | loss_w 0.3366 raw 0.0485 | lr 9.68e-05 | gn 0.23 | 325 img/s
+  ep12 step 2200/2398 | loss_w 0.3366 raw 0.0486 | lr 9.67e-05 | gn 0.23 | 325 img/s
+epoch  12/100 | train 0.3362 | val 0.3235 (raw 0.0462) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3235) -> diff_best.pt
+  ep13 step 200/2398 | loss_w 0.3380 raw 0.0484 | lr 9.67e-05 | gn 0.22 | 325 img/s
+  ep13 step 400/2398 | loss_w 0.3357 raw 0.0490 | lr 9.66e-05 | gn 0.22 | 325 img/s
+  ep13 step 600/2398 | loss_w 0.3357 raw 0.0486 | lr 9.66e-05 | gn 0.22 | 325 img/s
+  ep13 step 800/2398 | loss_w 0.3359 raw 0.0485 | lr 9.65e-05 | gn 0.22 | 325 img/s
+  ep13 step 1000/2398 | loss_w 0.3358 raw 0.0484 | lr 9.65e-05 | gn 0.22 | 325 img/s
+  ep13 step 1200/2398 | loss_w 0.3357 raw 0.0484 | lr 9.64e-05 | gn 0.22 | 325 img/s
+  ep13 step 1400/2398 | loss_w 0.3352 raw 0.0484 | lr 9.64e-05 | gn 0.22 | 325 img/s
+  ep13 step 1600/2398 | loss_w 0.3352 raw 0.0484 | lr 9.63e-05 | gn 0.22 | 325 img/s
+  ep13 step 1800/2398 | loss_w 0.3353 raw 0.0484 | lr 9.63e-05 | gn 0.22 | 325 img/s
+  ep13 step 2000/2398 | loss_w 0.3355 raw 0.0484 | lr 9.62e-05 | gn 0.22 | 325 img/s
+  ep13 step 2200/2398 | loss_w 0.3355 raw 0.0484 | lr 9.62e-05 | gn 0.22 | 325 img/s
+epoch  13/100 | train 0.3354 | val 0.3225 (raw 0.0461) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3225) -> diff_best.pt
+  ep14 step 200/2398 | loss_w 0.3341 raw 0.0486 | lr 9.61e-05 | gn 0.21 | 325 img/s
+  ep14 step 400/2398 | loss_w 0.3344 raw 0.0488 | lr 9.60e-05 | gn 0.22 | 325 img/s
+  ep14 step 600/2398 | loss_w 0.3343 raw 0.0487 | lr 9.60e-05 | gn 0.22 | 325 img/s
+  ep14 step 800/2398 | loss_w 0.3340 raw 0.0484 | lr 9.59e-05 | gn 0.22 | 325 img/s
+  ep14 step 1000/2398 | loss_w 0.3347 raw 0.0485 | lr 9.59e-05 | gn 0.22 | 325 img/s
+  ep14 step 1200/2398 | loss_w 0.3347 raw 0.0483 | lr 9.58e-05 | gn 0.22 | 325 img/s
+  ep14 step 1400/2398 | loss_w 0.3349 raw 0.0483 | lr 9.57e-05 | gn 0.22 | 325 img/s
+  ep14 step 1600/2398 | loss_w 0.3347 raw 0.0482 | lr 9.57e-05 | gn 0.22 | 325 img/s
+  ep14 step 1800/2398 | loss_w 0.3347 raw 0.0482 | lr 9.56e-05 | gn 0.21 | 325 img/s
+  ep14 step 2000/2398 | loss_w 0.3345 raw 0.0481 | lr 9.56e-05 | gn 0.21 | 325 img/s
+  ep14 step 2200/2398 | loss_w 0.3347 raw 0.0482 | lr 9.55e-05 | gn 0.21 | 325 img/s
+epoch  14/100 | train 0.3347 | val 0.3217 (raw 0.0460) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3217) -> diff_best.pt
+  ep15 step 200/2398 | loss_w 0.3334 raw 0.0483 | lr 9.54e-05 | gn 0.24 | 324 img/s
+  ep15 step 400/2398 | loss_w 0.3330 raw 0.0485 | lr 9.54e-05 | gn 0.22 | 325 img/s
+  ep15 step 600/2398 | loss_w 0.3332 raw 0.0480 | lr 9.53e-05 | gn 0.22 | 325 img/s
+  ep15 step 800/2398 | loss_w 0.3333 raw 0.0479 | lr 9.53e-05 | gn 0.22 | 325 img/s
+  ep15 step 1000/2398 | loss_w 0.3337 raw 0.0478 | lr 9.52e-05 | gn 0.22 | 325 img/s
+  ep15 step 1200/2398 | loss_w 0.3339 raw 0.0478 | lr 9.51e-05 | gn 0.22 | 325 img/s
+  ep15 step 1400/2398 | loss_w 0.3342 raw 0.0479 | lr 9.51e-05 | gn 0.22 | 325 img/s
+  ep15 step 1600/2398 | loss_w 0.3343 raw 0.0478 | lr 9.50e-05 | gn 0.21 | 325 img/s
+  ep15 step 1800/2398 | loss_w 0.3343 raw 0.0477 | lr 9.50e-05 | gn 0.21 | 325 img/s
+  ep15 step 2000/2398 | loss_w 0.3342 raw 0.0478 | lr 9.49e-05 | gn 0.21 | 325 img/s
+  ep15 step 2200/2398 | loss_w 0.3341 raw 0.0477 | lr 9.49e-05 | gn 0.21 | 325 img/s
+epoch  15/100 | train 0.3341 | val 0.3210 (raw 0.0459) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.415 (adv 0.462) | CSI@1 0.427 (adv 0.369) | CSI@8 0.016 (adv 0.031) | CRPS 0.300 (adv 0.462) | PSD 2-8km 1.24
+  new best (val loss_w 0.3210) -> diff_best.pt
+  ep16 step 200/2398 | loss_w 0.3344 raw 0.0477 | lr 9.47e-05 | gn 0.21 | 324 img/s
+  ep16 step 400/2398 | loss_w 0.3346 raw 0.0484 | lr 9.47e-05 | gn 0.22 | 325 img/s
+  ep16 step 600/2398 | loss_w 0.3345 raw 0.0478 | lr 9.46e-05 | gn 0.21 | 325 img/s
+  ep16 step 800/2398 | loss_w 0.3346 raw 0.0479 | lr 9.46e-05 | gn 0.21 | 325 img/s
+  ep16 step 1000/2398 | loss_w 0.3342 raw 0.0479 | lr 9.45e-05 | gn 0.21 | 325 img/s
+  ep16 step 1200/2398 | loss_w 0.3337 raw 0.0478 | lr 9.44e-05 | gn 0.21 | 325 img/s
+  ep16 step 1400/2398 | loss_w 0.3340 raw 0.0478 | lr 9.44e-05 | gn 0.21 | 325 img/s
+  ep16 step 1600/2398 | loss_w 0.3336 raw 0.0480 | lr 9.43e-05 | gn 0.21 | 325 img/s
+  ep16 step 1800/2398 | loss_w 0.3336 raw 0.0480 | lr 9.43e-05 | gn 0.20 | 325 img/s
+  ep16 step 2000/2398 | loss_w 0.3336 raw 0.0479 | lr 9.42e-05 | gn 0.20 | 325 img/s
+  ep16 step 2200/2398 | loss_w 0.3334 raw 0.0480 | lr 9.41e-05 | gn 0.20 | 325 img/s
+epoch  16/100 | train 0.3334 | val 0.3203 (raw 0.0457) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3203) -> diff_best.pt
+  ep17 step 200/2398 | loss_w 0.3374 raw 0.0477 | lr 9.40e-05 | gn 0.21 | 324 img/s
+  ep17 step 400/2398 | loss_w 0.3367 raw 0.0482 | lr 9.40e-05 | gn 0.21 | 325 img/s
+  ep17 step 600/2398 | loss_w 0.3357 raw 0.0479 | lr 9.39e-05 | gn 0.21 | 325 img/s
+  ep17 step 800/2398 | loss_w 0.3348 raw 0.0478 | lr 9.38e-05 | gn 0.21 | 325 img/s
+  ep17 step 1000/2398 | loss_w 0.3345 raw 0.0480 | lr 9.38e-05 | gn 0.21 | 325 img/s
+  ep17 step 1200/2398 | loss_w 0.3339 raw 0.0480 | lr 9.37e-05 | gn 0.20 | 325 img/s
+  ep17 step 1400/2398 | loss_w 0.3336 raw 0.0480 | lr 9.36e-05 | gn 0.21 | 325 img/s
+  ep17 step 1600/2398 | loss_w 0.3336 raw 0.0480 | lr 9.36e-05 | gn 0.21 | 325 img/s
+  ep17 step 1800/2398 | loss_w 0.3331 raw 0.0479 | lr 9.35e-05 | gn 0.21 | 325 img/s
+  ep17 step 2000/2398 | loss_w 0.3330 raw 0.0479 | lr 9.34e-05 | gn 0.20 | 325 img/s
+  ep17 step 2200/2398 | loss_w 0.3329 raw 0.0478 | lr 9.34e-05 | gn 0.20 | 325 img/s
+epoch  17/100 | train 0.3330 | val 0.3196 (raw 0.0457) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3196) -> diff_best.pt
+  ep18 step 200/2398 | loss_w 0.3315 raw 0.0467 | lr 9.32e-05 | gn 0.20 | 325 img/s
+  ep18 step 400/2398 | loss_w 0.3318 raw 0.0473 | lr 9.32e-05 | gn 0.20 | 325 img/s
+  ep18 step 600/2398 | loss_w 0.3324 raw 0.0473 | lr 9.31e-05 | gn 0.21 | 325 img/s
+  ep18 step 800/2398 | loss_w 0.3324 raw 0.0472 | lr 9.30e-05 | gn 0.21 | 325 img/s
+  ep18 step 1000/2398 | loss_w 0.3324 raw 0.0473 | lr 9.30e-05 | gn 0.21 | 325 img/s
+  ep18 step 1200/2398 | loss_w 0.3323 raw 0.0475 | lr 9.29e-05 | gn 0.21 | 325 img/s
+  ep18 step 1400/2398 | loss_w 0.3325 raw 0.0475 | lr 9.28e-05 | gn 0.21 | 325 img/s
+  ep18 step 1600/2398 | loss_w 0.3323 raw 0.0476 | lr 9.28e-05 | gn 0.21 | 325 img/s
+  ep18 step 1800/2398 | loss_w 0.3325 raw 0.0476 | lr 9.27e-05 | gn 0.20 | 325 img/s
+  ep18 step 2000/2398 | loss_w 0.3324 raw 0.0475 | lr 9.26e-05 | gn 0.20 | 325 img/s
+  ep18 step 2200/2398 | loss_w 0.3319 raw 0.0476 | lr 9.26e-05 | gn 0.20 | 325 img/s
+epoch  18/100 | train 0.3319 | val 0.3191 (raw 0.0456) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3191) -> diff_best.pt
+  ep19 step 200/2398 | loss_w 0.3297 raw 0.0475 | lr 9.24e-05 | gn 0.19 | 325 img/s
+  ep19 step 400/2398 | loss_w 0.3307 raw 0.0473 | lr 9.24e-05 | gn 0.20 | 325 img/s
+  ep19 step 600/2398 | loss_w 0.3316 raw 0.0472 | lr 9.23e-05 | gn 0.19 | 325 img/s
+  ep19 step 800/2398 | loss_w 0.3318 raw 0.0472 | lr 9.22e-05 | gn 0.20 | 325 img/s
+  ep19 step 1000/2398 | loss_w 0.3315 raw 0.0472 | lr 9.22e-05 | gn 0.20 | 325 img/s
+  ep19 step 1200/2398 | loss_w 0.3315 raw 0.0473 | lr 9.21e-05 | gn 0.20 | 325 img/s
+  ep19 step 1400/2398 | loss_w 0.3315 raw 0.0472 | lr 9.20e-05 | gn 0.20 | 325 img/s
+  ep19 step 1600/2398 | loss_w 0.3318 raw 0.0471 | lr 9.19e-05 | gn 0.20 | 325 img/s
+  ep19 step 1800/2398 | loss_w 0.3316 raw 0.0471 | lr 9.19e-05 | gn 0.20 | 325 img/s
+  ep19 step 2000/2398 | loss_w 0.3314 raw 0.0471 | lr 9.18e-05 | gn 0.20 | 325 img/s
+  ep19 step 2200/2398 | loss_w 0.3314 raw 0.0472 | lr 9.17e-05 | gn 0.20 | 325 img/s
+epoch  19/100 | train 0.3314 | val 0.3185 (raw 0.0455) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3185) -> diff_best.pt
+  ep20 step 200/2398 | loss_w 0.3300 raw 0.0466 | lr 9.16e-05 | gn 0.18 | 324 img/s
+  ep20 step 400/2398 | loss_w 0.3299 raw 0.0468 | lr 9.15e-05 | gn 0.19 | 325 img/s
+  ep20 step 600/2398 | loss_w 0.3301 raw 0.0469 | lr 9.14e-05 | gn 0.19 | 325 img/s
+  ep20 step 800/2398 | loss_w 0.3298 raw 0.0470 | lr 9.14e-05 | gn 0.19 | 325 img/s
+  ep20 step 1000/2398 | loss_w 0.3307 raw 0.0471 | lr 9.13e-05 | gn 0.19 | 325 img/s
+  ep20 step 1200/2398 | loss_w 0.3308 raw 0.0470 | lr 9.12e-05 | gn 0.19 | 325 img/s
+  ep20 step 1400/2398 | loss_w 0.3309 raw 0.0471 | lr 9.11e-05 | gn 0.19 | 325 img/s
+  ep20 step 1600/2398 | loss_w 0.3309 raw 0.0471 | lr 9.11e-05 | gn 0.20 | 325 img/s
+  ep20 step 1800/2398 | loss_w 0.3311 raw 0.0473 | lr 9.10e-05 | gn 0.20 | 325 img/s
+  ep20 step 2000/2398 | loss_w 0.3307 raw 0.0473 | lr 9.09e-05 | gn 0.19 | 325 img/s
+  ep20 step 2200/2398 | loss_w 0.3307 raw 0.0472 | lr 9.08e-05 | gn 0.19 | 325 img/s
+epoch  20/100 | train 0.3307 | val 0.3180 (raw 0.0454) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.410 (adv 0.462) | CSI@1 0.422 (adv 0.369) | CSI@8 0.019 (adv 0.031) | CRPS 0.298 (adv 0.462) | PSD 2-8km 1.26
+  new best (val loss_w 0.3180) -> diff_best.pt
+  ep21 step 200/2398 | loss_w 0.3295 raw 0.0477 | lr 9.07e-05 | gn 0.20 | 325 img/s
+  ep21 step 400/2398 | loss_w 0.3306 raw 0.0472 | lr 9.06e-05 | gn 0.20 | 325 img/s
+  ep21 step 600/2398 | loss_w 0.3309 raw 0.0469 | lr 9.05e-05 | gn 0.20 | 325 img/s
+  ep21 step 800/2398 | loss_w 0.3305 raw 0.0473 | lr 9.05e-05 | gn 0.20 | 325 img/s
+  ep21 step 1000/2398 | loss_w 0.3311 raw 0.0473 | lr 9.04e-05 | gn 0.20 | 325 img/s
+  ep21 step 1200/2398 | loss_w 0.3304 raw 0.0473 | lr 9.03e-05 | gn 0.20 | 325 img/s
+  ep21 step 1400/2398 | loss_w 0.3303 raw 0.0474 | lr 9.02e-05 | gn 0.20 | 325 img/s
+  ep21 step 1600/2398 | loss_w 0.3303 raw 0.0475 | lr 9.01e-05 | gn 0.20 | 325 img/s
+  ep21 step 1800/2398 | loss_w 0.3303 raw 0.0475 | lr 9.01e-05 | gn 0.19 | 325 img/s
+  ep21 step 2000/2398 | loss_w 0.3298 raw 0.0474 | lr 9.00e-05 | gn 0.19 | 325 img/s
+  ep21 step 2200/2398 | loss_w 0.3298 raw 0.0473 | lr 8.99e-05 | gn 0.19 | 325 img/s
+epoch  21/100 | train 0.3300 | val 0.3175 (raw 0.0454) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3175) -> diff_best.pt
+  ep22 step 200/2398 | loss_w 0.3327 raw 0.0484 | lr 8.97e-05 | gn 0.19 | 325 img/s
+  ep22 step 400/2398 | loss_w 0.3321 raw 0.0478 | lr 8.97e-05 | gn 0.19 | 325 img/s
+  ep22 step 600/2398 | loss_w 0.3311 raw 0.0477 | lr 8.96e-05 | gn 0.18 | 325 img/s
+  ep22 step 800/2398 | loss_w 0.3312 raw 0.0474 | lr 8.95e-05 | gn 0.19 | 325 img/s
+  ep22 step 1000/2398 | loss_w 0.3308 raw 0.0474 | lr 8.94e-05 | gn 0.19 | 325 img/s
+  ep22 step 1200/2398 | loss_w 0.3309 raw 0.0473 | lr 8.93e-05 | gn 0.19 | 325 img/s
+  ep22 step 1400/2398 | loss_w 0.3310 raw 0.0473 | lr 8.93e-05 | gn 0.19 | 325 img/s
+  ep22 step 1600/2398 | loss_w 0.3310 raw 0.0474 | lr 8.92e-05 | gn 0.19 | 325 img/s
+  ep22 step 1800/2398 | loss_w 0.3307 raw 0.0474 | lr 8.91e-05 | gn 0.19 | 325 img/s
+  ep22 step 2000/2398 | loss_w 0.3304 raw 0.0474 | lr 8.90e-05 | gn 0.19 | 325 img/s
+  ep22 step 2200/2398 | loss_w 0.3300 raw 0.0473 | lr 8.89e-05 | gn 0.19 | 325 img/s
+epoch  22/100 | train 0.3301 | val 0.3171 (raw 0.0453) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3171) -> diff_best.pt
+  ep23 step 200/2398 | loss_w 0.3291 raw 0.0478 | lr 8.88e-05 | gn 0.21 | 325 img/s
+  ep23 step 400/2398 | loss_w 0.3288 raw 0.0483 | lr 8.87e-05 | gn 0.20 | 325 img/s
+  ep23 step 600/2398 | loss_w 0.3290 raw 0.0481 | lr 8.86e-05 | gn 0.20 | 325 img/s
+  ep23 step 800/2398 | loss_w 0.3294 raw 0.0478 | lr 8.85e-05 | gn 0.20 | 325 img/s
+  ep23 step 1000/2398 | loss_w 0.3298 raw 0.0477 | lr 8.84e-05 | gn 0.19 | 325 img/s
+  ep23 step 1200/2398 | loss_w 0.3296 raw 0.0477 | lr 8.83e-05 | gn 0.19 | 325 img/s
+  ep23 step 1400/2398 | loss_w 0.3294 raw 0.0477 | lr 8.83e-05 | gn 0.19 | 325 img/s
+  ep23 step 1600/2398 | loss_w 0.3292 raw 0.0476 | lr 8.82e-05 | gn 0.19 | 325 img/s
+  ep23 step 1800/2398 | loss_w 0.3291 raw 0.0476 | lr 8.81e-05 | gn 0.19 | 325 img/s
+  ep23 step 2000/2398 | loss_w 0.3293 raw 0.0476 | lr 8.80e-05 | gn 0.19 | 325 img/s
+  ep23 step 2200/2398 | loss_w 0.3294 raw 0.0475 | lr 8.79e-05 | gn 0.19 | 325 img/s
+epoch  23/100 | train 0.3293 | val 0.3167 (raw 0.0452) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3167) -> diff_best.pt
+  ep24 step 200/2398 | loss_w 0.3276 raw 0.0469 | lr 8.78e-05 | gn 0.19 | 324 img/s
+  ep24 step 400/2398 | loss_w 0.3278 raw 0.0474 | lr 8.77e-05 | gn 0.19 | 325 img/s
+  ep24 step 600/2398 | loss_w 0.3277 raw 0.0472 | lr 8.76e-05 | gn 0.19 | 325 img/s
+  ep24 step 800/2398 | loss_w 0.3285 raw 0.0473 | lr 8.75e-05 | gn 0.19 | 325 img/s
+  ep24 step 1000/2398 | loss_w 0.3294 raw 0.0471 | lr 8.74e-05 | gn 0.19 | 325 img/s
+  ep24 step 1200/2398 | loss_w 0.3294 raw 0.0471 | lr 8.73e-05 | gn 0.19 | 325 img/s
+  ep24 step 1400/2398 | loss_w 0.3295 raw 0.0471 | lr 8.72e-05 | gn 0.18 | 325 img/s
+  ep24 step 1600/2398 | loss_w 0.3294 raw 0.0469 | lr 8.71e-05 | gn 0.18 | 325 img/s
+  ep24 step 1800/2398 | loss_w 0.3295 raw 0.0471 | lr 8.71e-05 | gn 0.18 | 325 img/s
+  ep24 step 2000/2398 | loss_w 0.3290 raw 0.0471 | lr 8.70e-05 | gn 0.19 | 325 img/s
+  ep24 step 2200/2398 | loss_w 0.3288 raw 0.0471 | lr 8.69e-05 | gn 0.18 | 325 img/s
+epoch  24/100 | train 0.3290 | val 0.3163 (raw 0.0452) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3163) -> diff_best.pt
+  ep25 step 200/2398 | loss_w 0.3300 raw 0.0466 | lr 8.67e-05 | gn 0.19 | 325 img/s
+  ep25 step 400/2398 | loss_w 0.3315 raw 0.0476 | lr 8.66e-05 | gn 0.18 | 325 img/s
+  ep25 step 600/2398 | loss_w 0.3301 raw 0.0477 | lr 8.65e-05 | gn 0.19 | 325 img/s
+  ep25 step 800/2398 | loss_w 0.3300 raw 0.0476 | lr 8.64e-05 | gn 0.18 | 325 img/s
+  ep25 step 1000/2398 | loss_w 0.3298 raw 0.0475 | lr 8.63e-05 | gn 0.18 | 325 img/s
+  ep25 step 1200/2398 | loss_w 0.3296 raw 0.0473 | lr 8.63e-05 | gn 0.18 | 325 img/s
+  ep25 step 1400/2398 | loss_w 0.3293 raw 0.0473 | lr 8.62e-05 | gn 0.18 | 325 img/s
+  ep25 step 1600/2398 | loss_w 0.3292 raw 0.0473 | lr 8.61e-05 | gn 0.18 | 325 img/s
+  ep25 step 1800/2398 | loss_w 0.3291 raw 0.0473 | lr 8.60e-05 | gn 0.18 | 325 img/s
+  ep25 step 2000/2398 | loss_w 0.3292 raw 0.0473 | lr 8.59e-05 | gn 0.18 | 325 img/s
+  ep25 step 2200/2398 | loss_w 0.3290 raw 0.0473 | lr 8.58e-05 | gn 0.18 | 325 img/s
+epoch  25/100 | train 0.3288 | val 0.3160 (raw 0.0451) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.414 (adv 0.462) | CSI@1 0.432 (adv 0.369) | CSI@8 0.022 (adv 0.031) | CRPS 0.296 (adv 0.462) | PSD 2-8km 1.32
+  new best (val loss_w 0.3160) -> diff_best.pt
+  ep26 step 200/2398 | loss_w 0.3286 raw 0.0479 | lr 8.56e-05 | gn 0.19 | 324 img/s
+  ep26 step 400/2398 | loss_w 0.3282 raw 0.0476 | lr 8.55e-05 | gn 0.18 | 324 img/s
+  ep26 step 600/2398 | loss_w 0.3279 raw 0.0479 | lr 8.54e-05 | gn 0.19 | 325 img/s
+  ep26 step 800/2398 | loss_w 0.3278 raw 0.0475 | lr 8.53e-05 | gn 0.19 | 325 img/s
+  ep26 step 1000/2398 | loss_w 0.3279 raw 0.0473 | lr 8.52e-05 | gn 0.19 | 325 img/s
+  ep26 step 1200/2398 | loss_w 0.3282 raw 0.0472 | lr 8.51e-05 | gn 0.19 | 325 img/s
+  ep26 step 1400/2398 | loss_w 0.3280 raw 0.0473 | lr 8.51e-05 | gn 0.19 | 325 img/s
+  ep26 step 1600/2398 | loss_w 0.3280 raw 0.0471 | lr 8.50e-05 | gn 0.18 | 325 img/s
+  ep26 step 1800/2398 | loss_w 0.3282 raw 0.0473 | lr 8.49e-05 | gn 0.18 | 325 img/s
+  ep26 step 2000/2398 | loss_w 0.3280 raw 0.0474 | lr 8.48e-05 | gn 0.18 | 325 img/s
+  ep26 step 2200/2398 | loss_w 0.3280 raw 0.0473 | lr 8.47e-05 | gn 0.18 | 325 img/s
+epoch  26/100 | train 0.3278 | val 0.3157 (raw 0.0451) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3157) -> diff_best.pt
+  ep27 step 200/2398 | loss_w 0.3268 raw 0.0461 | lr 8.45e-05 | gn 0.17 | 324 img/s
+  ep27 step 400/2398 | loss_w 0.3269 raw 0.0467 | lr 8.44e-05 | gn 0.18 | 325 img/s
+  ep27 step 600/2398 | loss_w 0.3272 raw 0.0468 | lr 8.43e-05 | gn 0.18 | 325 img/s
+  ep27 step 800/2398 | loss_w 0.3276 raw 0.0471 | lr 8.42e-05 | gn 0.18 | 325 img/s
+  ep27 step 1000/2398 | loss_w 0.3279 raw 0.0470 | lr 8.41e-05 | gn 0.18 | 325 img/s
+  ep27 step 1200/2398 | loss_w 0.3276 raw 0.0470 | lr 8.40e-05 | gn 0.18 | 325 img/s
+  ep27 step 1400/2398 | loss_w 0.3274 raw 0.0470 | lr 8.39e-05 | gn 0.18 | 325 img/s
+  ep27 step 1600/2398 | loss_w 0.3271 raw 0.0469 | lr 8.38e-05 | gn 0.18 | 325 img/s
+  ep27 step 1800/2398 | loss_w 0.3270 raw 0.0470 | lr 8.37e-05 | gn 0.18 | 325 img/s
+  ep27 step 2000/2398 | loss_w 0.3274 raw 0.0470 | lr 8.36e-05 | gn 0.18 | 325 img/s
+  ep27 step 2200/2398 | loss_w 0.3275 raw 0.0471 | lr 8.35e-05 | gn 0.18 | 325 img/s
+epoch  27/100 | train 0.3275 | val 0.3154 (raw 0.0451) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3154) -> diff_best.pt
+  ep28 step 200/2398 | loss_w 0.3272 raw 0.0465 | lr 8.33e-05 | gn 0.16 | 324 img/s
+  ep28 step 400/2398 | loss_w 0.3292 raw 0.0465 | lr 8.32e-05 | gn 0.17 | 325 img/s
+  ep28 step 600/2398 | loss_w 0.3295 raw 0.0469 | lr 8.31e-05 | gn 0.17 | 325 img/s
+  ep28 step 800/2398 | loss_w 0.3291 raw 0.0468 | lr 8.30e-05 | gn 0.18 | 325 img/s
+  ep28 step 1000/2398 | loss_w 0.3289 raw 0.0468 | lr 8.29e-05 | gn 0.18 | 325 img/s
+  ep28 step 1200/2398 | loss_w 0.3289 raw 0.0469 | lr 8.28e-05 | gn 0.18 | 325 img/s
+  ep28 step 1400/2398 | loss_w 0.3285 raw 0.0469 | lr 8.27e-05 | gn 0.18 | 325 img/s
+  ep28 step 1600/2398 | loss_w 0.3282 raw 0.0470 | lr 8.26e-05 | gn 0.18 | 325 img/s
+  ep28 step 1800/2398 | loss_w 0.3281 raw 0.0470 | lr 8.25e-05 | gn 0.18 | 325 img/s
+  ep28 step 2000/2398 | loss_w 0.3278 raw 0.0469 | lr 8.24e-05 | gn 0.18 | 325 img/s
+  ep28 step 2200/2398 | loss_w 0.3277 raw 0.0469 | lr 8.23e-05 | gn 0.18 | 325 img/s
+epoch  28/100 | train 0.3276 | val 0.3151 (raw 0.0450) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3151) -> diff_best.pt
+  ep29 step 200/2398 | loss_w 0.3258 raw 0.0469 | lr 8.21e-05 | gn 0.18 | 324 img/s
+  ep29 step 400/2398 | loss_w 0.3271 raw 0.0469 | lr 8.20e-05 | gn 0.18 | 325 img/s
+  ep29 step 600/2398 | loss_w 0.3276 raw 0.0465 | lr 8.19e-05 | gn 0.18 | 325 img/s
+  ep29 step 800/2398 | loss_w 0.3275 raw 0.0466 | lr 8.18e-05 | gn 0.18 | 325 img/s
+  ep29 step 1000/2398 | loss_w 0.3278 raw 0.0466 | lr 8.17e-05 | gn 0.18 | 325 img/s
+  ep29 step 1200/2398 | loss_w 0.3277 raw 0.0466 | lr 8.16e-05 | gn 0.18 | 325 img/s
+  ep29 step 1400/2398 | loss_w 0.3271 raw 0.0466 | lr 8.15e-05 | gn 0.18 | 325 img/s
+  ep29 step 1600/2398 | loss_w 0.3269 raw 0.0466 | lr 8.14e-05 | gn 0.18 | 325 img/s
+  ep29 step 1800/2398 | loss_w 0.3268 raw 0.0467 | lr 8.13e-05 | gn 0.18 | 325 img/s
+  ep29 step 2000/2398 | loss_w 0.3268 raw 0.0468 | lr 8.12e-05 | gn 0.18 | 325 img/s
+  ep29 step 2200/2398 | loss_w 0.3270 raw 0.0467 | lr 8.11e-05 | gn 0.18 | 325 img/s
+epoch  29/100 | train 0.3270 | val 0.3149 (raw 0.0450) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3149) -> diff_best.pt
+  ep30 step 200/2398 | loss_w 0.3247 raw 0.0466 | lr 8.09e-05 | gn 0.17 | 324 img/s
+  ep30 step 400/2398 | loss_w 0.3273 raw 0.0472 | lr 8.08e-05 | gn 0.18 | 325 img/s
+  ep30 step 600/2398 | loss_w 0.3280 raw 0.0470 | lr 8.07e-05 | gn 0.18 | 325 img/s
+  ep30 step 800/2398 | loss_w 0.3276 raw 0.0469 | lr 8.06e-05 | gn 0.17 | 325 img/s
+  ep30 step 1000/2398 | loss_w 0.3271 raw 0.0468 | lr 8.05e-05 | gn 0.17 | 325 img/s
+  ep30 step 1200/2398 | loss_w 0.3273 raw 0.0468 | lr 8.04e-05 | gn 0.18 | 325 img/s
+  ep30 step 1400/2398 | loss_w 0.3275 raw 0.0467 | lr 8.03e-05 | gn 0.18 | 325 img/s
+  ep30 step 1600/2398 | loss_w 0.3268 raw 0.0466 | lr 8.02e-05 | gn 0.18 | 325 img/s
+  ep30 step 1800/2398 | loss_w 0.3269 raw 0.0468 | lr 8.01e-05 | gn 0.18 | 325 img/s
+  ep30 step 2000/2398 | loss_w 0.3270 raw 0.0468 | lr 8.00e-05 | gn 0.18 | 325 img/s
+  ep30 step 2200/2398 | loss_w 0.3272 raw 0.0468 | lr 7.99e-05 | gn 0.18 | 325 img/s
+epoch  30/100 | train 0.3271 | val 0.3146 (raw 0.0450) | 473s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.409 (adv 0.462) | CSI@1 0.424 (adv 0.369) | CSI@8 0.016 (adv 0.031) | CRPS 0.294 (adv 0.462) | PSD 2-8km 1.26
+  new best (val loss_w 0.3146) -> diff_best.pt
+  ep31 step 200/2398 | loss_w 0.3262 raw 0.0468 | lr 7.97e-05 | gn 0.18 | 324 img/s
+  ep31 step 400/2398 | loss_w 0.3256 raw 0.0469 | lr 7.95e-05 | gn 0.17 | 324 img/s
+  ep31 step 600/2398 | loss_w 0.3267 raw 0.0469 | lr 7.94e-05 | gn 0.18 | 324 img/s
+  ep31 step 800/2398 | loss_w 0.3273 raw 0.0472 | lr 7.93e-05 | gn 0.18 | 324 img/s
+  ep31 step 1000/2398 | loss_w 0.3271 raw 0.0473 | lr 7.92e-05 | gn 0.18 | 324 img/s
+  ep31 step 1200/2398 | loss_w 0.3271 raw 0.0471 | lr 7.91e-05 | gn 0.18 | 324 img/s
+  ep31 step 1400/2398 | loss_w 0.3273 raw 0.0472 | lr 7.90e-05 | gn 0.18 | 324 img/s
+  ep31 step 1600/2398 | loss_w 0.3269 raw 0.0471 | lr 7.89e-05 | gn 0.18 | 324 img/s
+  ep31 step 1800/2398 | loss_w 0.3267 raw 0.0471 | lr 7.88e-05 | gn 0.18 | 324 img/s
+  ep31 step 2000/2398 | loss_w 0.3264 raw 0.0471 | lr 7.87e-05 | gn 0.18 | 324 img/s
+  ep31 step 2200/2398 | loss_w 0.3263 raw 0.0471 | lr 7.86e-05 | gn 0.18 | 325 img/s
+epoch  31/100 | train 0.3263 | val 0.3144 (raw 0.0449) | 473s | 324 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3144) -> diff_best.pt
+  ep32 step 200/2398 | loss_w 0.3293 raw 0.0475 | lr 7.84e-05 | gn 0.17 | 324 img/s
+  ep32 step 400/2398 | loss_w 0.3269 raw 0.0467 | lr 7.83e-05 | gn 0.17 | 324 img/s
+  ep32 step 600/2398 | loss_w 0.3280 raw 0.0471 | lr 7.82e-05 | gn 0.17 | 325 img/s
+  ep32 step 800/2398 | loss_w 0.3267 raw 0.0472 | lr 7.80e-05 | gn 0.17 | 325 img/s
+  ep32 step 1000/2398 | loss_w 0.3267 raw 0.0469 | lr 7.79e-05 | gn 0.17 | 325 img/s
+  ep32 step 1200/2398 | loss_w 0.3264 raw 0.0468 | lr 7.78e-05 | gn 0.17 | 325 img/s
+  ep32 step 1400/2398 | loss_w 0.3266 raw 0.0469 | lr 7.77e-05 | gn 0.17 | 325 img/s
+  ep32 step 1600/2398 | loss_w 0.3268 raw 0.0469 | lr 7.76e-05 | gn 0.17 | 325 img/s
+  ep32 step 1800/2398 | loss_w 0.3267 raw 0.0469 | lr 7.75e-05 | gn 0.17 | 325 img/s
+  ep32 step 2000/2398 | loss_w 0.3265 raw 0.0468 | lr 7.74e-05 | gn 0.17 | 325 img/s
+  ep32 step 2200/2398 | loss_w 0.3264 raw 0.0468 | lr 7.73e-05 | gn 0.18 | 325 img/s
+epoch  32/100 | train 0.3264 | val 0.3141 (raw 0.0449) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3141) -> diff_best.pt
+  ep33 step 200/2398 | loss_w 0.3268 raw 0.0480 | lr 7.71e-05 | gn 0.17 | 324 img/s
+  ep33 step 400/2398 | loss_w 0.3254 raw 0.0473 | lr 7.69e-05 | gn 0.17 | 325 img/s
+  ep33 step 600/2398 | loss_w 0.3240 raw 0.0469 | lr 7.68e-05 | gn 0.17 | 325 img/s
+  ep33 step 800/2398 | loss_w 0.3250 raw 0.0469 | lr 7.67e-05 | gn 0.17 | 325 img/s
+  ep33 step 1000/2398 | loss_w 0.3251 raw 0.0468 | lr 7.66e-05 | gn 0.17 | 325 img/s
+  ep33 step 1200/2398 | loss_w 0.3257 raw 0.0468 | lr 7.65e-05 | gn 0.17 | 325 img/s
+  ep33 step 1400/2398 | loss_w 0.3257 raw 0.0468 | lr 7.64e-05 | gn 0.17 | 325 img/s
+  ep33 step 1600/2398 | loss_w 0.3256 raw 0.0469 | lr 7.63e-05 | gn 0.17 | 325 img/s
+  ep33 step 1800/2398 | loss_w 0.3254 raw 0.0471 | lr 7.62e-05 | gn 0.17 | 325 img/s
+  ep33 step 2000/2398 | loss_w 0.3255 raw 0.0471 | lr 7.61e-05 | gn 0.17 | 325 img/s
+  ep33 step 2200/2398 | loss_w 0.3257 raw 0.0470 | lr 7.59e-05 | gn 0.17 | 325 img/s
+epoch  33/100 | train 0.3259 | val 0.3139 (raw 0.0449) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3139) -> diff_best.pt
+  ep34 step 200/2398 | loss_w 0.3288 raw 0.0469 | lr 7.57e-05 | gn 0.18 | 323 img/s
+  ep34 step 400/2398 | loss_w 0.3275 raw 0.0467 | lr 7.56e-05 | gn 0.19 | 324 img/s
+  ep34 step 600/2398 | loss_w 0.3282 raw 0.0470 | lr 7.55e-05 | gn 0.18 | 325 img/s
+  ep34 step 800/2398 | loss_w 0.3280 raw 0.0465 | lr 7.54e-05 | gn 0.18 | 325 img/s
+  ep34 step 1000/2398 | loss_w 0.3270 raw 0.0465 | lr 7.53e-05 | gn 0.18 | 325 img/s
+  ep34 step 1200/2398 | loss_w 0.3267 raw 0.0466 | lr 7.52e-05 | gn 0.17 | 325 img/s
+  ep34 step 1400/2398 | loss_w 0.3264 raw 0.0468 | lr 7.50e-05 | gn 0.17 | 325 img/s
+  ep34 step 1600/2398 | loss_w 0.3267 raw 0.0469 | lr 7.49e-05 | gn 0.17 | 325 img/s
+  ep34 step 1800/2398 | loss_w 0.3265 raw 0.0468 | lr 7.48e-05 | gn 0.17 | 325 img/s
+  ep34 step 2000/2398 | loss_w 0.3263 raw 0.0467 | lr 7.47e-05 | gn 0.17 | 325 img/s
+  ep34 step 2200/2398 | loss_w 0.3263 raw 0.0467 | lr 7.46e-05 | gn 0.17 | 325 img/s
+epoch  34/100 | train 0.3263 | val 0.3137 (raw 0.0448) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3137) -> diff_best.pt
+  ep35 step 200/2398 | loss_w 0.3265 raw 0.0462 | lr 7.44e-05 | gn 0.18 | 324 img/s
+  ep35 step 400/2398 | loss_w 0.3273 raw 0.0466 | lr 7.42e-05 | gn 0.19 | 325 img/s
+  ep35 step 600/2398 | loss_w 0.3263 raw 0.0466 | lr 7.41e-05 | gn 0.18 | 325 img/s
+  ep35 step 800/2398 | loss_w 0.3260 raw 0.0466 | lr 7.40e-05 | gn 0.18 | 325 img/s
+  ep35 step 1000/2398 | loss_w 0.3257 raw 0.0467 | lr 7.39e-05 | gn 0.18 | 325 img/s
+  ep35 step 1200/2398 | loss_w 0.3254 raw 0.0468 | lr 7.38e-05 | gn 0.18 | 325 img/s
+  ep35 step 1400/2398 | loss_w 0.3254 raw 0.0468 | lr 7.37e-05 | gn 0.17 | 325 img/s
+  ep35 step 1600/2398 | loss_w 0.3252 raw 0.0469 | lr 7.35e-05 | gn 0.17 | 325 img/s
+  ep35 step 1800/2398 | loss_w 0.3254 raw 0.0468 | lr 7.34e-05 | gn 0.17 | 325 img/s
+  ep35 step 2000/2398 | loss_w 0.3252 raw 0.0468 | lr 7.33e-05 | gn 0.17 | 325 img/s
+  ep35 step 2200/2398 | loss_w 0.3255 raw 0.0468 | lr 7.32e-05 | gn 0.17 | 325 img/s
+epoch  35/100 | train 0.3254 | val 0.3135 (raw 0.0448) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.410 (adv 0.462) | CSI@1 0.424 (adv 0.369) | CSI@8 0.021 (adv 0.031) | CRPS 0.294 (adv 0.462) | PSD 2-8km 1.29
+  new best (val loss_w 0.3135) -> diff_best.pt
+  ep36 step 200/2398 | loss_w 0.3253 raw 0.0467 | lr 7.30e-05 | gn 0.17 | 324 img/s
+  ep36 step 400/2398 | loss_w 0.3252 raw 0.0468 | lr 7.28e-05 | gn 0.17 | 325 img/s
+  ep36 step 600/2398 | loss_w 0.3252 raw 0.0467 | lr 7.27e-05 | gn 0.17 | 325 img/s
+  ep36 step 800/2398 | loss_w 0.3253 raw 0.0467 | lr 7.26e-05 | gn 0.17 | 325 img/s
+  ep36 step 1000/2398 | loss_w 0.3255 raw 0.0467 | lr 7.25e-05 | gn 0.17 | 325 img/s
+  ep36 step 1200/2398 | loss_w 0.3255 raw 0.0468 | lr 7.24e-05 | gn 0.17 | 325 img/s
+  ep36 step 1400/2398 | loss_w 0.3255 raw 0.0469 | lr 7.23e-05 | gn 0.17 | 325 img/s
+  ep36 step 1600/2398 | loss_w 0.3255 raw 0.0468 | lr 7.21e-05 | gn 0.17 | 325 img/s
+  ep36 step 1800/2398 | loss_w 0.3256 raw 0.0467 | lr 7.20e-05 | gn 0.17 | 325 img/s
+  ep36 step 2000/2398 | loss_w 0.3257 raw 0.0466 | lr 7.19e-05 | gn 0.17 | 325 img/s
+  ep36 step 2200/2398 | loss_w 0.3257 raw 0.0466 | lr 7.18e-05 | gn 0.17 | 325 img/s
+epoch  36/100 | train 0.3254 | val 0.3133 (raw 0.0448) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3133) -> diff_best.pt
+  ep37 step 200/2398 | loss_w 0.3239 raw 0.0474 | lr 7.16e-05 | gn 0.18 | 325 img/s
+  ep37 step 400/2398 | loss_w 0.3237 raw 0.0468 | lr 7.14e-05 | gn 0.18 | 325 img/s
+  ep37 step 600/2398 | loss_w 0.3234 raw 0.0468 | lr 7.13e-05 | gn 0.17 | 325 img/s
+  ep37 step 800/2398 | loss_w 0.3235 raw 0.0467 | lr 7.12e-05 | gn 0.17 | 325 img/s
+  ep37 step 1000/2398 | loss_w 0.3242 raw 0.0468 | lr 7.11e-05 | gn 0.17 | 325 img/s
+  ep37 step 1200/2398 | loss_w 0.3242 raw 0.0468 | lr 7.10e-05 | gn 0.17 | 325 img/s
+  ep37 step 1400/2398 | loss_w 0.3244 raw 0.0467 | lr 7.08e-05 | gn 0.17 | 325 img/s
+  ep37 step 1600/2398 | loss_w 0.3243 raw 0.0467 | lr 7.07e-05 | gn 0.17 | 325 img/s
+  ep37 step 1800/2398 | loss_w 0.3241 raw 0.0467 | lr 7.06e-05 | gn 0.17 | 325 img/s
+  ep37 step 2000/2398 | loss_w 0.3244 raw 0.0467 | lr 7.05e-05 | gn 0.17 | 325 img/s
+  ep37 step 2200/2398 | loss_w 0.3247 raw 0.0466 | lr 7.04e-05 | gn 0.17 | 325 img/s
+epoch  37/100 | train 0.3245 | val 0.3131 (raw 0.0448) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3131) -> diff_best.pt
+  ep38 step 200/2398 | loss_w 0.3257 raw 0.0473 | lr 7.01e-05 | gn 0.18 | 325 img/s
+  ep38 step 400/2398 | loss_w 0.3252 raw 0.0467 | lr 7.00e-05 | gn 0.17 | 325 img/s
+  ep38 step 600/2398 | loss_w 0.3250 raw 0.0467 | lr 6.99e-05 | gn 0.17 | 325 img/s
+  ep38 step 800/2398 | loss_w 0.3261 raw 0.0466 | lr 6.98e-05 | gn 0.17 | 325 img/s
+  ep38 step 1000/2398 | loss_w 0.3257 raw 0.0463 | lr 6.96e-05 | gn 0.17 | 325 img/s
+  ep38 step 1200/2398 | loss_w 0.3257 raw 0.0462 | lr 6.95e-05 | gn 0.17 | 325 img/s
+  ep38 step 1400/2398 | loss_w 0.3258 raw 0.0461 | lr 6.94e-05 | gn 0.17 | 325 img/s
+  ep38 step 1600/2398 | loss_w 0.3256 raw 0.0461 | lr 6.93e-05 | gn 0.17 | 325 img/s
+  ep38 step 1800/2398 | loss_w 0.3255 raw 0.0462 | lr 6.91e-05 | gn 0.17 | 325 img/s
+  ep38 step 2000/2398 | loss_w 0.3252 raw 0.0462 | lr 6.90e-05 | gn 0.17 | 325 img/s
+  ep38 step 2200/2398 | loss_w 0.3250 raw 0.0462 | lr 6.89e-05 | gn 0.17 | 325 img/s
+epoch  38/100 | train 0.3251 | val 0.3129 (raw 0.0448) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3129) -> diff_best.pt
+  ep39 step 200/2398 | loss_w 0.3240 raw 0.0461 | lr 6.87e-05 | gn 0.16 | 324 img/s
+  ep39 step 400/2398 | loss_w 0.3241 raw 0.0459 | lr 6.85e-05 | gn 0.16 | 325 img/s
+  ep39 step 600/2398 | loss_w 0.3242 raw 0.0462 | lr 6.84e-05 | gn 0.16 | 325 img/s
+  ep39 step 800/2398 | loss_w 0.3237 raw 0.0461 | lr 6.83e-05 | gn 0.16 | 325 img/s
+  ep39 step 1000/2398 | loss_w 0.3243 raw 0.0461 | lr 6.82e-05 | gn 0.17 | 325 img/s
+  ep39 step 1200/2398 | loss_w 0.3240 raw 0.0462 | lr 6.81e-05 | gn 0.17 | 325 img/s
+  ep39 step 1400/2398 | loss_w 0.3243 raw 0.0463 | lr 6.79e-05 | gn 0.17 | 325 img/s
+  ep39 step 1600/2398 | loss_w 0.3243 raw 0.0464 | lr 6.78e-05 | gn 0.17 | 325 img/s
+  ep39 step 1800/2398 | loss_w 0.3244 raw 0.0465 | lr 6.77e-05 | gn 0.17 | 325 img/s
+  ep39 step 2000/2398 | loss_w 0.3244 raw 0.0465 | lr 6.76e-05 | gn 0.17 | 325 img/s
+  ep39 step 2200/2398 | loss_w 0.3245 raw 0.0466 | lr 6.74e-05 | gn 0.17 | 325 img/s
+epoch  39/100 | train 0.3247 | val 0.3128 (raw 0.0447) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3128) -> diff_best.pt
+  ep40 step 200/2398 | loss_w 0.3236 raw 0.0469 | lr 6.72e-05 | gn 0.17 | 324 img/s
+  ep40 step 400/2398 | loss_w 0.3234 raw 0.0469 | lr 6.71e-05 | gn 0.17 | 325 img/s
+  ep40 step 600/2398 | loss_w 0.3233 raw 0.0472 | lr 6.69e-05 | gn 0.17 | 325 img/s
+  ep40 step 800/2398 | loss_w 0.3235 raw 0.0468 | lr 6.68e-05 | gn 0.17 | 325 img/s
+  ep40 step 1000/2398 | loss_w 0.3236 raw 0.0467 | lr 6.67e-05 | gn 0.17 | 325 img/s
+  ep40 step 1200/2398 | loss_w 0.3238 raw 0.0467 | lr 6.66e-05 | gn 0.17 | 325 img/s
+  ep40 step 1400/2398 | loss_w 0.3235 raw 0.0466 | lr 6.64e-05 | gn 0.17 | 325 img/s
+  ep40 step 1600/2398 | loss_w 0.3238 raw 0.0466 | lr 6.63e-05 | gn 0.17 | 325 img/s
+  ep40 step 1800/2398 | loss_w 0.3239 raw 0.0466 | lr 6.62e-05 | gn 0.17 | 325 img/s
+  ep40 step 2000/2398 | loss_w 0.3239 raw 0.0465 | lr 6.61e-05 | gn 0.17 | 325 img/s
+  ep40 step 2200/2398 | loss_w 0.3237 raw 0.0465 | lr 6.59e-05 | gn 0.17 | 325 img/s
+epoch  40/100 | train 0.3241 | val 0.3126 (raw 0.0447) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.407 (adv 0.462) | CSI@1 0.424 (adv 0.369) | CSI@8 0.021 (adv 0.031) | CRPS 0.293 (adv 0.462) | PSD 2-8km 1.21
+  new best (val loss_w 0.3126) -> diff_best.pt
+  ep41 step 200/2398 | loss_w 0.3258 raw 0.0459 | lr 6.57e-05 | gn 0.17 | 324 img/s
+  ep41 step 400/2398 | loss_w 0.3249 raw 0.0461 | lr 6.56e-05 | gn 0.17 | 325 img/s
+  ep41 step 600/2398 | loss_w 0.3237 raw 0.0461 | lr 6.55e-05 | gn 0.17 | 325 img/s
+  ep41 step 800/2398 | loss_w 0.3238 raw 0.0461 | lr 6.53e-05 | gn 0.16 | 325 img/s
+  ep41 step 1000/2398 | loss_w 0.3237 raw 0.0462 | lr 6.52e-05 | gn 0.16 | 325 img/s
+  ep41 step 1200/2398 | loss_w 0.3240 raw 0.0462 | lr 6.51e-05 | gn 0.16 | 325 img/s
+  ep41 step 1400/2398 | loss_w 0.3241 raw 0.0463 | lr 6.50e-05 | gn 0.16 | 325 img/s
+  ep41 step 1600/2398 | loss_w 0.3242 raw 0.0462 | lr 6.48e-05 | gn 0.16 | 325 img/s
+  ep41 step 1800/2398 | loss_w 0.3240 raw 0.0461 | lr 6.47e-05 | gn 0.16 | 325 img/s
+  ep41 step 2000/2398 | loss_w 0.3241 raw 0.0462 | lr 6.46e-05 | gn 0.17 | 325 img/s
+  ep41 step 2200/2398 | loss_w 0.3241 raw 0.0461 | lr 6.44e-05 | gn 0.17 | 325 img/s
+epoch  41/100 | train 0.3243 | val 0.3126 (raw 0.0448) | 472s | 325 img/s | GPU 14.1 GB
+  ep42 step 200/2398 | loss_w 0.3251 raw 0.0468 | lr 6.42e-05 | gn 0.16 | 324 img/s
+  ep42 step 400/2398 | loss_w 0.3245 raw 0.0463 | lr 6.41e-05 | gn 0.16 | 325 img/s
+  ep42 step 600/2398 | loss_w 0.3241 raw 0.0464 | lr 6.39e-05 | gn 0.16 | 325 img/s
+  ep42 step 800/2398 | loss_w 0.3235 raw 0.0464 | lr 6.38e-05 | gn 0.16 | 325 img/s
+  ep42 step 1000/2398 | loss_w 0.3235 raw 0.0465 | lr 6.37e-05 | gn 0.16 | 325 img/s
+  ep42 step 1200/2398 | loss_w 0.3233 raw 0.0464 | lr 6.36e-05 | gn 0.17 | 325 img/s
+  ep42 step 1400/2398 | loss_w 0.3233 raw 0.0464 | lr 6.34e-05 | gn 0.17 | 325 img/s
+  ep42 step 1600/2398 | loss_w 0.3236 raw 0.0465 | lr 6.33e-05 | gn 0.17 | 325 img/s
+  ep42 step 1800/2398 | loss_w 0.3235 raw 0.0465 | lr 6.32e-05 | gn 0.16 | 325 img/s
+  ep42 step 2000/2398 | loss_w 0.3235 raw 0.0465 | lr 6.31e-05 | gn 0.16 | 325 img/s
+  ep42 step 2200/2398 | loss_w 0.3238 raw 0.0465 | lr 6.29e-05 | gn 0.16 | 325 img/s
+epoch  42/100 | train 0.3236 | val 0.3123 (raw 0.0447) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3123) -> diff_best.pt
+  ep43 step 200/2398 | loss_w 0.3233 raw 0.0460 | lr 6.27e-05 | gn 0.16 | 325 img/s
+  ep43 step 400/2398 | loss_w 0.3227 raw 0.0462 | lr 6.25e-05 | gn 0.16 | 325 img/s
+  ep43 step 600/2398 | loss_w 0.3230 raw 0.0461 | lr 6.24e-05 | gn 0.16 | 325 img/s
+  ep43 step 800/2398 | loss_w 0.3237 raw 0.0462 | lr 6.23e-05 | gn 0.16 | 325 img/s
+  ep43 step 1000/2398 | loss_w 0.3236 raw 0.0463 | lr 6.22e-05 | gn 0.16 | 325 img/s
+  ep43 step 1200/2398 | loss_w 0.3234 raw 0.0465 | lr 6.20e-05 | gn 0.16 | 325 img/s
+  ep43 step 1400/2398 | loss_w 0.3234 raw 0.0466 | lr 6.19e-05 | gn 0.16 | 325 img/s
+  ep43 step 1600/2398 | loss_w 0.3235 raw 0.0464 | lr 6.18e-05 | gn 0.16 | 325 img/s
+  ep43 step 1800/2398 | loss_w 0.3237 raw 0.0464 | lr 6.17e-05 | gn 0.16 | 325 img/s
+  ep43 step 2000/2398 | loss_w 0.3235 raw 0.0464 | lr 6.15e-05 | gn 0.16 | 325 img/s
+  ep43 step 2200/2398 | loss_w 0.3233 raw 0.0464 | lr 6.14e-05 | gn 0.16 | 325 img/s
+epoch  43/100 | train 0.3234 | val 0.3122 (raw 0.0447) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3122) -> diff_best.pt
+  ep44 step 200/2398 | loss_w 0.3226 raw 0.0459 | lr 6.11e-05 | gn 0.15 | 324 img/s
+  ep44 step 400/2398 | loss_w 0.3240 raw 0.0456 | lr 6.10e-05 | gn 0.15 | 325 img/s
+  ep44 step 600/2398 | loss_w 0.3240 raw 0.0461 | lr 6.09e-05 | gn 0.16 | 325 img/s
+  ep44 step 800/2398 | loss_w 0.3235 raw 0.0462 | lr 6.08e-05 | gn 0.16 | 325 img/s
+  ep44 step 1000/2398 | loss_w 0.3229 raw 0.0463 | lr 6.06e-05 | gn 0.16 | 325 img/s
+  ep44 step 1200/2398 | loss_w 0.3234 raw 0.0462 | lr 6.05e-05 | gn 0.16 | 325 img/s
+  ep44 step 1400/2398 | loss_w 0.3236 raw 0.0462 | lr 6.04e-05 | gn 0.16 | 325 img/s
+  ep44 step 1600/2398 | loss_w 0.3237 raw 0.0463 | lr 6.02e-05 | gn 0.16 | 325 img/s
+  ep44 step 1800/2398 | loss_w 0.3236 raw 0.0462 | lr 6.01e-05 | gn 0.16 | 325 img/s
+  ep44 step 2000/2398 | loss_w 0.3234 raw 0.0463 | lr 6.00e-05 | gn 0.16 | 325 img/s
+  ep44 step 2200/2398 | loss_w 0.3233 raw 0.0463 | lr 5.99e-05 | gn 0.16 | 325 img/s
+epoch  44/100 | train 0.3233 | val 0.3120 (raw 0.0446) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3120) -> diff_best.pt
+  ep45 step 200/2398 | loss_w 0.3247 raw 0.0471 | lr 5.96e-05 | gn 0.16 | 325 img/s
+  ep45 step 400/2398 | loss_w 0.3251 raw 0.0469 | lr 5.95e-05 | gn 0.17 | 325 img/s
+  ep45 step 600/2398 | loss_w 0.3248 raw 0.0469 | lr 5.93e-05 | gn 0.17 | 325 img/s
+  ep45 step 800/2398 | loss_w 0.3244 raw 0.0470 | lr 5.92e-05 | gn 0.16 | 325 img/s
+  ep45 step 1000/2398 | loss_w 0.3244 raw 0.0471 | lr 5.91e-05 | gn 0.17 | 325 img/s
+  ep45 step 1200/2398 | loss_w 0.3241 raw 0.0467 | lr 5.90e-05 | gn 0.16 | 325 img/s
+  ep45 step 1400/2398 | loss_w 0.3241 raw 0.0468 | lr 5.88e-05 | gn 0.16 | 325 img/s
+  ep45 step 1600/2398 | loss_w 0.3239 raw 0.0466 | lr 5.87e-05 | gn 0.16 | 325 img/s
+  ep45 step 1800/2398 | loss_w 0.3233 raw 0.0465 | lr 5.86e-05 | gn 0.16 | 325 img/s
+  ep45 step 2000/2398 | loss_w 0.3232 raw 0.0464 | lr 5.84e-05 | gn 0.16 | 325 img/s
+  ep45 step 2200/2398 | loss_w 0.3231 raw 0.0464 | lr 5.83e-05 | gn 0.16 | 325 img/s
+epoch  45/100 | train 0.3231 | val 0.3119 (raw 0.0446) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.410 (adv 0.462) | CSI@1 0.428 (adv 0.369) | CSI@8 0.021 (adv 0.031) | CRPS 0.295 (adv 0.462) | PSD 2-8km 1.18
+  new best (val loss_w 0.3119) -> diff_best.pt
+  ep46 step 200/2398 | loss_w 0.3251 raw 0.0473 | lr 5.80e-05 | gn 0.15 | 324 img/s
+  ep46 step 400/2398 | loss_w 0.3237 raw 0.0471 | lr 5.79e-05 | gn 0.16 | 325 img/s
+  ep46 step 600/2398 | loss_w 0.3244 raw 0.0469 | lr 5.78e-05 | gn 0.16 | 325 img/s
+  ep46 step 800/2398 | loss_w 0.3239 raw 0.0468 | lr 5.77e-05 | gn 0.16 | 325 img/s
+  ep46 step 1000/2398 | loss_w 0.3231 raw 0.0467 | lr 5.75e-05 | gn 0.16 | 325 img/s
+  ep46 step 1200/2398 | loss_w 0.3229 raw 0.0465 | lr 5.74e-05 | gn 0.16 | 325 img/s
+  ep46 step 1400/2398 | loss_w 0.3228 raw 0.0466 | lr 5.73e-05 | gn 0.16 | 325 img/s
+  ep46 step 1600/2398 | loss_w 0.3228 raw 0.0465 | lr 5.71e-05 | gn 0.16 | 325 img/s
+  ep46 step 1800/2398 | loss_w 0.3227 raw 0.0465 | lr 5.70e-05 | gn 0.16 | 325 img/s
+  ep46 step 2000/2398 | loss_w 0.3231 raw 0.0465 | lr 5.69e-05 | gn 0.16 | 325 img/s
+  ep46 step 2200/2398 | loss_w 0.3230 raw 0.0465 | lr 5.67e-05 | gn 0.16 | 325 img/s
+epoch  46/100 | train 0.3229 | val 0.3118 (raw 0.0446) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3118) -> diff_best.pt
+  ep47 step 200/2398 | loss_w 0.3208 raw 0.0461 | lr 5.65e-05 | gn 0.15 | 324 img/s
+  ep47 step 400/2398 | loss_w 0.3206 raw 0.0468 | lr 5.64e-05 | gn 0.16 | 325 img/s
+  ep47 step 600/2398 | loss_w 0.3209 raw 0.0467 | lr 5.62e-05 | gn 0.15 | 325 img/s
+  ep47 step 800/2398 | loss_w 0.3217 raw 0.0465 | lr 5.61e-05 | gn 0.15 | 325 img/s
+  ep47 step 1000/2398 | loss_w 0.3215 raw 0.0465 | lr 5.60e-05 | gn 0.15 | 325 img/s
+  ep47 step 1200/2398 | loss_w 0.3216 raw 0.0465 | lr 5.58e-05 | gn 0.15 | 325 img/s
+  ep47 step 1400/2398 | loss_w 0.3222 raw 0.0466 | lr 5.57e-05 | gn 0.15 | 325 img/s
+  ep47 step 1600/2398 | loss_w 0.3222 raw 0.0464 | lr 5.56e-05 | gn 0.16 | 325 img/s
+  ep47 step 1800/2398 | loss_w 0.3224 raw 0.0463 | lr 5.54e-05 | gn 0.16 | 325 img/s
+  ep47 step 2000/2398 | loss_w 0.3225 raw 0.0463 | lr 5.53e-05 | gn 0.16 | 325 img/s
+  ep47 step 2200/2398 | loss_w 0.3227 raw 0.0463 | lr 5.52e-05 | gn 0.15 | 325 img/s
+epoch  47/100 | train 0.3230 | val 0.3117 (raw 0.0446) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3117) -> diff_best.pt
+  ep48 step 200/2398 | loss_w 0.3229 raw 0.0462 | lr 5.49e-05 | gn 0.16 | 324 img/s
+  ep48 step 400/2398 | loss_w 0.3222 raw 0.0465 | lr 5.48e-05 | gn 0.16 | 325 img/s
+  ep48 step 600/2398 | loss_w 0.3218 raw 0.0469 | lr 5.47e-05 | gn 0.16 | 325 img/s
+  ep48 step 800/2398 | loss_w 0.3228 raw 0.0467 | lr 5.45e-05 | gn 0.16 | 325 img/s
+  ep48 step 1000/2398 | loss_w 0.3225 raw 0.0469 | lr 5.44e-05 | gn 0.16 | 325 img/s
+  ep48 step 1200/2398 | loss_w 0.3226 raw 0.0466 | lr 5.43e-05 | gn 0.16 | 325 img/s
+  ep48 step 1400/2398 | loss_w 0.3225 raw 0.0467 | lr 5.41e-05 | gn 0.16 | 325 img/s
+  ep48 step 1600/2398 | loss_w 0.3224 raw 0.0466 | lr 5.40e-05 | gn 0.16 | 325 img/s
+  ep48 step 1800/2398 | loss_w 0.3226 raw 0.0467 | lr 5.39e-05 | gn 0.16 | 325 img/s
+  ep48 step 2000/2398 | loss_w 0.3226 raw 0.0467 | lr 5.37e-05 | gn 0.16 | 325 img/s
+  ep48 step 2200/2398 | loss_w 0.3226 raw 0.0466 | lr 5.36e-05 | gn 0.16 | 325 img/s
+epoch  48/100 | train 0.3227 | val 0.3115 (raw 0.0446) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3115) -> diff_best.pt
+  ep49 step 200/2398 | loss_w 0.3203 raw 0.0466 | lr 5.34e-05 | gn 0.16 | 324 img/s
+  ep49 step 400/2398 | loss_w 0.3220 raw 0.0467 | lr 5.32e-05 | gn 0.16 | 325 img/s
+  ep49 step 600/2398 | loss_w 0.3224 raw 0.0467 | lr 5.31e-05 | gn 0.16 | 325 img/s
+  ep49 step 800/2398 | loss_w 0.3221 raw 0.0466 | lr 5.30e-05 | gn 0.16 | 325 img/s
+  ep49 step 1000/2398 | loss_w 0.3223 raw 0.0465 | lr 5.28e-05 | gn 0.16 | 325 img/s
+  ep49 step 1200/2398 | loss_w 0.3228 raw 0.0464 | lr 5.27e-05 | gn 0.16 | 325 img/s
+  ep49 step 1400/2398 | loss_w 0.3230 raw 0.0464 | lr 5.26e-05 | gn 0.16 | 325 img/s
+  ep49 step 1600/2398 | loss_w 0.3232 raw 0.0464 | lr 5.24e-05 | gn 0.15 | 325 img/s
+  ep49 step 1800/2398 | loss_w 0.3230 raw 0.0464 | lr 5.23e-05 | gn 0.16 | 325 img/s
+  ep49 step 2000/2398 | loss_w 0.3228 raw 0.0464 | lr 5.22e-05 | gn 0.16 | 325 img/s
+  ep49 step 2200/2398 | loss_w 0.3228 raw 0.0462 | lr 5.20e-05 | gn 0.16 | 325 img/s
+epoch  49/100 | train 0.3227 | val 0.3114 (raw 0.0446) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3114) -> diff_best.pt
+  ep50 step 200/2398 | loss_w 0.3224 raw 0.0455 | lr 5.18e-05 | gn 0.15 | 324 img/s
+  ep50 step 400/2398 | loss_w 0.3229 raw 0.0454 | lr 5.16e-05 | gn 0.15 | 325 img/s
+  ep50 step 600/2398 | loss_w 0.3223 raw 0.0456 | lr 5.15e-05 | gn 0.15 | 325 img/s
+  ep50 step 800/2398 | loss_w 0.3225 raw 0.0458 | lr 5.14e-05 | gn 0.15 | 325 img/s
+  ep50 step 1000/2398 | loss_w 0.3223 raw 0.0460 | lr 5.12e-05 | gn 0.15 | 325 img/s
+  ep50 step 1200/2398 | loss_w 0.3227 raw 0.0461 | lr 5.11e-05 | gn 0.15 | 325 img/s
+  ep50 step 1400/2398 | loss_w 0.3227 raw 0.0461 | lr 5.10e-05 | gn 0.15 | 325 img/s
+  ep50 step 1600/2398 | loss_w 0.3228 raw 0.0460 | lr 5.09e-05 | gn 0.15 | 325 img/s
+  ep50 step 1800/2398 | loss_w 0.3228 raw 0.0460 | lr 5.07e-05 | gn 0.15 | 325 img/s
+  ep50 step 2000/2398 | loss_w 0.3228 raw 0.0459 | lr 5.06e-05 | gn 0.15 | 325 img/s
+  ep50 step 2200/2398 | loss_w 0.3228 raw 0.0458 | lr 5.05e-05 | gn 0.15 | 325 img/s
+epoch  50/100 | train 0.3229 | val 0.3113 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.407 (adv 0.462) | CSI@1 0.429 (adv 0.369) | CSI@8 0.028 (adv 0.031) | CRPS 0.293 (adv 0.462) | PSD 2-8km 1.14
+  new best (val loss_w 0.3113) -> diff_best.pt
+  ep51 step 200/2398 | loss_w 0.3210 raw 0.0458 | lr 5.02e-05 | gn 0.16 | 324 img/s
+  ep51 step 400/2398 | loss_w 0.3234 raw 0.0458 | lr 5.01e-05 | gn 0.16 | 325 img/s
+  ep51 step 600/2398 | loss_w 0.3235 raw 0.0455 | lr 4.99e-05 | gn 0.15 | 325 img/s
+  ep51 step 800/2398 | loss_w 0.3225 raw 0.0457 | lr 4.98e-05 | gn 0.15 | 325 img/s
+  ep51 step 1000/2398 | loss_w 0.3224 raw 0.0458 | lr 4.97e-05 | gn 0.16 | 325 img/s
+  ep51 step 1200/2398 | loss_w 0.3227 raw 0.0459 | lr 4.95e-05 | gn 0.16 | 325 img/s
+  ep51 step 1400/2398 | loss_w 0.3226 raw 0.0460 | lr 4.94e-05 | gn 0.16 | 325 img/s
+  ep51 step 1600/2398 | loss_w 0.3229 raw 0.0460 | lr 4.93e-05 | gn 0.16 | 325 img/s
+  ep51 step 1800/2398 | loss_w 0.3229 raw 0.0460 | lr 4.91e-05 | gn 0.16 | 325 img/s
+  ep51 step 2000/2398 | loss_w 0.3228 raw 0.0461 | lr 4.90e-05 | gn 0.15 | 325 img/s
+  ep51 step 2200/2398 | loss_w 0.3226 raw 0.0460 | lr 4.89e-05 | gn 0.16 | 325 img/s
+epoch  51/100 | train 0.3227 | val 0.3112 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3112) -> diff_best.pt
+  ep52 step 200/2398 | loss_w 0.3219 raw 0.0460 | lr 4.86e-05 | gn 0.15 | 325 img/s
+  ep52 step 400/2398 | loss_w 0.3218 raw 0.0464 | lr 4.85e-05 | gn 0.15 | 325 img/s
+  ep52 step 600/2398 | loss_w 0.3229 raw 0.0466 | lr 4.84e-05 | gn 0.15 | 325 img/s
+  ep52 step 800/2398 | loss_w 0.3230 raw 0.0466 | lr 4.82e-05 | gn 0.15 | 325 img/s
+  ep52 step 1000/2398 | loss_w 0.3228 raw 0.0464 | lr 4.81e-05 | gn 0.15 | 325 img/s
+  ep52 step 1200/2398 | loss_w 0.3220 raw 0.0465 | lr 4.80e-05 | gn 0.15 | 325 img/s
+  ep52 step 1400/2398 | loss_w 0.3220 raw 0.0463 | lr 4.78e-05 | gn 0.15 | 325 img/s
+  ep52 step 1600/2398 | loss_w 0.3220 raw 0.0462 | lr 4.77e-05 | gn 0.15 | 325 img/s
+  ep52 step 1800/2398 | loss_w 0.3220 raw 0.0463 | lr 4.76e-05 | gn 0.15 | 325 img/s
+  ep52 step 2000/2398 | loss_w 0.3221 raw 0.0462 | lr 4.74e-05 | gn 0.15 | 325 img/s
+  ep52 step 2200/2398 | loss_w 0.3222 raw 0.0462 | lr 4.73e-05 | gn 0.15 | 325 img/s
+epoch  52/100 | train 0.3222 | val 0.3111 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3111) -> diff_best.pt
+  ep53 step 200/2398 | loss_w 0.3233 raw 0.0461 | lr 4.70e-05 | gn 0.16 | 325 img/s
+  ep53 step 400/2398 | loss_w 0.3225 raw 0.0459 | lr 4.69e-05 | gn 0.16 | 325 img/s
+  ep53 step 600/2398 | loss_w 0.3213 raw 0.0461 | lr 4.68e-05 | gn 0.16 | 325 img/s
+  ep53 step 800/2398 | loss_w 0.3214 raw 0.0459 | lr 4.67e-05 | gn 0.15 | 325 img/s
+  ep53 step 1000/2398 | loss_w 0.3215 raw 0.0458 | lr 4.65e-05 | gn 0.15 | 325 img/s
+  ep53 step 1200/2398 | loss_w 0.3217 raw 0.0459 | lr 4.64e-05 | gn 0.15 | 325 img/s
+  ep53 step 1400/2398 | loss_w 0.3220 raw 0.0461 | lr 4.63e-05 | gn 0.15 | 325 img/s
+  ep53 step 1600/2398 | loss_w 0.3219 raw 0.0460 | lr 4.61e-05 | gn 0.15 | 325 img/s
+  ep53 step 1800/2398 | loss_w 0.3222 raw 0.0460 | lr 4.60e-05 | gn 0.15 | 325 img/s
+  ep53 step 2000/2398 | loss_w 0.3219 raw 0.0461 | lr 4.59e-05 | gn 0.15 | 325 img/s
+  ep53 step 2200/2398 | loss_w 0.3216 raw 0.0461 | lr 4.57e-05 | gn 0.15 | 325 img/s
+epoch  53/100 | train 0.3214 | val 0.3110 (raw 0.0445) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3110) -> diff_best.pt
+  ep54 step 200/2398 | loss_w 0.3218 raw 0.0463 | lr 4.55e-05 | gn 0.15 | 325 img/s
+  ep54 step 400/2398 | loss_w 0.3231 raw 0.0461 | lr 4.53e-05 | gn 0.16 | 325 img/s
+  ep54 step 600/2398 | loss_w 0.3235 raw 0.0462 | lr 4.52e-05 | gn 0.16 | 325 img/s
+  ep54 step 800/2398 | loss_w 0.3224 raw 0.0462 | lr 4.51e-05 | gn 0.15 | 325 img/s
+  ep54 step 1000/2398 | loss_w 0.3217 raw 0.0463 | lr 4.49e-05 | gn 0.15 | 325 img/s
+  ep54 step 1200/2398 | loss_w 0.3217 raw 0.0464 | lr 4.48e-05 | gn 0.15 | 325 img/s
+  ep54 step 1400/2398 | loss_w 0.3215 raw 0.0462 | lr 4.47e-05 | gn 0.15 | 325 img/s
+  ep54 step 1600/2398 | loss_w 0.3218 raw 0.0460 | lr 4.46e-05 | gn 0.15 | 325 img/s
+  ep54 step 1800/2398 | loss_w 0.3217 raw 0.0461 | lr 4.44e-05 | gn 0.15 | 325 img/s
+  ep54 step 2000/2398 | loss_w 0.3217 raw 0.0461 | lr 4.43e-05 | gn 0.15 | 325 img/s
+  ep54 step 2200/2398 | loss_w 0.3216 raw 0.0460 | lr 4.42e-05 | gn 0.15 | 325 img/s
+epoch  54/100 | train 0.3216 | val 0.3109 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3109) -> diff_best.pt
+  ep55 step 200/2398 | loss_w 0.3227 raw 0.0455 | lr 4.39e-05 | gn 0.15 | 324 img/s
+  ep55 step 400/2398 | loss_w 0.3221 raw 0.0462 | lr 4.38e-05 | gn 0.15 | 325 img/s
+  ep55 step 600/2398 | loss_w 0.3216 raw 0.0461 | lr 4.36e-05 | gn 0.15 | 325 img/s
+  ep55 step 800/2398 | loss_w 0.3216 raw 0.0462 | lr 4.35e-05 | gn 0.15 | 325 img/s
+  ep55 step 1000/2398 | loss_w 0.3222 raw 0.0462 | lr 4.34e-05 | gn 0.15 | 325 img/s
+  ep55 step 1200/2398 | loss_w 0.3222 raw 0.0461 | lr 4.33e-05 | gn 0.15 | 325 img/s
+  ep55 step 1400/2398 | loss_w 0.3224 raw 0.0461 | lr 4.31e-05 | gn 0.15 | 325 img/s
+  ep55 step 1600/2398 | loss_w 0.3223 raw 0.0461 | lr 4.30e-05 | gn 0.15 | 325 img/s
+  ep55 step 1800/2398 | loss_w 0.3221 raw 0.0460 | lr 4.29e-05 | gn 0.15 | 325 img/s
+  ep55 step 2000/2398 | loss_w 0.3220 raw 0.0461 | lr 4.27e-05 | gn 0.15 | 325 img/s
+  ep55 step 2200/2398 | loss_w 0.3218 raw 0.0460 | lr 4.26e-05 | gn 0.15 | 325 img/s
+epoch  55/100 | train 0.3217 | val 0.3108 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.410 (adv 0.462) | CSI@1 0.434 (adv 0.369) | CSI@8 0.023 (adv 0.031) | CRPS 0.294 (adv 0.462) | PSD 2-8km 1.20
+  new best (val loss_w 0.3108) -> diff_best.pt
+  ep56 step 200/2398 | loss_w 0.3222 raw 0.0454 | lr 4.23e-05 | gn 0.15 | 325 img/s
+  ep56 step 400/2398 | loss_w 0.3213 raw 0.0462 | lr 4.22e-05 | gn 0.15 | 324 img/s
+  ep56 step 600/2398 | loss_w 0.3220 raw 0.0458 | lr 4.21e-05 | gn 0.15 | 325 img/s
+  ep56 step 800/2398 | loss_w 0.3217 raw 0.0460 | lr 4.20e-05 | gn 0.15 | 325 img/s
+  ep56 step 1000/2398 | loss_w 0.3211 raw 0.0459 | lr 4.18e-05 | gn 0.15 | 325 img/s
+  ep56 step 1200/2398 | loss_w 0.3207 raw 0.0460 | lr 4.17e-05 | gn 0.15 | 325 img/s
+  ep56 step 1400/2398 | loss_w 0.3212 raw 0.0460 | lr 4.16e-05 | gn 0.15 | 325 img/s
+  ep56 step 1600/2398 | loss_w 0.3217 raw 0.0459 | lr 4.14e-05 | gn 0.15 | 325 img/s
+  ep56 step 1800/2398 | loss_w 0.3214 raw 0.0459 | lr 4.13e-05 | gn 0.15 | 325 img/s
+  ep56 step 2000/2398 | loss_w 0.3214 raw 0.0459 | lr 4.12e-05 | gn 0.15 | 325 img/s
+  ep56 step 2200/2398 | loss_w 0.3212 raw 0.0459 | lr 4.10e-05 | gn 0.15 | 325 img/s
+epoch  56/100 | train 0.3210 | val 0.3107 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3107) -> diff_best.pt
+  ep57 step 200/2398 | loss_w 0.3199 raw 0.0471 | lr 4.08e-05 | gn 0.15 | 325 img/s
+  ep57 step 400/2398 | loss_w 0.3208 raw 0.0470 | lr 4.07e-05 | gn 0.15 | 325 img/s
+  ep57 step 600/2398 | loss_w 0.3212 raw 0.0469 | lr 4.05e-05 | gn 0.14 | 325 img/s
+  ep57 step 800/2398 | loss_w 0.3211 raw 0.0466 | lr 4.04e-05 | gn 0.15 | 325 img/s
+  ep57 step 1000/2398 | loss_w 0.3201 raw 0.0466 | lr 4.03e-05 | gn 0.15 | 325 img/s
+  ep57 step 1200/2398 | loss_w 0.3203 raw 0.0465 | lr 4.01e-05 | gn 0.15 | 325 img/s
+  ep57 step 1400/2398 | loss_w 0.3204 raw 0.0463 | lr 4.00e-05 | gn 0.15 | 325 img/s
+  ep57 step 1600/2398 | loss_w 0.3208 raw 0.0463 | lr 3.99e-05 | gn 0.15 | 325 img/s
+  ep57 step 1800/2398 | loss_w 0.3208 raw 0.0463 | lr 3.98e-05 | gn 0.15 | 325 img/s
+  ep57 step 2000/2398 | loss_w 0.3210 raw 0.0462 | lr 3.96e-05 | gn 0.15 | 325 img/s
+  ep57 step 2200/2398 | loss_w 0.3208 raw 0.0462 | lr 3.95e-05 | gn 0.15 | 325 img/s
+epoch  57/100 | train 0.3211 | val 0.3107 (raw 0.0445) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3107) -> diff_best.pt
+  ep58 step 200/2398 | loss_w 0.3194 raw 0.0467 | lr 3.92e-05 | gn 0.15 | 323 img/s
+  ep58 step 400/2398 | loss_w 0.3189 raw 0.0466 | lr 3.91e-05 | gn 0.15 | 324 img/s
+  ep58 step 600/2398 | loss_w 0.3192 raw 0.0464 | lr 3.90e-05 | gn 0.15 | 324 img/s
+  ep58 step 800/2398 | loss_w 0.3189 raw 0.0461 | lr 3.89e-05 | gn 0.14 | 324 img/s
+  ep58 step 1000/2398 | loss_w 0.3190 raw 0.0458 | lr 3.87e-05 | gn 0.14 | 325 img/s
+  ep58 step 1200/2398 | loss_w 0.3194 raw 0.0458 | lr 3.86e-05 | gn 0.15 | 325 img/s
+  ep58 step 1400/2398 | loss_w 0.3198 raw 0.0459 | lr 3.85e-05 | gn 0.15 | 325 img/s
+  ep58 step 1600/2398 | loss_w 0.3200 raw 0.0458 | lr 3.83e-05 | gn 0.15 | 325 img/s
+  ep58 step 1800/2398 | loss_w 0.3203 raw 0.0459 | lr 3.82e-05 | gn 0.15 | 325 img/s
+  ep58 step 2000/2398 | loss_w 0.3204 raw 0.0460 | lr 3.81e-05 | gn 0.15 | 325 img/s
+  ep58 step 2200/2398 | loss_w 0.3208 raw 0.0460 | lr 3.80e-05 | gn 0.15 | 325 img/s
+epoch  58/100 | train 0.3208 | val 0.3106 (raw 0.0445) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3106) -> diff_best.pt
+  ep59 step 200/2398 | loss_w 0.3205 raw 0.0468 | lr 3.77e-05 | gn 0.15 | 324 img/s
+  ep59 step 400/2398 | loss_w 0.3203 raw 0.0463 | lr 3.76e-05 | gn 0.14 | 324 img/s
+  ep59 step 600/2398 | loss_w 0.3208 raw 0.0460 | lr 3.75e-05 | gn 0.14 | 324 img/s
+  ep59 step 800/2398 | loss_w 0.3200 raw 0.0461 | lr 3.73e-05 | gn 0.14 | 324 img/s
+  ep59 step 1000/2398 | loss_w 0.3205 raw 0.0461 | lr 3.72e-05 | gn 0.14 | 325 img/s
+  ep59 step 1200/2398 | loss_w 0.3207 raw 0.0462 | lr 3.71e-05 | gn 0.15 | 325 img/s
+  ep59 step 1400/2398 | loss_w 0.3204 raw 0.0460 | lr 3.69e-05 | gn 0.15 | 325 img/s
+  ep59 step 1600/2398 | loss_w 0.3201 raw 0.0460 | lr 3.68e-05 | gn 0.15 | 325 img/s
+  ep59 step 1800/2398 | loss_w 0.3204 raw 0.0460 | lr 3.67e-05 | gn 0.15 | 325 img/s
+  ep59 step 2000/2398 | loss_w 0.3202 raw 0.0460 | lr 3.66e-05 | gn 0.14 | 325 img/s
+  ep59 step 2200/2398 | loss_w 0.3205 raw 0.0460 | lr 3.64e-05 | gn 0.14 | 325 img/s
+epoch  59/100 | train 0.3203 | val 0.3105 (raw 0.0445) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3105) -> diff_best.pt
+  ep60 step 200/2398 | loss_w 0.3235 raw 0.0457 | lr 3.62e-05 | gn 0.15 | 324 img/s
+  ep60 step 400/2398 | loss_w 0.3230 raw 0.0457 | lr 3.61e-05 | gn 0.15 | 324 img/s
+  ep60 step 600/2398 | loss_w 0.3214 raw 0.0457 | lr 3.59e-05 | gn 0.15 | 324 img/s
+  ep60 step 800/2398 | loss_w 0.3212 raw 0.0457 | lr 3.58e-05 | gn 0.15 | 324 img/s
+  ep60 step 1000/2398 | loss_w 0.3205 raw 0.0455 | lr 3.57e-05 | gn 0.15 | 324 img/s
+  ep60 step 1200/2398 | loss_w 0.3206 raw 0.0456 | lr 3.56e-05 | gn 0.15 | 324 img/s
+  ep60 step 1400/2398 | loss_w 0.3206 raw 0.0457 | lr 3.54e-05 | gn 0.15 | 325 img/s
+  ep60 step 1600/2398 | loss_w 0.3204 raw 0.0457 | lr 3.53e-05 | gn 0.15 | 325 img/s
+  ep60 step 1800/2398 | loss_w 0.3205 raw 0.0458 | lr 3.52e-05 | gn 0.15 | 325 img/s
+  ep60 step 2000/2398 | loss_w 0.3207 raw 0.0459 | lr 3.50e-05 | gn 0.15 | 325 img/s
+  ep60 step 2200/2398 | loss_w 0.3206 raw 0.0459 | lr 3.49e-05 | gn 0.15 | 325 img/s
+epoch  60/100 | train 0.3203 | val 0.3105 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.406 (adv 0.462) | CSI@1 0.431 (adv 0.369) | CSI@8 0.022 (adv 0.031) | CRPS 0.293 (adv 0.462) | PSD 2-8km 1.11
+  new best (val loss_w 0.3105) -> diff_best.pt
+  ep61 step 200/2398 | loss_w 0.3197 raw 0.0454 | lr 3.47e-05 | gn 0.14 | 324 img/s
+  ep61 step 400/2398 | loss_w 0.3203 raw 0.0456 | lr 3.45e-05 | gn 0.14 | 324 img/s
+  ep61 step 600/2398 | loss_w 0.3205 raw 0.0454 | lr 3.44e-05 | gn 0.14 | 324 img/s
+  ep61 step 800/2398 | loss_w 0.3216 raw 0.0455 | lr 3.43e-05 | gn 0.14 | 324 img/s
+  ep61 step 1000/2398 | loss_w 0.3216 raw 0.0454 | lr 3.42e-05 | gn 0.14 | 324 img/s
+  ep61 step 1200/2398 | loss_w 0.3213 raw 0.0454 | lr 3.41e-05 | gn 0.14 | 324 img/s
+  ep61 step 1400/2398 | loss_w 0.3215 raw 0.0456 | lr 3.39e-05 | gn 0.14 | 325 img/s
+  ep61 step 1600/2398 | loss_w 0.3215 raw 0.0457 | lr 3.38e-05 | gn 0.14 | 325 img/s
+  ep61 step 1800/2398 | loss_w 0.3214 raw 0.0457 | lr 3.37e-05 | gn 0.14 | 325 img/s
+  ep61 step 2000/2398 | loss_w 0.3213 raw 0.0457 | lr 3.36e-05 | gn 0.14 | 325 img/s
+  ep61 step 2200/2398 | loss_w 0.3209 raw 0.0457 | lr 3.34e-05 | gn 0.14 | 325 img/s
+epoch  61/100 | train 0.3208 | val 0.3104 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3104) -> diff_best.pt
+  ep62 step 200/2398 | loss_w 0.3192 raw 0.0461 | lr 3.32e-05 | gn 0.14 | 324 img/s
+  ep62 step 400/2398 | loss_w 0.3187 raw 0.0464 | lr 3.31e-05 | gn 0.14 | 324 img/s
+  ep62 step 600/2398 | loss_w 0.3196 raw 0.0461 | lr 3.29e-05 | gn 0.14 | 325 img/s
+  ep62 step 800/2398 | loss_w 0.3203 raw 0.0460 | lr 3.28e-05 | gn 0.14 | 325 img/s
+  ep62 step 1000/2398 | loss_w 0.3210 raw 0.0458 | lr 3.27e-05 | gn 0.14 | 325 img/s
+  ep62 step 1200/2398 | loss_w 0.3208 raw 0.0457 | lr 3.26e-05 | gn 0.15 | 325 img/s
+  ep62 step 1400/2398 | loss_w 0.3211 raw 0.0457 | lr 3.24e-05 | gn 0.15 | 325 img/s
+  ep62 step 1600/2398 | loss_w 0.3209 raw 0.0456 | lr 3.23e-05 | gn 0.14 | 325 img/s
+  ep62 step 1800/2398 | loss_w 0.3209 raw 0.0456 | lr 3.22e-05 | gn 0.14 | 325 img/s
+  ep62 step 2000/2398 | loss_w 0.3207 raw 0.0457 | lr 3.21e-05 | gn 0.14 | 325 img/s
+  ep62 step 2200/2398 | loss_w 0.3208 raw 0.0456 | lr 3.19e-05 | gn 0.14 | 325 img/s
+epoch  62/100 | train 0.3209 | val 0.3103 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3103) -> diff_best.pt
+  ep63 step 200/2398 | loss_w 0.3220 raw 0.0450 | lr 3.17e-05 | gn 0.14 | 324 img/s
+  ep63 step 400/2398 | loss_w 0.3220 raw 0.0454 | lr 3.16e-05 | gn 0.14 | 325 img/s
+  ep63 step 600/2398 | loss_w 0.3216 raw 0.0454 | lr 3.15e-05 | gn 0.14 | 325 img/s
+  ep63 step 800/2398 | loss_w 0.3211 raw 0.0455 | lr 3.13e-05 | gn 0.14 | 325 img/s
+  ep63 step 1000/2398 | loss_w 0.3213 raw 0.0456 | lr 3.12e-05 | gn 0.14 | 325 img/s
+  ep63 step 1200/2398 | loss_w 0.3215 raw 0.0457 | lr 3.11e-05 | gn 0.14 | 325 img/s
+  ep63 step 1400/2398 | loss_w 0.3213 raw 0.0458 | lr 3.10e-05 | gn 0.14 | 325 img/s
+  ep63 step 1600/2398 | loss_w 0.3213 raw 0.0458 | lr 3.09e-05 | gn 0.14 | 325 img/s
+  ep63 step 1800/2398 | loss_w 0.3211 raw 0.0458 | lr 3.07e-05 | gn 0.14 | 325 img/s
+  ep63 step 2000/2398 | loss_w 0.3210 raw 0.0458 | lr 3.06e-05 | gn 0.14 | 325 img/s
+  ep63 step 2200/2398 | loss_w 0.3209 raw 0.0457 | lr 3.05e-05 | gn 0.14 | 325 img/s
+epoch  63/100 | train 0.3209 | val 0.3103 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3103) -> diff_best.pt
+  ep64 step 200/2398 | loss_w 0.3211 raw 0.0447 | lr 3.02e-05 | gn 0.14 | 324 img/s
+  ep64 step 400/2398 | loss_w 0.3194 raw 0.0447 | lr 3.01e-05 | gn 0.14 | 325 img/s
+  ep64 step 600/2398 | loss_w 0.3201 raw 0.0450 | lr 3.00e-05 | gn 0.14 | 325 img/s
+  ep64 step 800/2398 | loss_w 0.3204 raw 0.0451 | lr 2.99e-05 | gn 0.14 | 325 img/s
+  ep64 step 1000/2398 | loss_w 0.3207 raw 0.0450 | lr 2.98e-05 | gn 0.14 | 325 img/s
+  ep64 step 1200/2398 | loss_w 0.3208 raw 0.0451 | lr 2.96e-05 | gn 0.14 | 325 img/s
+  ep64 step 1400/2398 | loss_w 0.3209 raw 0.0455 | lr 2.95e-05 | gn 0.14 | 325 img/s
+  ep64 step 1600/2398 | loss_w 0.3207 raw 0.0455 | lr 2.94e-05 | gn 0.14 | 325 img/s
+  ep64 step 1800/2398 | loss_w 0.3205 raw 0.0456 | lr 2.93e-05 | gn 0.14 | 325 img/s
+  ep64 step 2000/2398 | loss_w 0.3203 raw 0.0455 | lr 2.92e-05 | gn 0.14 | 325 img/s
+  ep64 step 2200/2398 | loss_w 0.3202 raw 0.0455 | lr 2.90e-05 | gn 0.14 | 325 img/s
+epoch  64/100 | train 0.3203 | val 0.3102 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3102) -> diff_best.pt
+  ep65 step 200/2398 | loss_w 0.3209 raw 0.0467 | lr 2.88e-05 | gn 0.14 | 324 img/s
+  ep65 step 400/2398 | loss_w 0.3208 raw 0.0459 | lr 2.87e-05 | gn 0.14 | 325 img/s
+  ep65 step 600/2398 | loss_w 0.3212 raw 0.0458 | lr 2.86e-05 | gn 0.14 | 325 img/s
+  ep65 step 800/2398 | loss_w 0.3206 raw 0.0457 | lr 2.85e-05 | gn 0.14 | 325 img/s
+  ep65 step 1000/2398 | loss_w 0.3203 raw 0.0458 | lr 2.83e-05 | gn 0.14 | 325 img/s
+  ep65 step 1200/2398 | loss_w 0.3201 raw 0.0457 | lr 2.82e-05 | gn 0.14 | 325 img/s
+  ep65 step 1400/2398 | loss_w 0.3200 raw 0.0457 | lr 2.81e-05 | gn 0.14 | 325 img/s
+  ep65 step 1600/2398 | loss_w 0.3202 raw 0.0458 | lr 2.80e-05 | gn 0.14 | 325 img/s
+  ep65 step 1800/2398 | loss_w 0.3201 raw 0.0457 | lr 2.79e-05 | gn 0.14 | 325 img/s
+  ep65 step 2000/2398 | loss_w 0.3202 raw 0.0457 | lr 2.77e-05 | gn 0.14 | 325 img/s
+  ep65 step 2200/2398 | loss_w 0.3201 raw 0.0457 | lr 2.76e-05 | gn 0.14 | 325 img/s
+epoch  65/100 | train 0.3202 | val 0.3102 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.402 (adv 0.462) | CSI@1 0.436 (adv 0.369) | CSI@8 0.025 (adv 0.031) | CRPS 0.291 (adv 0.462) | PSD 2-8km 1.11
+  new best (val loss_w 0.3102) -> diff_best.pt
+  ep66 step 200/2398 | loss_w 0.3214 raw 0.0449 | lr 2.74e-05 | gn 0.13 | 324 img/s
+  ep66 step 400/2398 | loss_w 0.3214 raw 0.0457 | lr 2.73e-05 | gn 0.14 | 325 img/s
+  ep66 step 600/2398 | loss_w 0.3215 raw 0.0457 | lr 2.72e-05 | gn 0.14 | 325 img/s
+  ep66 step 800/2398 | loss_w 0.3209 raw 0.0458 | lr 2.70e-05 | gn 0.14 | 325 img/s
+  ep66 step 1000/2398 | loss_w 0.3203 raw 0.0458 | lr 2.69e-05 | gn 0.14 | 325 img/s
+  ep66 step 1200/2398 | loss_w 0.3206 raw 0.0456 | lr 2.68e-05 | gn 0.14 | 325 img/s
+  ep66 step 1400/2398 | loss_w 0.3204 raw 0.0457 | lr 2.67e-05 | gn 0.14 | 325 img/s
+  ep66 step 1600/2398 | loss_w 0.3204 raw 0.0457 | lr 2.66e-05 | gn 0.14 | 325 img/s
+  ep66 step 1800/2398 | loss_w 0.3202 raw 0.0457 | lr 2.65e-05 | gn 0.14 | 325 img/s
+  ep66 step 2000/2398 | loss_w 0.3200 raw 0.0457 | lr 2.63e-05 | gn 0.14 | 325 img/s
+  ep66 step 2200/2398 | loss_w 0.3202 raw 0.0456 | lr 2.62e-05 | gn 0.14 | 325 img/s
+epoch  66/100 | train 0.3204 | val 0.3101 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3101) -> diff_best.pt
+  ep67 step 200/2398 | loss_w 0.3204 raw 0.0459 | lr 2.60e-05 | gn 0.14 | 324 img/s
+  ep67 step 400/2398 | loss_w 0.3205 raw 0.0459 | lr 2.59e-05 | gn 0.14 | 324 img/s
+  ep67 step 600/2398 | loss_w 0.3198 raw 0.0457 | lr 2.58e-05 | gn 0.14 | 325 img/s
+  ep67 step 800/2398 | loss_w 0.3190 raw 0.0458 | lr 2.56e-05 | gn 0.14 | 325 img/s
+  ep67 step 1000/2398 | loss_w 0.3190 raw 0.0456 | lr 2.55e-05 | gn 0.14 | 325 img/s
+  ep67 step 1200/2398 | loss_w 0.3191 raw 0.0456 | lr 2.54e-05 | gn 0.14 | 325 img/s
+  ep67 step 1400/2398 | loss_w 0.3192 raw 0.0457 | lr 2.53e-05 | gn 0.14 | 325 img/s
+  ep67 step 1600/2398 | loss_w 0.3197 raw 0.0457 | lr 2.52e-05 | gn 0.14 | 325 img/s
+  ep67 step 1800/2398 | loss_w 0.3196 raw 0.0457 | lr 2.51e-05 | gn 0.14 | 325 img/s
+  ep67 step 2000/2398 | loss_w 0.3197 raw 0.0457 | lr 2.50e-05 | gn 0.14 | 325 img/s
+  ep67 step 2200/2398 | loss_w 0.3199 raw 0.0456 | lr 2.48e-05 | gn 0.13 | 325 img/s
+epoch  67/100 | train 0.3199 | val 0.3101 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3101) -> diff_best.pt
+  ep68 step 200/2398 | loss_w 0.3206 raw 0.0460 | lr 2.46e-05 | gn 0.13 | 324 img/s
+  ep68 step 400/2398 | loss_w 0.3208 raw 0.0457 | lr 2.45e-05 | gn 0.13 | 325 img/s
+  ep68 step 600/2398 | loss_w 0.3209 raw 0.0454 | lr 2.44e-05 | gn 0.13 | 325 img/s
+  ep68 step 800/2398 | loss_w 0.3203 raw 0.0454 | lr 2.43e-05 | gn 0.14 | 325 img/s
+  ep68 step 1000/2398 | loss_w 0.3198 raw 0.0455 | lr 2.42e-05 | gn 0.14 | 325 img/s
+  ep68 step 1200/2398 | loss_w 0.3194 raw 0.0455 | lr 2.41e-05 | gn 0.13 | 325 img/s
+  ep68 step 1400/2398 | loss_w 0.3198 raw 0.0455 | lr 2.39e-05 | gn 0.14 | 325 img/s
+  ep68 step 1600/2398 | loss_w 0.3197 raw 0.0455 | lr 2.38e-05 | gn 0.13 | 325 img/s
+  ep68 step 1800/2398 | loss_w 0.3199 raw 0.0456 | lr 2.37e-05 | gn 0.13 | 325 img/s
+  ep68 step 2000/2398 | loss_w 0.3199 raw 0.0456 | lr 2.36e-05 | gn 0.13 | 325 img/s
+  ep68 step 2200/2398 | loss_w 0.3199 raw 0.0456 | lr 2.35e-05 | gn 0.13 | 325 img/s
+epoch  68/100 | train 0.3202 | val 0.3100 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3100) -> diff_best.pt
+  ep69 step 200/2398 | loss_w 0.3171 raw 0.0469 | lr 2.33e-05 | gn 0.14 | 323 img/s
+  ep69 step 400/2398 | loss_w 0.3182 raw 0.0460 | lr 2.32e-05 | gn 0.14 | 324 img/s
+  ep69 step 600/2398 | loss_w 0.3192 raw 0.0456 | lr 2.31e-05 | gn 0.14 | 324 img/s
+  ep69 step 800/2398 | loss_w 0.3192 raw 0.0455 | lr 2.29e-05 | gn 0.13 | 324 img/s
+  ep69 step 1000/2398 | loss_w 0.3190 raw 0.0456 | lr 2.28e-05 | gn 0.13 | 325 img/s
+  ep69 step 1200/2398 | loss_w 0.3192 raw 0.0456 | lr 2.27e-05 | gn 0.13 | 325 img/s
+  ep69 step 1400/2398 | loss_w 0.3193 raw 0.0455 | lr 2.26e-05 | gn 0.13 | 325 img/s
+  ep69 step 1600/2398 | loss_w 0.3196 raw 0.0456 | lr 2.25e-05 | gn 0.13 | 325 img/s
+  ep69 step 1800/2398 | loss_w 0.3194 raw 0.0456 | lr 2.24e-05 | gn 0.13 | 325 img/s
+  ep69 step 2000/2398 | loss_w 0.3193 raw 0.0457 | lr 2.23e-05 | gn 0.13 | 325 img/s
+  ep69 step 2200/2398 | loss_w 0.3191 raw 0.0456 | lr 2.22e-05 | gn 0.13 | 325 img/s
+epoch  69/100 | train 0.3193 | val 0.3100 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3100) -> diff_best.pt
+  ep70 step 200/2398 | loss_w 0.3185 raw 0.0463 | lr 2.20e-05 | gn 0.14 | 324 img/s
+  ep70 step 400/2398 | loss_w 0.3186 raw 0.0456 | lr 2.18e-05 | gn 0.13 | 324 img/s
+  ep70 step 600/2398 | loss_w 0.3188 raw 0.0454 | lr 2.17e-05 | gn 0.13 | 324 img/s
+  ep70 step 800/2398 | loss_w 0.3194 raw 0.0457 | lr 2.16e-05 | gn 0.13 | 325 img/s
+  ep70 step 1000/2398 | loss_w 0.3195 raw 0.0458 | lr 2.15e-05 | gn 0.13 | 325 img/s
+  ep70 step 1200/2398 | loss_w 0.3197 raw 0.0458 | lr 2.14e-05 | gn 0.13 | 325 img/s
+  ep70 step 1400/2398 | loss_w 0.3197 raw 0.0457 | lr 2.13e-05 | gn 0.13 | 325 img/s
+  ep70 step 1600/2398 | loss_w 0.3196 raw 0.0457 | lr 2.12e-05 | gn 0.13 | 325 img/s
+  ep70 step 1800/2398 | loss_w 0.3196 raw 0.0457 | lr 2.11e-05 | gn 0.13 | 325 img/s
+  ep70 step 2000/2398 | loss_w 0.3197 raw 0.0456 | lr 2.10e-05 | gn 0.13 | 325 img/s
+  ep70 step 2200/2398 | loss_w 0.3196 raw 0.0455 | lr 2.09e-05 | gn 0.13 | 325 img/s
+epoch  70/100 | train 0.3197 | val 0.3099 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.407 (adv 0.462) | CSI@1 0.428 (adv 0.369) | CSI@8 0.026 (adv 0.031) | CRPS 0.294 (adv 0.462) | PSD 2-8km 1.09
+  new best (val loss_w 0.3099) -> diff_best.pt
+  ep71 step 200/2398 | loss_w 0.3213 raw 0.0457 | lr 2.07e-05 | gn 0.14 | 325 img/s
+  ep71 step 400/2398 | loss_w 0.3187 raw 0.0454 | lr 2.06e-05 | gn 0.14 | 325 img/s
+  ep71 step 600/2398 | loss_w 0.3177 raw 0.0456 | lr 2.05e-05 | gn 0.14 | 325 img/s
+  ep71 step 800/2398 | loss_w 0.3180 raw 0.0456 | lr 2.03e-05 | gn 0.14 | 325 img/s
+  ep71 step 1000/2398 | loss_w 0.3184 raw 0.0456 | lr 2.02e-05 | gn 0.13 | 325 img/s
+  ep71 step 1200/2398 | loss_w 0.3189 raw 0.0455 | lr 2.01e-05 | gn 0.13 | 325 img/s
+  ep71 step 1400/2398 | loss_w 0.3193 raw 0.0455 | lr 2.00e-05 | gn 0.13 | 325 img/s
+  ep71 step 1600/2398 | loss_w 0.3195 raw 0.0456 | lr 1.99e-05 | gn 0.13 | 325 img/s
+  ep71 step 1800/2398 | loss_w 0.3191 raw 0.0456 | lr 1.98e-05 | gn 0.13 | 325 img/s
+  ep71 step 2000/2398 | loss_w 0.3193 raw 0.0456 | lr 1.97e-05 | gn 0.13 | 325 img/s
+  ep71 step 2200/2398 | loss_w 0.3192 raw 0.0455 | lr 1.96e-05 | gn 0.13 | 325 img/s
+epoch  71/100 | train 0.3195 | val 0.3099 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3099) -> diff_best.pt
+  ep72 step 200/2398 | loss_w 0.3205 raw 0.0464 | lr 1.94e-05 | gn 0.14 | 325 img/s
+  ep72 step 400/2398 | loss_w 0.3211 raw 0.0454 | lr 1.93e-05 | gn 0.13 | 325 img/s
+  ep72 step 600/2398 | loss_w 0.3208 raw 0.0455 | lr 1.92e-05 | gn 0.13 | 325 img/s
+  ep72 step 800/2398 | loss_w 0.3203 raw 0.0452 | lr 1.91e-05 | gn 0.13 | 325 img/s
+  ep72 step 1000/2398 | loss_w 0.3204 raw 0.0455 | lr 1.90e-05 | gn 0.13 | 325 img/s
+  ep72 step 1200/2398 | loss_w 0.3203 raw 0.0455 | lr 1.89e-05 | gn 0.13 | 325 img/s
+  ep72 step 1400/2398 | loss_w 0.3201 raw 0.0455 | lr 1.88e-05 | gn 0.13 | 325 img/s
+  ep72 step 1600/2398 | loss_w 0.3199 raw 0.0456 | lr 1.87e-05 | gn 0.13 | 325 img/s
+  ep72 step 1800/2398 | loss_w 0.3200 raw 0.0457 | lr 1.86e-05 | gn 0.13 | 325 img/s
+  ep72 step 2000/2398 | loss_w 0.3202 raw 0.0457 | lr 1.85e-05 | gn 0.13 | 325 img/s
+  ep72 step 2200/2398 | loss_w 0.3198 raw 0.0456 | lr 1.84e-05 | gn 0.13 | 325 img/s
+epoch  72/100 | train 0.3197 | val 0.3099 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3099) -> diff_best.pt
+  ep73 step 200/2398 | loss_w 0.3190 raw 0.0457 | lr 1.82e-05 | gn 0.13 | 324 img/s
+  ep73 step 400/2398 | loss_w 0.3195 raw 0.0459 | lr 1.81e-05 | gn 0.13 | 324 img/s
+  ep73 step 600/2398 | loss_w 0.3198 raw 0.0460 | lr 1.80e-05 | gn 0.13 | 325 img/s
+  ep73 step 800/2398 | loss_w 0.3197 raw 0.0458 | lr 1.79e-05 | gn 0.13 | 325 img/s
+  ep73 step 1000/2398 | loss_w 0.3196 raw 0.0456 | lr 1.78e-05 | gn 0.13 | 325 img/s
+  ep73 step 1200/2398 | loss_w 0.3200 raw 0.0455 | lr 1.77e-05 | gn 0.13 | 325 img/s
+  ep73 step 1400/2398 | loss_w 0.3195 raw 0.0455 | lr 1.76e-05 | gn 0.13 | 325 img/s
+  ep73 step 1600/2398 | loss_w 0.3197 raw 0.0455 | lr 1.75e-05 | gn 0.13 | 325 img/s
+  ep73 step 1800/2398 | loss_w 0.3196 raw 0.0455 | lr 1.74e-05 | gn 0.13 | 325 img/s
+  ep73 step 2000/2398 | loss_w 0.3196 raw 0.0455 | lr 1.73e-05 | gn 0.13 | 325 img/s
+  ep73 step 2200/2398 | loss_w 0.3194 raw 0.0455 | lr 1.72e-05 | gn 0.13 | 325 img/s
+epoch  73/100 | train 0.3191 | val 0.3098 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3098) -> diff_best.pt
+  ep74 step 200/2398 | loss_w 0.3231 raw 0.0459 | lr 1.70e-05 | gn 0.13 | 324 img/s
+  ep74 step 400/2398 | loss_w 0.3207 raw 0.0457 | lr 1.69e-05 | gn 0.13 | 325 img/s
+  ep74 step 600/2398 | loss_w 0.3210 raw 0.0456 | lr 1.68e-05 | gn 0.12 | 325 img/s
+  ep74 step 800/2398 | loss_w 0.3202 raw 0.0456 | lr 1.67e-05 | gn 0.12 | 325 img/s
+  ep74 step 1000/2398 | loss_w 0.3201 raw 0.0455 | lr 1.66e-05 | gn 0.13 | 325 img/s
+  ep74 step 1200/2398 | loss_w 0.3200 raw 0.0454 | lr 1.65e-05 | gn 0.13 | 325 img/s
+  ep74 step 1400/2398 | loss_w 0.3199 raw 0.0455 | lr 1.64e-05 | gn 0.13 | 325 img/s
+  ep74 step 1600/2398 | loss_w 0.3199 raw 0.0455 | lr 1.63e-05 | gn 0.13 | 325 img/s
+  ep74 step 1800/2398 | loss_w 0.3199 raw 0.0455 | lr 1.62e-05 | gn 0.13 | 325 img/s
+  ep74 step 2000/2398 | loss_w 0.3198 raw 0.0454 | lr 1.61e-05 | gn 0.13 | 325 img/s
+  ep74 step 2200/2398 | loss_w 0.3196 raw 0.0453 | lr 1.60e-05 | gn 0.13 | 325 img/s
+epoch  74/100 | train 0.3194 | val 0.3098 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3098) -> diff_best.pt
+  ep75 step 200/2398 | loss_w 0.3171 raw 0.0450 | lr 1.58e-05 | gn 0.12 | 325 img/s
+  ep75 step 400/2398 | loss_w 0.3172 raw 0.0450 | lr 1.57e-05 | gn 0.13 | 325 img/s
+  ep75 step 600/2398 | loss_w 0.3187 raw 0.0450 | lr 1.56e-05 | gn 0.13 | 325 img/s
+  ep75 step 800/2398 | loss_w 0.3187 raw 0.0453 | lr 1.55e-05 | gn 0.13 | 325 img/s
+  ep75 step 1000/2398 | loss_w 0.3186 raw 0.0453 | lr 1.54e-05 | gn 0.13 | 325 img/s
+  ep75 step 1200/2398 | loss_w 0.3189 raw 0.0453 | lr 1.53e-05 | gn 0.13 | 325 img/s
+  ep75 step 1400/2398 | loss_w 0.3186 raw 0.0455 | lr 1.52e-05 | gn 0.13 | 325 img/s
+  ep75 step 1600/2398 | loss_w 0.3189 raw 0.0454 | lr 1.51e-05 | gn 0.13 | 325 img/s
+  ep75 step 1800/2398 | loss_w 0.3188 raw 0.0455 | lr 1.50e-05 | gn 0.13 | 325 img/s
+  ep75 step 2000/2398 | loss_w 0.3189 raw 0.0454 | lr 1.49e-05 | gn 0.13 | 325 img/s
+  ep75 step 2200/2398 | loss_w 0.3191 raw 0.0454 | lr 1.49e-05 | gn 0.13 | 325 img/s
+epoch  75/100 | train 0.3189 | val 0.3098 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.403 (adv 0.462) | CSI@1 0.429 (adv 0.369) | CSI@8 0.028 (adv 0.031) | CRPS 0.293 (adv 0.462) | PSD 2-8km 1.04
+  new best (val loss_w 0.3098) -> diff_best.pt
+  ep76 step 200/2398 | loss_w 0.3181 raw 0.0447 | lr 1.47e-05 | gn 0.13 | 324 img/s
+  ep76 step 400/2398 | loss_w 0.3180 raw 0.0452 | lr 1.46e-05 | gn 0.13 | 325 img/s
+  ep76 step 600/2398 | loss_w 0.3186 raw 0.0454 | lr 1.45e-05 | gn 0.13 | 325 img/s
+  ep76 step 800/2398 | loss_w 0.3185 raw 0.0454 | lr 1.44e-05 | gn 0.13 | 325 img/s
+  ep76 step 1000/2398 | loss_w 0.3183 raw 0.0455 | lr 1.43e-05 | gn 0.13 | 325 img/s
+  ep76 step 1200/2398 | loss_w 0.3186 raw 0.0456 | lr 1.42e-05 | gn 0.13 | 325 img/s
+  ep76 step 1400/2398 | loss_w 0.3183 raw 0.0456 | lr 1.41e-05 | gn 0.13 | 325 img/s
+  ep76 step 1600/2398 | loss_w 0.3184 raw 0.0455 | lr 1.40e-05 | gn 0.12 | 325 img/s
+  ep76 step 1800/2398 | loss_w 0.3184 raw 0.0456 | lr 1.39e-05 | gn 0.13 | 325 img/s
+  ep76 step 2000/2398 | loss_w 0.3186 raw 0.0457 | lr 1.38e-05 | gn 0.13 | 325 img/s
+  ep76 step 2200/2398 | loss_w 0.3185 raw 0.0457 | lr 1.37e-05 | gn 0.12 | 325 img/s
+epoch  76/100 | train 0.3184 | val 0.3097 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3097) -> diff_best.pt
+  ep77 step 200/2398 | loss_w 0.3229 raw 0.0449 | lr 1.36e-05 | gn 0.12 | 324 img/s
+  ep77 step 400/2398 | loss_w 0.3206 raw 0.0452 | lr 1.35e-05 | gn 0.13 | 325 img/s
+  ep77 step 600/2398 | loss_w 0.3205 raw 0.0452 | lr 1.34e-05 | gn 0.13 | 325 img/s
+  ep77 step 800/2398 | loss_w 0.3204 raw 0.0454 | lr 1.33e-05 | gn 0.13 | 325 img/s
+  ep77 step 1000/2398 | loss_w 0.3199 raw 0.0455 | lr 1.32e-05 | gn 0.12 | 325 img/s
+  ep77 step 1200/2398 | loss_w 0.3197 raw 0.0454 | lr 1.31e-05 | gn 0.12 | 325 img/s
+  ep77 step 1400/2398 | loss_w 0.3195 raw 0.0455 | lr 1.30e-05 | gn 0.12 | 325 img/s
+  ep77 step 1600/2398 | loss_w 0.3196 raw 0.0456 | lr 1.29e-05 | gn 0.12 | 325 img/s
+  ep77 step 1800/2398 | loss_w 0.3193 raw 0.0455 | lr 1.29e-05 | gn 0.12 | 325 img/s
+  ep77 step 2000/2398 | loss_w 0.3192 raw 0.0455 | lr 1.28e-05 | gn 0.12 | 325 img/s
+  ep77 step 2200/2398 | loss_w 0.3192 raw 0.0455 | lr 1.27e-05 | gn 0.12 | 325 img/s
+epoch  77/100 | train 0.3191 | val 0.3097 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3097) -> diff_best.pt
+  ep78 step 200/2398 | loss_w 0.3189 raw 0.0462 | lr 1.25e-05 | gn 0.13 | 324 img/s
+  ep78 step 400/2398 | loss_w 0.3180 raw 0.0459 | lr 1.24e-05 | gn 0.12 | 324 img/s
+  ep78 step 600/2398 | loss_w 0.3175 raw 0.0457 | lr 1.23e-05 | gn 0.12 | 325 img/s
+  ep78 step 800/2398 | loss_w 0.3185 raw 0.0457 | lr 1.22e-05 | gn 0.12 | 325 img/s
+  ep78 step 1000/2398 | loss_w 0.3188 raw 0.0456 | lr 1.22e-05 | gn 0.12 | 325 img/s
+  ep78 step 1200/2398 | loss_w 0.3187 raw 0.0456 | lr 1.21e-05 | gn 0.12 | 325 img/s
+  ep78 step 1400/2398 | loss_w 0.3188 raw 0.0456 | lr 1.20e-05 | gn 0.12 | 325 img/s
+  ep78 step 1600/2398 | loss_w 0.3190 raw 0.0456 | lr 1.19e-05 | gn 0.12 | 325 img/s
+  ep78 step 1800/2398 | loss_w 0.3187 raw 0.0457 | lr 1.18e-05 | gn 0.12 | 325 img/s
+  ep78 step 2000/2398 | loss_w 0.3186 raw 0.0457 | lr 1.17e-05 | gn 0.12 | 325 img/s
+  ep78 step 2200/2398 | loss_w 0.3186 raw 0.0457 | lr 1.17e-05 | gn 0.12 | 325 img/s
+epoch  78/100 | train 0.3186 | val 0.3097 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3097) -> diff_best.pt
+  ep79 step 200/2398 | loss_w 0.3189 raw 0.0452 | lr 1.15e-05 | gn 0.12 | 324 img/s
+  ep79 step 400/2398 | loss_w 0.3197 raw 0.0456 | lr 1.14e-05 | gn 0.12 | 324 img/s
+  ep79 step 600/2398 | loss_w 0.3197 raw 0.0455 | lr 1.13e-05 | gn 0.12 | 325 img/s
+  ep79 step 800/2398 | loss_w 0.3188 raw 0.0456 | lr 1.12e-05 | gn 0.12 | 325 img/s
+  ep79 step 1000/2398 | loss_w 0.3189 raw 0.0457 | lr 1.11e-05 | gn 0.12 | 325 img/s
+  ep79 step 1200/2398 | loss_w 0.3183 raw 0.0457 | lr 1.11e-05 | gn 0.12 | 325 img/s
+  ep79 step 1400/2398 | loss_w 0.3181 raw 0.0457 | lr 1.10e-05 | gn 0.12 | 325 img/s
+  ep79 step 1600/2398 | loss_w 0.3182 raw 0.0458 | lr 1.09e-05 | gn 0.12 | 325 img/s
+  ep79 step 1800/2398 | loss_w 0.3181 raw 0.0456 | lr 1.08e-05 | gn 0.12 | 325 img/s
+  ep79 step 2000/2398 | loss_w 0.3180 raw 0.0457 | lr 1.07e-05 | gn 0.12 | 325 img/s
+  ep79 step 2200/2398 | loss_w 0.3181 raw 0.0456 | lr 1.07e-05 | gn 0.12 | 325 img/s
+epoch  79/100 | train 0.3184 | val 0.3097 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3097) -> diff_best.pt
+  ep80 step 200/2398 | loss_w 0.3201 raw 0.0457 | lr 1.05e-05 | gn 0.12 | 324 img/s
+  ep80 step 400/2398 | loss_w 0.3206 raw 0.0454 | lr 1.04e-05 | gn 0.12 | 325 img/s
+  ep80 step 600/2398 | loss_w 0.3201 raw 0.0455 | lr 1.03e-05 | gn 0.12 | 325 img/s
+  ep80 step 800/2398 | loss_w 0.3198 raw 0.0456 | lr 1.03e-05 | gn 0.12 | 325 img/s
+  ep80 step 1000/2398 | loss_w 0.3194 raw 0.0457 | lr 1.02e-05 | gn 0.12 | 325 img/s
+  ep80 step 1200/2398 | loss_w 0.3191 raw 0.0457 | lr 1.01e-05 | gn 0.12 | 325 img/s
+  ep80 step 1400/2398 | loss_w 0.3191 raw 0.0456 | lr 1.00e-05 | gn 0.12 | 325 img/s
+  ep80 step 1600/2398 | loss_w 0.3193 raw 0.0456 | lr 9.94e-06 | gn 0.12 | 325 img/s
+  ep80 step 1800/2398 | loss_w 0.3192 raw 0.0457 | lr 9.86e-06 | gn 0.12 | 325 img/s
+  ep80 step 2000/2398 | loss_w 0.3189 raw 0.0455 | lr 9.78e-06 | gn 0.12 | 325 img/s
+  ep80 step 2200/2398 | loss_w 0.3190 raw 0.0455 | lr 9.70e-06 | gn 0.12 | 325 img/s
+epoch  80/100 | train 0.3189 | val 0.3097 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.402 (adv 0.462) | CSI@1 0.432 (adv 0.369) | CSI@8 0.028 (adv 0.031) | CRPS 0.292 (adv 0.462) | PSD 2-8km 0.97
+  new best (val loss_w 0.3097) -> diff_best.pt
+  ep81 step 200/2398 | loss_w 0.3174 raw 0.0440 | lr 9.55e-06 | gn 0.11 | 324 img/s
+  ep81 step 400/2398 | loss_w 0.3189 raw 0.0439 | lr 9.47e-06 | gn 0.11 | 325 img/s
+  ep81 step 600/2398 | loss_w 0.3188 raw 0.0443 | lr 9.40e-06 | gn 0.11 | 325 img/s
+  ep81 step 800/2398 | loss_w 0.3183 raw 0.0447 | lr 9.32e-06 | gn 0.11 | 325 img/s
+  ep81 step 1000/2398 | loss_w 0.3188 raw 0.0447 | lr 9.24e-06 | gn 0.11 | 325 img/s
+  ep81 step 1200/2398 | loss_w 0.3191 raw 0.0450 | lr 9.17e-06 | gn 0.11 | 325 img/s
+  ep81 step 1400/2398 | loss_w 0.3189 raw 0.0451 | lr 9.09e-06 | gn 0.11 | 325 img/s
+  ep81 step 1600/2398 | loss_w 0.3189 raw 0.0451 | lr 9.02e-06 | gn 0.12 | 325 img/s
+  ep81 step 1800/2398 | loss_w 0.3191 raw 0.0452 | lr 8.94e-06 | gn 0.12 | 325 img/s
+  ep81 step 2000/2398 | loss_w 0.3192 raw 0.0451 | lr 8.86e-06 | gn 0.12 | 325 img/s
+  ep81 step 2200/2398 | loss_w 0.3191 raw 0.0452 | lr 8.79e-06 | gn 0.12 | 325 img/s
+epoch  81/100 | train 0.3191 | val 0.3097 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3097) -> diff_best.pt
+  ep82 step 200/2398 | loss_w 0.3215 raw 0.0453 | lr 8.64e-06 | gn 0.11 | 324 img/s
+  ep82 step 400/2398 | loss_w 0.3216 raw 0.0453 | lr 8.57e-06 | gn 0.11 | 324 img/s
+  ep82 step 600/2398 | loss_w 0.3205 raw 0.0456 | lr 8.50e-06 | gn 0.11 | 325 img/s
+  ep82 step 800/2398 | loss_w 0.3203 raw 0.0454 | lr 8.42e-06 | gn 0.11 | 325 img/s
+  ep82 step 1000/2398 | loss_w 0.3197 raw 0.0454 | lr 8.35e-06 | gn 0.11 | 325 img/s
+  ep82 step 1200/2398 | loss_w 0.3197 raw 0.0453 | lr 8.28e-06 | gn 0.11 | 325 img/s
+  ep82 step 1400/2398 | loss_w 0.3195 raw 0.0453 | lr 8.20e-06 | gn 0.11 | 325 img/s
+  ep82 step 1600/2398 | loss_w 0.3196 raw 0.0453 | lr 8.13e-06 | gn 0.11 | 325 img/s
+  ep82 step 1800/2398 | loss_w 0.3194 raw 0.0452 | lr 8.06e-06 | gn 0.11 | 325 img/s
+  ep82 step 2000/2398 | loss_w 0.3192 raw 0.0452 | lr 7.99e-06 | gn 0.11 | 325 img/s
+  ep82 step 2200/2398 | loss_w 0.3188 raw 0.0453 | lr 7.92e-06 | gn 0.11 | 325 img/s
+epoch  82/100 | train 0.3186 | val 0.3096 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep83 step 200/2398 | loss_w 0.3163 raw 0.0450 | lr 7.78e-06 | gn 0.11 | 324 img/s
+  ep83 step 400/2398 | loss_w 0.3178 raw 0.0458 | lr 7.71e-06 | gn 0.11 | 324 img/s
+  ep83 step 600/2398 | loss_w 0.3172 raw 0.0457 | lr 7.64e-06 | gn 0.11 | 325 img/s
+  ep83 step 800/2398 | loss_w 0.3178 raw 0.0455 | lr 7.57e-06 | gn 0.11 | 325 img/s
+  ep83 step 1000/2398 | loss_w 0.3176 raw 0.0454 | lr 7.50e-06 | gn 0.11 | 325 img/s
+  ep83 step 1200/2398 | loss_w 0.3178 raw 0.0453 | lr 7.43e-06 | gn 0.11 | 325 img/s
+  ep83 step 1400/2398 | loss_w 0.3180 raw 0.0453 | lr 7.36e-06 | gn 0.11 | 325 img/s
+  ep83 step 1600/2398 | loss_w 0.3185 raw 0.0453 | lr 7.29e-06 | gn 0.11 | 325 img/s
+  ep83 step 1800/2398 | loss_w 0.3188 raw 0.0453 | lr 7.22e-06 | gn 0.11 | 325 img/s
+  ep83 step 2000/2398 | loss_w 0.3186 raw 0.0453 | lr 7.15e-06 | gn 0.11 | 325 img/s
+  ep83 step 2200/2398 | loss_w 0.3184 raw 0.0453 | lr 7.09e-06 | gn 0.11 | 325 img/s
+epoch  83/100 | train 0.3184 | val 0.3096 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep84 step 200/2398 | loss_w 0.3184 raw 0.0451 | lr 6.95e-06 | gn 0.11 | 324 img/s
+  ep84 step 400/2398 | loss_w 0.3180 raw 0.0448 | lr 6.89e-06 | gn 0.11 | 324 img/s
+  ep84 step 600/2398 | loss_w 0.3184 raw 0.0448 | lr 6.82e-06 | gn 0.11 | 324 img/s
+  ep84 step 800/2398 | loss_w 0.3181 raw 0.0450 | lr 6.75e-06 | gn 0.11 | 325 img/s
+  ep84 step 1000/2398 | loss_w 0.3186 raw 0.0450 | lr 6.69e-06 | gn 0.11 | 325 img/s
+  ep84 step 1200/2398 | loss_w 0.3184 raw 0.0452 | lr 6.62e-06 | gn 0.11 | 325 img/s
+  ep84 step 1400/2398 | loss_w 0.3182 raw 0.0452 | lr 6.56e-06 | gn 0.11 | 325 img/s
+  ep84 step 1600/2398 | loss_w 0.3182 raw 0.0453 | lr 6.49e-06 | gn 0.11 | 325 img/s
+  ep84 step 1800/2398 | loss_w 0.3182 raw 0.0454 | lr 6.43e-06 | gn 0.11 | 325 img/s
+  ep84 step 2000/2398 | loss_w 0.3182 raw 0.0453 | lr 6.36e-06 | gn 0.11 | 325 img/s
+  ep84 step 2200/2398 | loss_w 0.3185 raw 0.0453 | lr 6.30e-06 | gn 0.11 | 325 img/s
+epoch  84/100 | train 0.3184 | val 0.3096 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep85 step 200/2398 | loss_w 0.3171 raw 0.0454 | lr 6.17e-06 | gn 0.11 | 324 img/s
+  ep85 step 400/2398 | loss_w 0.3195 raw 0.0452 | lr 6.11e-06 | gn 0.11 | 324 img/s
+  ep85 step 600/2398 | loss_w 0.3187 raw 0.0450 | lr 6.05e-06 | gn 0.11 | 325 img/s
+  ep85 step 800/2398 | loss_w 0.3188 raw 0.0449 | lr 5.98e-06 | gn 0.11 | 325 img/s
+  ep85 step 1000/2398 | loss_w 0.3192 raw 0.0449 | lr 5.92e-06 | gn 0.11 | 325 img/s
+  ep85 step 1200/2398 | loss_w 0.3192 raw 0.0450 | lr 5.86e-06 | gn 0.11 | 325 img/s
+  ep85 step 1400/2398 | loss_w 0.3193 raw 0.0450 | lr 5.80e-06 | gn 0.11 | 325 img/s
+  ep85 step 1600/2398 | loss_w 0.3192 raw 0.0450 | lr 5.74e-06 | gn 0.11 | 325 img/s
+  ep85 step 1800/2398 | loss_w 0.3189 raw 0.0451 | lr 5.68e-06 | gn 0.11 | 325 img/s
+  ep85 step 2000/2398 | loss_w 0.3187 raw 0.0452 | lr 5.61e-06 | gn 0.11 | 325 img/s
+  ep85 step 2200/2398 | loss_w 0.3187 raw 0.0451 | lr 5.55e-06 | gn 0.11 | 325 img/s
+epoch  85/100 | train 0.3186 | val 0.3096 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.403 (adv 0.462) | CSI@1 0.434 (adv 0.369) | CSI@8 0.030 (adv 0.031) | CRPS 0.291 (adv 0.462) | PSD 2-8km 0.96
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep86 step 200/2398 | loss_w 0.3181 raw 0.0453 | lr 5.44e-06 | gn 0.11 | 325 img/s
+  ep86 step 400/2398 | loss_w 0.3199 raw 0.0451 | lr 5.38e-06 | gn 0.11 | 325 img/s
+  ep86 step 600/2398 | loss_w 0.3197 raw 0.0452 | lr 5.32e-06 | gn 0.11 | 325 img/s
+  ep86 step 800/2398 | loss_w 0.3188 raw 0.0453 | lr 5.26e-06 | gn 0.11 | 325 img/s
+  ep86 step 1000/2398 | loss_w 0.3189 raw 0.0453 | lr 5.20e-06 | gn 0.11 | 325 img/s
+  ep86 step 1200/2398 | loss_w 0.3187 raw 0.0454 | lr 5.14e-06 | gn 0.11 | 325 img/s
+  ep86 step 1400/2398 | loss_w 0.3191 raw 0.0454 | lr 5.08e-06 | gn 0.11 | 325 img/s
+  ep86 step 1600/2398 | loss_w 0.3187 raw 0.0453 | lr 5.03e-06 | gn 0.11 | 325 img/s
+  ep86 step 1800/2398 | loss_w 0.3188 raw 0.0454 | lr 4.97e-06 | gn 0.11 | 325 img/s
+  ep86 step 2000/2398 | loss_w 0.3188 raw 0.0454 | lr 4.91e-06 | gn 0.11 | 325 img/s
+  ep86 step 2200/2398 | loss_w 0.3185 raw 0.0453 | lr 4.85e-06 | gn 0.11 | 325 img/s
+epoch  86/100 | train 0.3186 | val 0.3096 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep87 step 200/2398 | loss_w 0.3160 raw 0.0445 | lr 4.74e-06 | gn 0.10 | 324 img/s
+  ep87 step 400/2398 | loss_w 0.3177 raw 0.0451 | lr 4.69e-06 | gn 0.10 | 325 img/s
+  ep87 step 600/2398 | loss_w 0.3170 raw 0.0452 | lr 4.63e-06 | gn 0.10 | 325 img/s
+  ep87 step 800/2398 | loss_w 0.3173 raw 0.0453 | lr 4.58e-06 | gn 0.10 | 325 img/s
+  ep87 step 1000/2398 | loss_w 0.3178 raw 0.0455 | lr 4.52e-06 | gn 0.10 | 325 img/s
+  ep87 step 1200/2398 | loss_w 0.3175 raw 0.0455 | lr 4.47e-06 | gn 0.10 | 325 img/s
+  ep87 step 1400/2398 | loss_w 0.3177 raw 0.0456 | lr 4.41e-06 | gn 0.10 | 325 img/s
+  ep87 step 1600/2398 | loss_w 0.3177 raw 0.0456 | lr 4.36e-06 | gn 0.10 | 325 img/s
+  ep87 step 1800/2398 | loss_w 0.3178 raw 0.0455 | lr 4.30e-06 | gn 0.10 | 325 img/s
+  ep87 step 2000/2398 | loss_w 0.3179 raw 0.0455 | lr 4.25e-06 | gn 0.10 | 325 img/s
+  ep87 step 2200/2398 | loss_w 0.3180 raw 0.0454 | lr 4.20e-06 | gn 0.10 | 325 img/s
+epoch  87/100 | train 0.3179 | val 0.3096 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep88 step 200/2398 | loss_w 0.3152 raw 0.0451 | lr 4.09e-06 | gn 0.10 | 324 img/s
+  ep88 step 400/2398 | loss_w 0.3155 raw 0.0452 | lr 4.04e-06 | gn 0.10 | 325 img/s
+  ep88 step 600/2398 | loss_w 0.3171 raw 0.0453 | lr 3.99e-06 | gn 0.10 | 325 img/s
+  ep88 step 800/2398 | loss_w 0.3178 raw 0.0454 | lr 3.94e-06 | gn 0.10 | 325 img/s
+  ep88 step 1000/2398 | loss_w 0.3183 raw 0.0454 | lr 3.89e-06 | gn 0.10 | 325 img/s
+  ep88 step 1200/2398 | loss_w 0.3185 raw 0.0454 | lr 3.84e-06 | gn 0.10 | 325 img/s
+  ep88 step 1400/2398 | loss_w 0.3184 raw 0.0455 | lr 3.79e-06 | gn 0.10 | 325 img/s
+  ep88 step 1600/2398 | loss_w 0.3187 raw 0.0456 | lr 3.74e-06 | gn 0.10 | 325 img/s
+  ep88 step 1800/2398 | loss_w 0.3189 raw 0.0456 | lr 3.69e-06 | gn 0.10 | 325 img/s
+  ep88 step 2000/2398 | loss_w 0.3188 raw 0.0455 | lr 3.64e-06 | gn 0.10 | 325 img/s
+  ep88 step 2200/2398 | loss_w 0.3187 raw 0.0455 | lr 3.59e-06 | gn 0.10 | 325 img/s
+epoch  88/100 | train 0.3187 | val 0.3096 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep89 step 200/2398 | loss_w 0.3185 raw 0.0456 | lr 3.49e-06 | gn 0.10 | 324 img/s
+  ep89 step 400/2398 | loss_w 0.3201 raw 0.0455 | lr 3.44e-06 | gn 0.10 | 324 img/s
+  ep89 step 600/2398 | loss_w 0.3187 raw 0.0453 | lr 3.40e-06 | gn 0.10 | 324 img/s
+  ep89 step 800/2398 | loss_w 0.3185 raw 0.0453 | lr 3.35e-06 | gn 0.10 | 324 img/s
+  ep89 step 1000/2398 | loss_w 0.3187 raw 0.0452 | lr 3.30e-06 | gn 0.10 | 324 img/s
+  ep89 step 1200/2398 | loss_w 0.3183 raw 0.0452 | lr 3.25e-06 | gn 0.10 | 324 img/s
+  ep89 step 1400/2398 | loss_w 0.3184 raw 0.0451 | lr 3.21e-06 | gn 0.10 | 324 img/s
+  ep89 step 1600/2398 | loss_w 0.3177 raw 0.0452 | lr 3.16e-06 | gn 0.10 | 325 img/s
+  ep89 step 1800/2398 | loss_w 0.3180 raw 0.0452 | lr 3.12e-06 | gn 0.10 | 325 img/s
+  ep89 step 2000/2398 | loss_w 0.3182 raw 0.0452 | lr 3.07e-06 | gn 0.10 | 324 img/s
+  ep89 step 2200/2398 | loss_w 0.3181 raw 0.0452 | lr 3.03e-06 | gn 0.10 | 324 img/s
+epoch  89/100 | train 0.3183 | val 0.3096 (raw 0.0444) | 473s | 324 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep90 step 200/2398 | loss_w 0.3184 raw 0.0449 | lr 2.94e-06 | gn 0.10 | 324 img/s
+  ep90 step 400/2398 | loss_w 0.3191 raw 0.0450 | lr 2.89e-06 | gn 0.10 | 324 img/s
+  ep90 step 600/2398 | loss_w 0.3181 raw 0.0451 | lr 2.85e-06 | gn 0.10 | 324 img/s
+  ep90 step 800/2398 | loss_w 0.3180 raw 0.0450 | lr 2.80e-06 | gn 0.10 | 325 img/s
+  ep90 step 1000/2398 | loss_w 0.3178 raw 0.0453 | lr 2.76e-06 | gn 0.10 | 325 img/s
+  ep90 step 1200/2398 | loss_w 0.3177 raw 0.0453 | lr 2.72e-06 | gn 0.10 | 325 img/s
+  ep90 step 1400/2398 | loss_w 0.3179 raw 0.0452 | lr 2.68e-06 | gn 0.10 | 325 img/s
+  ep90 step 1600/2398 | loss_w 0.3180 raw 0.0453 | lr 2.63e-06 | gn 0.10 | 325 img/s
+  ep90 step 1800/2398 | loss_w 0.3180 raw 0.0451 | lr 2.59e-06 | gn 0.10 | 325 img/s
+  ep90 step 2000/2398 | loss_w 0.3181 raw 0.0453 | lr 2.55e-06 | gn 0.10 | 325 img/s
+  ep90 step 2200/2398 | loss_w 0.3182 raw 0.0452 | lr 2.51e-06 | gn 0.10 | 325 img/s
+epoch  90/100 | train 0.3183 | val 0.3096 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.401 (adv 0.462) | CSI@1 0.431 (adv 0.369) | CSI@8 0.023 (adv 0.031) | CRPS 0.291 (adv 0.462) | PSD 2-8km 0.96
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep91 step 200/2398 | loss_w 0.3177 raw 0.0463 | lr 2.43e-06 | gn 0.10 | 324 img/s
+  ep91 step 400/2398 | loss_w 0.3173 raw 0.0461 | lr 2.39e-06 | gn 0.09 | 324 img/s
+  ep91 step 600/2398 | loss_w 0.3180 raw 0.0457 | lr 2.35e-06 | gn 0.10 | 325 img/s
+  ep91 step 800/2398 | loss_w 0.3180 raw 0.0455 | lr 2.31e-06 | gn 0.10 | 325 img/s
+  ep91 step 1000/2398 | loss_w 0.3181 raw 0.0455 | lr 2.27e-06 | gn 0.10 | 325 img/s
+  ep91 step 1200/2398 | loss_w 0.3185 raw 0.0454 | lr 2.23e-06 | gn 0.10 | 325 img/s
+  ep91 step 1400/2398 | loss_w 0.3189 raw 0.0455 | lr 2.19e-06 | gn 0.10 | 325 img/s
+  ep91 step 1600/2398 | loss_w 0.3188 raw 0.0456 | lr 2.15e-06 | gn 0.10 | 325 img/s
+  ep91 step 1800/2398 | loss_w 0.3186 raw 0.0455 | lr 2.11e-06 | gn 0.10 | 325 img/s
+  ep91 step 2000/2398 | loss_w 0.3187 raw 0.0455 | lr 2.08e-06 | gn 0.10 | 325 img/s
+  ep91 step 2200/2398 | loss_w 0.3189 raw 0.0455 | lr 2.04e-06 | gn 0.10 | 325 img/s
+epoch  91/100 | train 0.3187 | val 0.3096 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep92 step 200/2398 | loss_w 0.3202 raw 0.0453 | lr 1.97e-06 | gn 0.09 | 323 img/s
+  ep92 step 400/2398 | loss_w 0.3200 raw 0.0455 | lr 1.93e-06 | gn 0.09 | 324 img/s
+  ep92 step 600/2398 | loss_w 0.3192 raw 0.0456 | lr 1.89e-06 | gn 0.09 | 324 img/s
+  ep92 step 800/2398 | loss_w 0.3190 raw 0.0457 | lr 1.86e-06 | gn 0.09 | 325 img/s
+  ep92 step 1000/2398 | loss_w 0.3192 raw 0.0455 | lr 1.82e-06 | gn 0.09 | 325 img/s
+  ep92 step 1200/2398 | loss_w 0.3191 raw 0.0451 | lr 1.79e-06 | gn 0.09 | 325 img/s
+  ep92 step 1400/2398 | loss_w 0.3188 raw 0.0452 | lr 1.75e-06 | gn 0.09 | 325 img/s
+  ep92 step 1600/2398 | loss_w 0.3188 raw 0.0452 | lr 1.72e-06 | gn 0.09 | 325 img/s
+  ep92 step 1800/2398 | loss_w 0.3189 raw 0.0451 | lr 1.68e-06 | gn 0.09 | 325 img/s
+  ep92 step 2000/2398 | loss_w 0.3188 raw 0.0451 | lr 1.65e-06 | gn 0.09 | 325 img/s
+  ep92 step 2200/2398 | loss_w 0.3186 raw 0.0451 | lr 1.62e-06 | gn 0.09 | 325 img/s
+epoch  92/100 | train 0.3184 | val 0.3096 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3096) -> diff_best.pt
+  ep93 step 200/2398 | loss_w 0.3161 raw 0.0455 | lr 1.55e-06 | gn 0.09 | 324 img/s
+  ep93 step 400/2398 | loss_w 0.3179 raw 0.0459 | lr 1.52e-06 | gn 0.09 | 325 img/s
+  ep93 step 600/2398 | loss_w 0.3180 raw 0.0459 | lr 1.49e-06 | gn 0.09 | 325 img/s
+  ep93 step 800/2398 | loss_w 0.3182 raw 0.0461 | lr 1.46e-06 | gn 0.09 | 325 img/s
+  ep93 step 1000/2398 | loss_w 0.3183 raw 0.0458 | lr 1.42e-06 | gn 0.09 | 325 img/s
+  ep93 step 1200/2398 | loss_w 0.3187 raw 0.0457 | lr 1.39e-06 | gn 0.09 | 325 img/s
+  ep93 step 1400/2398 | loss_w 0.3187 raw 0.0456 | lr 1.36e-06 | gn 0.09 | 325 img/s
+  ep93 step 1600/2398 | loss_w 0.3187 raw 0.0457 | lr 1.33e-06 | gn 0.09 | 325 img/s
+  ep93 step 1800/2398 | loss_w 0.3187 raw 0.0456 | lr 1.30e-06 | gn 0.09 | 325 img/s
+  ep93 step 2000/2398 | loss_w 0.3185 raw 0.0456 | lr 1.27e-06 | gn 0.09 | 325 img/s
+  ep93 step 2200/2398 | loss_w 0.3183 raw 0.0455 | lr 1.24e-06 | gn 0.09 | 325 img/s
+epoch  93/100 | train 0.3183 | val 0.3095 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3095) -> diff_best.pt
+  ep94 step 200/2398 | loss_w 0.3187 raw 0.0453 | lr 1.19e-06 | gn 0.09 | 324 img/s
+  ep94 step 400/2398 | loss_w 0.3179 raw 0.0453 | lr 1.16e-06 | gn 0.09 | 324 img/s
+  ep94 step 600/2398 | loss_w 0.3176 raw 0.0451 | lr 1.13e-06 | gn 0.09 | 325 img/s
+  ep94 step 800/2398 | loss_w 0.3183 raw 0.0454 | lr 1.10e-06 | gn 0.09 | 325 img/s
+  ep94 step 1000/2398 | loss_w 0.3184 raw 0.0453 | lr 1.07e-06 | gn 0.09 | 325 img/s
+  ep94 step 1200/2398 | loss_w 0.3185 raw 0.0453 | lr 1.05e-06 | gn 0.09 | 325 img/s
+  ep94 step 1400/2398 | loss_w 0.3182 raw 0.0451 | lr 1.02e-06 | gn 0.09 | 325 img/s
+  ep94 step 1600/2398 | loss_w 0.3185 raw 0.0451 | lr 9.95e-07 | gn 0.09 | 325 img/s
+  ep94 step 1800/2398 | loss_w 0.3186 raw 0.0451 | lr 9.69e-07 | gn 0.09 | 325 img/s
+  ep94 step 2000/2398 | loss_w 0.3184 raw 0.0451 | lr 9.43e-07 | gn 0.09 | 325 img/s
+  ep94 step 2200/2398 | loss_w 0.3183 raw 0.0451 | lr 9.18e-07 | gn 0.09 | 325 img/s
+epoch  94/100 | train 0.3185 | val 0.3095 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3095) -> diff_best.pt
+  ep95 step 200/2398 | loss_w 0.3197 raw 0.0458 | lr 8.69e-07 | gn 0.09 | 324 img/s
+  ep95 step 400/2398 | loss_w 0.3173 raw 0.0458 | lr 8.44e-07 | gn 0.09 | 325 img/s
+  ep95 step 600/2398 | loss_w 0.3188 raw 0.0459 | lr 8.20e-07 | gn 0.09 | 325 img/s
+  ep95 step 800/2398 | loss_w 0.3179 raw 0.0455 | lr 7.97e-07 | gn 0.09 | 325 img/s
+  ep95 step 1000/2398 | loss_w 0.3176 raw 0.0458 | lr 7.74e-07 | gn 0.09 | 325 img/s
+  ep95 step 1200/2398 | loss_w 0.3177 raw 0.0458 | lr 7.51e-07 | gn 0.09 | 325 img/s
+  ep95 step 1400/2398 | loss_w 0.3176 raw 0.0457 | lr 7.28e-07 | gn 0.09 | 325 img/s
+  ep95 step 1600/2398 | loss_w 0.3178 raw 0.0456 | lr 7.06e-07 | gn 0.09 | 325 img/s
+  ep95 step 1800/2398 | loss_w 0.3177 raw 0.0456 | lr 6.84e-07 | gn 0.09 | 325 img/s
+  ep95 step 2000/2398 | loss_w 0.3181 raw 0.0457 | lr 6.63e-07 | gn 0.09 | 325 img/s
+  ep95 step 2200/2398 | loss_w 0.3180 raw 0.0456 | lr 6.41e-07 | gn 0.09 | 325 img/s
+epoch  95/100 | train 0.3179 | val 0.3095 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.400 (adv 0.462) | CSI@1 0.431 (adv 0.369) | CSI@8 0.026 (adv 0.031) | CRPS 0.290 (adv 0.462) | PSD 2-8km 0.95
+  new best (val loss_w 0.3095) -> diff_best.pt
+  ep96 step 200/2398 | loss_w 0.3188 raw 0.0453 | lr 6.00e-07 | gn 0.09 | 324 img/s
+  ep96 step 400/2398 | loss_w 0.3192 raw 0.0451 | lr 5.80e-07 | gn 0.08 | 324 img/s
+  ep96 step 600/2398 | loss_w 0.3187 raw 0.0452 | lr 5.60e-07 | gn 0.08 | 324 img/s
+  ep96 step 800/2398 | loss_w 0.3190 raw 0.0451 | lr 5.41e-07 | gn 0.08 | 325 img/s
+  ep96 step 1000/2398 | loss_w 0.3186 raw 0.0452 | lr 5.22e-07 | gn 0.09 | 325 img/s
+  ep96 step 1200/2398 | loss_w 0.3184 raw 0.0451 | lr 5.03e-07 | gn 0.08 | 325 img/s
+  ep96 step 1400/2398 | loss_w 0.3185 raw 0.0451 | lr 4.85e-07 | gn 0.08 | 325 img/s
+  ep96 step 1600/2398 | loss_w 0.3187 raw 0.0452 | lr 4.66e-07 | gn 0.08 | 325 img/s
+  ep96 step 1800/2398 | loss_w 0.3184 raw 0.0452 | lr 4.49e-07 | gn 0.08 | 325 img/s
+  ep96 step 2000/2398 | loss_w 0.3182 raw 0.0452 | lr 4.31e-07 | gn 0.08 | 325 img/s
+  ep96 step 2200/2398 | loss_w 0.3182 raw 0.0453 | lr 4.14e-07 | gn 0.08 | 325 img/s
+epoch  96/100 | train 0.3185 | val 0.3095 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3095) -> diff_best.pt
+  ep97 step 200/2398 | loss_w 0.3169 raw 0.0448 | lr 3.81e-07 | gn 0.08 | 325 img/s
+  ep97 step 400/2398 | loss_w 0.3177 raw 0.0456 | lr 3.65e-07 | gn 0.08 | 324 img/s
+  ep97 step 600/2398 | loss_w 0.3178 raw 0.0455 | lr 3.50e-07 | gn 0.08 | 325 img/s
+  ep97 step 800/2398 | loss_w 0.3176 raw 0.0456 | lr 3.34e-07 | gn 0.08 | 325 img/s
+  ep97 step 1000/2398 | loss_w 0.3180 raw 0.0456 | lr 3.19e-07 | gn 0.08 | 325 img/s
+  ep97 step 1200/2398 | loss_w 0.3183 raw 0.0454 | lr 3.04e-07 | gn 0.08 | 325 img/s
+  ep97 step 1400/2398 | loss_w 0.3184 raw 0.0454 | lr 2.90e-07 | gn 0.08 | 325 img/s
+  ep97 step 1600/2398 | loss_w 0.3181 raw 0.0453 | lr 2.76e-07 | gn 0.08 | 325 img/s
+  ep97 step 1800/2398 | loss_w 0.3183 raw 0.0452 | lr 2.63e-07 | gn 0.08 | 325 img/s
+  ep97 step 2000/2398 | loss_w 0.3184 raw 0.0451 | lr 2.49e-07 | gn 0.08 | 325 img/s
+  ep97 step 2200/2398 | loss_w 0.3182 raw 0.0452 | lr 2.36e-07 | gn 0.08 | 325 img/s
+epoch  97/100 | train 0.3184 | val 0.3095 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  ep98 step 200/2398 | loss_w 0.3190 raw 0.0440 | lr 2.12e-07 | gn 0.09 | 325 img/s
+  ep98 step 400/2398 | loss_w 0.3181 raw 0.0445 | lr 2.00e-07 | gn 0.08 | 324 img/s
+  ep98 step 600/2398 | loss_w 0.3178 raw 0.0447 | lr 1.88e-07 | gn 0.08 | 325 img/s
+  ep98 step 800/2398 | loss_w 0.3178 raw 0.0447 | lr 1.77e-07 | gn 0.08 | 325 img/s
+  ep98 step 1000/2398 | loss_w 0.3179 raw 0.0448 | lr 1.66e-07 | gn 0.08 | 325 img/s
+  ep98 step 1200/2398 | loss_w 0.3179 raw 0.0451 | lr 1.55e-07 | gn 0.08 | 325 img/s
+  ep98 step 1400/2398 | loss_w 0.3180 raw 0.0451 | lr 1.45e-07 | gn 0.08 | 325 img/s
+  ep98 step 1600/2398 | loss_w 0.3178 raw 0.0452 | lr 1.35e-07 | gn 0.08 | 325 img/s
+  ep98 step 1800/2398 | loss_w 0.3181 raw 0.0452 | lr 1.26e-07 | gn 0.08 | 325 img/s
+  ep98 step 2000/2398 | loss_w 0.3182 raw 0.0452 | lr 1.17e-07 | gn 0.08 | 325 img/s
+  ep98 step 2200/2398 | loss_w 0.3182 raw 0.0453 | lr 1.08e-07 | gn 0.08 | 325 img/s
+epoch  98/100 | train 0.3182 | val 0.3095 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  new best (val loss_w 0.3095) -> diff_best.pt
+  ep99 step 200/2398 | loss_w 0.3178 raw 0.0455 | lr 9.14e-08 | gn 0.08 | 324 img/s
+  ep99 step 400/2398 | loss_w 0.3172 raw 0.0455 | lr 8.36e-08 | gn 0.08 | 324 img/s
+  ep99 step 600/2398 | loss_w 0.3176 raw 0.0456 | lr 7.62e-08 | gn 0.08 | 324 img/s
+  ep99 step 800/2398 | loss_w 0.3173 raw 0.0455 | lr 6.91e-08 | gn 0.08 | 325 img/s
+  ep99 step 1000/2398 | loss_w 0.3174 raw 0.0455 | lr 6.24e-08 | gn 0.08 | 325 img/s
+  ep99 step 1200/2398 | loss_w 0.3175 raw 0.0456 | lr 5.60e-08 | gn 0.08 | 325 img/s
+  ep99 step 1400/2398 | loss_w 0.3177 raw 0.0456 | lr 4.99e-08 | gn 0.08 | 325 img/s
+  ep99 step 1600/2398 | loss_w 0.3179 raw 0.0455 | lr 4.42e-08 | gn 0.08 | 325 img/s
+  ep99 step 1800/2398 | loss_w 0.3180 raw 0.0455 | lr 3.89e-08 | gn 0.08 | 325 img/s
+  ep99 step 2000/2398 | loss_w 0.3180 raw 0.0456 | lr 3.38e-08 | gn 0.08 | 325 img/s
+  ep99 step 2200/2398 | loss_w 0.3179 raw 0.0456 | lr 2.92e-08 | gn 0.08 | 325 img/s
+epoch  99/100 | train 0.3181 | val 0.3095 (raw 0.0444) | 472s | 325 img/s | GPU 14.1 GB
+  ep100 step 200/2398 | loss_w 0.3186 raw 0.0461 | lr 2.09e-08 | gn 0.08 | 323 img/s
+  ep100 step 400/2398 | loss_w 0.3178 raw 0.0457 | lr 1.73e-08 | gn 0.08 | 324 img/s
+  ep100 step 600/2398 | loss_w 0.3173 raw 0.0456 | lr 1.40e-08 | gn 0.08 | 324 img/s
+  ep100 step 800/2398 | loss_w 0.3175 raw 0.0457 | lr 1.11e-08 | gn 0.08 | 324 img/s
+  ep100 step 1000/2398 | loss_w 0.3178 raw 0.0456 | lr 8.47e-09 | gn 0.08 | 325 img/s
+  ep100 step 1200/2398 | loss_w 0.3178 raw 0.0454 | lr 6.22e-09 | gn 0.08 | 325 img/s
+  ep100 step 1400/2398 | loss_w 0.3179 raw 0.0454 | lr 4.32e-09 | gn 0.08 | 325 img/s
+  ep100 step 1600/2398 | loss_w 0.3182 raw 0.0454 | lr 2.76e-09 | gn 0.08 | 325 img/s
+  ep100 step 1800/2398 | loss_w 0.3184 raw 0.0455 | lr 1.55e-09 | gn 0.08 | 325 img/s
+  ep100 step 2000/2398 | loss_w 0.3186 raw 0.0455 | lr 6.89e-10 | gn 0.08 | 325 img/s
+  ep100 step 2200/2398 | loss_w 0.3185 raw 0.0455 | lr 1.71e-10 | gn 0.08 | 325 img/s
+epoch 100/100 | train 0.3183 | val 0.3095 (raw 0.0444) | 473s | 325 img/s | GPU 14.1 GB
+  sampled: MAE 0.400 (adv 0.462) | CSI@1 0.431 (adv 0.369) | CSI@8 0.027 (adv 0.031) | CRPS 0.290 (adv 0.462) | PSD 2-8km 0.96
+
+completed: total 822.1 min | best val loss_w 0.3095 (ep98) | DONE written -> the sbatch chain will stop

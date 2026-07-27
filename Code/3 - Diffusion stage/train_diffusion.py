@@ -121,8 +121,14 @@ class LatentRows(Dataset):
         return torch.from_numpy(np.asarray(self._mm[i], dtype="float32"))
 
 
-def load_pack_meta(latents_dir, split):
-    p = os.path.join(latents_dir, f"{split}_latents_meta.json")
+def shard_suffix(lead=None):
+    """'' for a single-lead (+60) pack, '_L45' for a multi-lead shard. Must match
+    pack_latents.shard_names."""
+    return "" if lead is None else f"_L{lead:02d}"
+
+
+def load_pack_meta(latents_dir, split, lead=None):
+    p = os.path.join(latents_dir, f"{split}_latents{shard_suffix(lead)}_meta.json")
     if not os.path.exists(p):
         raise SystemExit(f"ERROR: {p} not found. Run pack_latents.py first "
                          "(and check DISS_SCRATCH / --latents-dir).")

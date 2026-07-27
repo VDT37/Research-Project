@@ -40,8 +40,9 @@ Outputs (in --out, default $DISS_SCRATCH/latents/):
     {split}_latents_meta.json   layout, latent_scale, sigma_data, VAE sha
     {split}_latents_index.json  the exact npz file list (row provenance)
 """
-import os, glob, json, time, getpass, hashlib, argparse
+import os, glob, json, time, getpass, hashlib, argparse, resource
 import multiprocessing as mp
+from collections import deque
 from concurrent.futures import ProcessPoolExecutor
 
 import numpy as np
@@ -96,6 +97,32 @@ def load_crop_dbr(path):
     return out
 
 
+def rss_gb():
+    """Peak RSS of this process, GiB (Linux ru_maxrss is in KiB)."""
+    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / (1024.0 ** 2)
+
+
+def parse_lead(path):
+    """Lead (minutes) from a multi-lead crop filename ..._L45.npz, else None.
+    Mirrors the naming in build_advection_prior.py."""
+    base = os.path.basename(path)
+    if "_L" in base:
+        try:
+            return int(base.rsplit("_L", 1)[-1].split(".")[0])
+        except ValueError:
+            return None
+    return None
+
+
+def shard_names(out_dir, split, lead):
+    """Output paths. lead=None keeps the original single-lead names, so the
+    existing +60 packs stay valid and train_diffusion.py needs no change."""
+    tag = "" if lead is None else f"_L{lead:02d}"
+    return (os.path.join(out_dir, f"{split}_latents{tag}.npy"),
+            os.path.join(out_dir, f"{split}_latents{tag}_meta.json"),
+            os.path.join(out_dir, f"{split}_latents{tag}_index.json"))
+
+
 def load_vae(ckpt_path, device):
     ck = torch.load(ckpt_path, map_location=device)
     for k in ("model", "config", "norm", "latent_scale"):
@@ -143,34 +170,36 @@ def spot_check(npy_path, files, vae, mean, std, latent_scale, device, zc, n=8, s
     return bad == 0
 
 
-def pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, device):
-    files = sorted(glob.glob(os.path.join(args.root, split, "*", "*.npz")))
+def pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, device,
+               lead=None, files=None):
+    if files is None:
+        files = sorted(glob.glob(os.path.join(args.root, split, "*", "*.npz")))
     if not files:
         print(f"[{split}] no crops found under {os.path.join(args.root, split)}, skipping")
         return
+    tag = split if lead is None else f"{split} +{lead}min"
     nch = len(FIELDS) * zc
-    npy    = os.path.join(args.out, f"{split}_latents.npy")
-    meta_p = os.path.join(args.out, f"{split}_latents_meta.json")
+    npy, meta_p, index_p = shard_names(args.out, split, lead)
 
     if os.path.exists(npy) and os.path.exists(meta_p) and not args.force:
         try:
             meta = json.load(open(meta_p))
         except (json.JSONDecodeError, ValueError):
-            print(f"[{split}] {meta_p} is corrupt (interrupted pack?): repacking")
+            print(f"[{tag}] {meta_p} is corrupt (interrupted pack?): repacking")
             meta = {}
         n_disk = np.load(npy, mmap_mode="r").shape[0]
         if meta.get("n_files") == len(files) and n_disk == len(files) \
                 and meta.get("vae_sha256") == vae_sha:
-            print(f"[{split}] already packed ({len(files)} rows, same VAE), "
+            print(f"[{tag}] already packed ({len(files)} rows, same VAE), "
                   "skipping (use --force to redo)")
             return
-        print(f"[{split}] existing pack is stale (meta n {meta.get('n_files')}, "
+        print(f"[{tag}] existing pack is stale (meta n {meta.get('n_files')}, "
               f"disk {n_disk}, expected {len(files)}, "
               f"vae match {meta.get('vae_sha256') == vae_sha}): repacking")
 
     part = npy + ".part"
     gb = len(files) * nch * HL * WL * 2 / 1e9
-    print(f"[{split}] encoding {len(files)} crops -> ({len(files)}, {nch}, {HL}, {WL}) "
+    print(f"[{tag}] encoding {len(files)} crops -> ({len(files)}, {nch}, {HL}, {WL}) "
           f"float16 ({gb:.1f} GB) on {device} ...", flush=True)
     mm = np.lib.format.open_memmap(part, mode="w+", dtype="float16",
                                    shape=(len(files), nch, HL, WL))
@@ -181,9 +210,17 @@ def pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, d
 
     ctx = mp.get_context("fork")
     t0, done, buf, i0 = time.time(), 0, [], 0
+    since_sync = 0
+    # Bounded prefetch. ProcessPoolExecutor.map is eager: it submits every file up
+    # front and, because results are yielded in order, holds each completed result
+    # (1.5 MiB per crop) in the parent until consumed. Loaders outrun the single-GPU
+    # encoder, so that queue grew without limit and OOM-killed the job. A sliding
+    # window of submitted futures caps in-flight crops at prefetch * batch, which
+    # bounds this to a few hundred MB regardless of --workers.
+    inflight = max(1, args.prefetch) * args.batch
     with ProcessPoolExecutor(max_workers=args.workers, mp_context=ctx) as ex:
         def flush():
-            nonlocal buf, i0, d_sum, d_sumsq, d_cnt, zy_sum, zy_sumsq
+            nonlocal buf, i0, d_sum, d_sumsq, d_cnt, zy_sum, zy_sumsq, since_sync
             if not buf:
                 return
             z = encode_batch(vae, np.stack(buf), mean, std, latent_scale, device, zc)
@@ -194,16 +231,34 @@ def pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, d
             zy_sum  += float(zy.sum()); zy_sumsq += float((zy * zy).sum())
             mm[i0:i0 + len(buf)] = z.astype("float16")
             i0 += len(buf)
+            since_sync += len(buf)
             buf = []
+            # Written pages stay dirty (unreclaimable) until msync'd, and on Lustre
+            # writeback is deferred, so a long run accumulates tens of GB of dirty
+            # mapping. Syncing periodically keeps them clean and therefore evictable.
+            if since_sync >= args.flush_rows:
+                mm.flush()
+                since_sync = 0
 
-        for arr in ex.map(load_crop_dbr, files, chunksize=8):
+        pending = deque()
+        it = iter(files)
+        for f in it:                                  # prime the window
+            pending.append(ex.submit(load_crop_dbr, f))
+            if len(pending) >= inflight:
+                break
+        while pending:
+            arr = pending.popleft().result()
+            nxt = next(it, None)
+            if nxt is not None:
+                pending.append(ex.submit(load_crop_dbr, nxt))
             buf.append(arr)
             if len(buf) == args.batch:
                 flush()
             done += 1
             if done % 2000 == 0:
-                print(f"  {done}/{len(files)} crops | {done / (time.time() - t0):.0f} crops/s",
-                      flush=True)
+                print(f"  {done}/{len(files)} crops | "
+                      f"{done / (time.time() - t0):.0f} crops/s | "
+                      f"peak RSS {rss_gb():.1f} GiB", flush=True)
         flush()
     mm.flush()
     del mm
@@ -212,11 +267,12 @@ def pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, d
     sigma_data = float(np.sqrt(max(d_sumsq / d_cnt - d_mean ** 2, 0.0)))
     zy_mean = zy_sum / d_cnt
     zy_std = float(np.sqrt(max(zy_sumsq / d_cnt - zy_mean ** 2, 0.0)))
-    print(f"[{split}] latent stats: sigma_data (std of z_y - z_A) = {sigma_data:.4f} "
-          f"| delta mean {d_mean:+.4f} | z_y std {zy_std:.3f}", flush=True)
+    print(f"[{tag}] latent stats: sigma_data (std of z_y - z_A) = {sigma_data:.4f} "
+          f"| delta mean {d_mean:+.4f} | z_y std {zy_std:.3f} "
+          f"| peak RSS {rss_gb():.1f} GiB", flush=True)
 
     if not spot_check(part, files, vae, mean, std, latent_scale, device, zc, n=args.spot):
-        print(f"[{split}] VERIFICATION FAILED: leaving {part} for inspection, "
+        print(f"[{tag}] VERIFICATION FAILED: leaving {part} for inspection, "
               "pack NOT installed", flush=True)
         return
     # Install order matters: the npy is renamed into place FIRST, and the meta
@@ -225,23 +281,28 @@ def pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, d
     # correctly repacks. The reverse order would leave new-meta + old-npy, which
     # would wrongly pass the skip-check after a VAE change (silent corruption).
     os.replace(part, npy)
-    atomic_json(files, os.path.join(args.out, f"{split}_latents_index.json"))
+    atomic_json(files, index_p)
     atomic_json({"n_files": len(files), "n_channels": nch, "h": HL, "w": WL,
                  "dtype": "float16",
                  "channel_layout": "0:4 z_x1, 4:8 z_x2, 8:12 z_x3, 12:16 z_x4, "
                                    "16:20 z_A, 20:24 z_y (zc=4 blocks, files sorted)",
                  "fields": list(FIELDS), "zc": zc,
+                 "lead_min": lead,
                  "latent_scale": latent_scale,
                  "norm": {"mean": mean, "std": std,
                           "dbr_thresh": DBR_THRESH, "dbr_zero": DBR_ZERO},
                  "sigma_data": sigma_data,
                  "delta_mean": d_mean, "zy_std": zy_std,
+                 # raw moments, so a pooled sigma_data across lead shards can be
+                 # recomputed exactly without re-encoding (a lead-conditioned model
+                 # needs ONE sigma_data, and the residual grows with lead time)
+                 "delta_moments": {"sum": d_sum, "sumsq": d_sumsq, "count": d_cnt},
                  "vae_ckpt": os.path.abspath(args.vae),
                  "vae_sha256": vae_sha,
                  "vae_epoch": vae_ck.get("epoch"),
                  "vae_config": vae_ck.get("config")},
                 meta_p, indent=2)
-    print(f"[{split}] done -> {npy} (verified)", flush=True)
+    print(f"[{tag}] done -> {npy} (verified)", flush=True)
 
 
 def main():
@@ -251,7 +312,19 @@ def main():
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--splits", default="train,val")
     ap.add_argument("--batch", type=int, default=16, help="crops per encoder pass (x6 fields)")
-    ap.add_argument("--workers", type=int, default=max(1, (os.cpu_count() or 8) - 4))
+    ap.add_argument("--workers", type=int, default=4,
+                    help="loader processes. The GPU encode caps throughput (~65 crops/s), "
+                         "so 2-4 is enough; more only enlarges the prefetch queue.")
+    ap.add_argument("--prefetch", type=int, default=4,
+                    help="in-flight work, in units of --batch (4 x 16 crops ~= 96 MiB). "
+                         "This is the hard bound that prevents the earlier OOM.")
+    ap.add_argument("--flush-rows", type=int, default=4096,
+                    help="msync the output mapping every N rows, so dirty pages stay "
+                         "bounded (0 = only at the end)")
+    ap.add_argument("--lead", type=int, default=None,
+                    help="pack ONLY this lead (minutes) from a multi-lead cache, into "
+                         "{split}_latents_L<lead>.npy. One job per lead keeps each "
+                         "inside the Orchid wall. Omit to pack every lead found.")
     ap.add_argument("--spot", type=int, default=8, help="spot-check sample size")
     ap.add_argument("--force", action="store_true", help="repack even if present")
     ap.add_argument("--check-only", action="store_true", help="only run the spot checks")
@@ -273,16 +346,36 @@ def main():
 
     for split in args.splits.split(","):
         split = split.strip()
-        if args.check_only:
-            idx_p = os.path.join(args.out, f"{split}_latents_index.json")
-            npy = os.path.join(args.out, f"{split}_latents.npy")
-            if not (os.path.exists(idx_p) and os.path.exists(npy)):
-                print(f"[{split}] no pack to check")
+        all_files = sorted(glob.glob(os.path.join(args.root, split, "*", "*.npz")))
+        # Group by lead. A legacy single-lead (+60) cache has untagged filenames and
+        # maps to {None: files}, which keeps the original output names untouched.
+        by_lead = {}
+        for f in all_files:
+            by_lead.setdefault(parse_lead(f), []).append(f)
+        if args.lead is not None:
+            if args.lead not in by_lead:
+                print(f"[{split}] no crops for lead +{args.lead}min under "
+                      f"{os.path.join(args.root, split)} "
+                      f"(found leads: {sorted(k for k in by_lead if k is not None)})")
                 continue
-            files = json.load(open(idx_p))
-            spot_check(npy, files, vae, mean, std, latent_scale, device, zc, n=10)
-        else:
-            pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha, vae_ck, device)
+            by_lead = {args.lead: by_lead[args.lead]}
+        elif len(by_lead) > 1:
+            print(f"[{split}] multi-lead cache: packing one shard per lead "
+                  f"{sorted(k for k in by_lead if k is not None)} sequentially. "
+                  "Use --lead <min> to run them as separate jobs.", flush=True)
+
+        for lead in sorted(by_lead, key=lambda k: (k is not None, k)):
+            files = by_lead[lead]
+            if args.check_only:
+                npy, _, idx_p = shard_names(args.out, split, lead)
+                if not (os.path.exists(idx_p) and os.path.exists(npy)):
+                    print(f"[{split} lead {lead}] no pack to check")
+                    continue
+                spot_check(npy, json.load(open(idx_p)), vae, mean, std,
+                           latent_scale, device, zc, n=10)
+            else:
+                pack_split(split, args, vae, latent_scale, mean, std, zc, vae_sha,
+                           vae_ck, device, lead=lead, files=files)
 
 
 if __name__ == "__main__":

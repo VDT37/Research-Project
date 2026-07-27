@@ -1,0 +1,50 @@
+{
+  "reason": "completed",
+  "epochs_run": 100,
+  "best": 0.3095366189686152,
+  "best_ep": 98,
+  "wall_min": 822.1,
+  "last_sampled": {
+    "mae": 0.4003334571607411,
+    "mae_adv": 0.4621242736466229,
+    "crps": 0.2901079310104251,
+    "crps_adv": 0.4621242736466229,
+    "n_crops": 16,
+    "n_members": 8,
+    "csi_1": 0.4305982935869641,
+    "csi_1_adv": 0.3690965203502591,
+    "csi_8": 0.026709834075273168,
+    "csi_8_adv": 0.03133453561767358,
+    "psd_ratio_2_8km": 0.9550375320167628
+  },
+  "config": {
+    "width": 128,
+    "mults": "1,2,4",
+    "attn": "16",
+    "dropout": 0.0,
+    "cond_mode": "full",
+    "cond_drop": 0.1,
+    "lr": 0.0001,
+    "warmup": 1000,
+    "lr_schedule": "cosine",
+    "batch": 64,
+    "weight_decay": 0.0,
+    "ema_decay": 0.999,
+    "p_mean": -1.2,
+    "p_std": 1.2,
+    "sigma_data": 0.8575485145995007,
+    "latent_scale": 0.7600803698644721,
+    "norm": {
+      "mean": -11.880375862121582,
+      "std": 6.110200881958008
+    },
+    "seed": 0,
+    "epochs": 100,
+    "limit": null,
+    "vae_sha256": "94ca1aa09a22472a9a6b7a303210b865dafc5186b32d9eb3ff90b0ad18f7a823",
+    "git": "489e072",
+    "n_train": 153487,
+    "n_val": 13281,
+    "n_params": 65739652
+  }
+}

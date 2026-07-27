@@ -281,7 +281,7 @@ source ~/miniforge3/bin/activate nowcast
 cd ~/dissertation
 export DISS_SCRATCH=/work/scratch-pw4/$USER/dissertation
 
-python "Code/2 - VAE Stage/pack_latents.py" --vae ~/dissertation_outputs/vae_v2/vae_best.pt --workers 12
+python "Code/2 - VAE Stage/pack_latents.py" --vae ~/dissertation_outputs/vae_v2/vae_best.pt
 ```
 
 ```bash
@@ -294,6 +294,35 @@ and `spot check: 8/8 rows verified against source npz`. The value of
 refuses to start if it looks wrong. Re-running skips complete packs, and a pack
 is automatically invalidated (repacked) if the VAE checkpoint hash changes,
 so retraining the VAE and re-running this script is always safe.
+
+Memory note: do not raise `--workers` above about 4. The GPU encode caps
+throughput near 65 crops/s, so extra loaders cannot go faster, they only enlarge
+the prefetch queue. In-flight work is now hard-bounded at `--prefetch x --batch`
+crops (default 4 x 16, roughly 96 MiB) and the output mapping is msync'd every
+`--flush-rows` rows, which together fixed the OOM described in
+`docs/Latent_Packing_Memory_Analysis.md`. Each progress line prints peak RSS, so
+growth is visible in the log.
+
+Multi-lead (Phase 2): the multi-lead cache (`prior_ml/`) is packed as **one shard
+per lead**, `{split}_latents_L15.npy` and so on, roughly 28 GiB each. Run one job
+per lead so each fits the wall comfortably, and they can queue in parallel:
+
+```bash
+for L in 15 30 45 60; do
+    sbatch --export=ALL,LEAD=$L pack_latents.sbatch     # script passes --lead $LEAD
+done
+```
+
+Add `--lead $LEAD --root $DISS_SCRATCH/prior_ml --vae <retrained vae_best.pt>` to the
+python line for those jobs. Omitting `--lead` packs every lead found sequentially in
+one job, which is simpler but likely exceeds the 3 h wall for four leads. The legacy
++60 cache has untagged filenames and still produces the original
+`{split}_latents.npy`, so the Phase 1 run above is unaffected.
+
+Each shard's meta stores its own `sigma_data` plus raw `delta_moments`, because the
+residual grows with lead time. A lead-conditioned model needs a single **pooled**
+`sigma_data`, which can be computed exactly from those stored moments without
+re-encoding.
 
 ### 6.2 Smoke test (~10 min, interactive GPU)
 
@@ -403,7 +432,47 @@ with a distinct `--out` per configuration, e.g.
 to its own `runs.jsonl`, and every sampled line already carries the advection
 baseline for the comparison the supervisor asked for.
 
-### 6.6 The 24 h wall and long jobs (matters for diffusion)
+### 6.6 Sampling and evaluation (after training)
+
+Two scripts, both reading the EMA weights in `diff_best.pt`. Neither needs the
+trainer to be running.
+
+`sample_diffusion.py` draws ensembles for a few crops and writes the montage
+figure that goes in the report (obs, persistence, advection, ensemble mean,
+members):
+
+```bash
+python "Code/3 - Diffusion stage/sample_diffusion.py" --crops 8 --members 8
+```
+
+`evaluate_diffusion.py` is the full scorecard, streamed so memory does not grow
+with the split. It scores **four** forecasts on identical crops: the ensemble
+mean, the average single member, advection, and persistence.
+
+```bash
+# smoke run first (minutes), then the full split
+python "Code/3 - Diffusion stage/evaluate_diffusion.py" --limit 256
+python "Code/3 - Diffusion stage/evaluate_diffusion.py"
+```
+
+Cost: each crop needs `members x (2 x steps - 1)` UNet passes, so the defaults (8
+members, 25 steps) are about 392 forward passes per crop. A full validation split
+takes hours on an A100, so run it as a batch job with `--time` set generously, and
+always do the `--limit 256` pass first. `--members` and `--steps` trade cost
+against ensemble quality; both are recorded in the output JSON.
+
+Outputs land in `~/dissertation_outputs/diffusion/eval/`:
+`diffusion_eval.json` (the runs-table record), `diffusion_eval.md`
+(paste-ready tables) and `diffusion_eval.png` (rain-rate histogram, PSD, CSI vs
+threshold, reliability diagram, rank histogram, MAE comparison). Use `--tag` to
+keep several configurations side by side, and `--split test` only once, at the end.
+
+Why both `model_mean` and `model_member` are reported: averaging an ensemble damps
+peaks, so ensemble-mean CSI at high thresholds largely measures how often the
+*mean* exceeds the threshold, which understates a generative model. Members do
+produce heavy rain. See `docs/Diffusion_Run1_Results.md` section 4.
+
+### 6.7 The 24 h wall and long jobs (matters for diffusion)
 
 Orchid `orchid` QoS is capped at **24 h** wall time. Diffusion training will
 exceed that, so it must checkpoint and resume across job chunks, exactly like the
@@ -426,7 +495,7 @@ VAE tooling on Exeter already does. Two options:
   completion or early stop, refuses to retrain past it (unless `--ignore-done`),
   and `--resume auto` picks up `diff_last.pt` if one exists. See section 6.3.
 
-### 6.7 Multiple GPUs (optional, for diffusion)
+### 6.8 Multiple GPUs (optional, for diffusion)
 
 An Orchid node has 4 A100s. For the diffusion stage you can request all four and
 use PyTorch DDP to cut wall time roughly 4x:
