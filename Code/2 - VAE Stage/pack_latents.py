@@ -53,7 +53,7 @@ import torch
 from train_vae_v2 import VAE, to_dbr
 
 USER    = getpass.getuser()
-SCRATCH = os.environ.get("DISS_SCRATCH", f"/scratch/{USER}/dissertation")
+SCRATCH = os.environ.get("DISS_SCRATCH", f"/work/scratch-nopw2/{USER}/dissertation")
 PRIOR   = os.path.join(SCRATCH, "prior")
 OUT     = os.path.join(SCRATCH, "latents")
 VAE_CKPT = os.path.expanduser("~/dissertation_outputs/vae_v2/vae_best.pt")

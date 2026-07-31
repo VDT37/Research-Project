@@ -452,7 +452,12 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     user = getpass.getuser()
-    default_root = f"/scratch/{user}/dissertation"
+    # Default to the JASMIN scratch volume: that is where the project now trains,
+    # so the scripts work with no flags there. On the Exeter servers instead pass
+    # --root /scratch/<user>/dissertation, or export DISS_SCRATCH, which overrides
+    # this for every stage.
+    default_root = os.environ.get("DISS_SCRATCH",
+                                  f"/work/scratch-nopw2/{user}/dissertation")
     ap.add_argument("--start", default="2024-11-21", help="subset start (YYYY-MM-DD)")
     ap.add_argument("--end",   default="2025-04-30", help="subset end (YYYY-MM-DD)")
     ap.add_argument("--leads", default="15,30,45,60",
@@ -480,18 +485,27 @@ def main():
         if L <= 0 or L % CADENCE_MIN != 0:
             sys.exit(f"--leads must be positive multiples of {CADENCE_MIN} min; got {L}")
 
+    # --check only tests S3 reachability, so answer it before touching the disk.
+    # Otherwise a wrong or unset --root fails with a bare PermissionError on a
+    # path the check does not even need.
+    if args.check:
+        sys.exit(0 if connectivity_check() else 1)
+
     global FRAMES_DIR, PRIOR_DIR
     FRAMES_DIR = args.frames_dir or os.path.join(args.root, "frames")
     # multi-lead lands in prior_ml/ by default so it never collides with the
     # single-lead +60 prior/ cache (override with --prior-dir).
     PRIOR_DIR  = args.prior_dir or os.path.join(
         args.root, "prior" if leads == [LEAD_MIN] else "prior_ml")
-    os.makedirs(FRAMES_DIR, exist_ok=True)
-    os.makedirs(PRIOR_DIR, exist_ok=True)
-    os.makedirs(args.out, exist_ok=True)
-
-    if args.check:
-        sys.exit(0 if connectivity_check() else 1)
+    for d in (FRAMES_DIR, PRIOR_DIR, args.out):
+        try:
+            os.makedirs(d, exist_ok=True)
+        except OSError as e:
+            sys.exit(f"ERROR: cannot create {d}: {e}\n"
+                     f"       The cache root is currently '{args.root}'. Set it with "
+                     "--root (or export DISS_SCRATCH) to a writable volume, for example\n"
+                     f"       --root /work/scratch-nopw2/{user}/dissertation")
+    print(f"frames -> {FRAMES_DIR}\nprior  -> {PRIOR_DIR}", flush=True)
 
     if args.baseline_only:
         from collections import Counter

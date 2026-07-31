@@ -68,7 +68,7 @@ _ensure_vae_importable()
 from train_vae_v2 import VAE, AttnBlock, from_dbr, radial_psd, atomic_save, atomic_json
 
 USER    = getpass.getuser()
-SCRATCH = os.environ.get("DISS_SCRATCH", f"/scratch/{USER}/dissertation")
+SCRATCH = os.environ.get("DISS_SCRATCH", f"/work/scratch-nopw2/{USER}/dissertation")
 LATENTS = os.path.join(SCRATCH, "latents")
 OUT     = os.path.expanduser("~/dissertation_outputs/diffusion")
 VAE_CKPT = os.path.expanduser("~/dissertation_outputs/vae_v2/vae_best.pt")

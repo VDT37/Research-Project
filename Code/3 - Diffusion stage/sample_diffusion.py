@@ -48,7 +48,7 @@ from train_diffusion import (ZC, COND_CH, UNet, EDMDenoiser, edm_sample,
 from train_vae_v2 import VAE, from_dbr
 
 USER    = getpass.getuser()
-SCRATCH = os.environ.get("DISS_SCRATCH", f"/scratch/{USER}/dissertation")
+SCRATCH = os.environ.get("DISS_SCRATCH", f"/work/scratch-nopw2/{USER}/dissertation")
 LATENTS = os.path.join(SCRATCH, "latents")
 PRIOR   = os.path.join(SCRATCH, "prior")
 DIFF    = os.path.expanduser("~/dissertation_outputs/diffusion")
