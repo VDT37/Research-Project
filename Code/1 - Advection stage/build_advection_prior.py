@@ -27,6 +27,16 @@ Typical headless run (survives disconnect):
     # multi-lead (+15/30/45/60, one npz per crop-lead) auto-routes to prior_ml/:
     #   python build_advection_prior.py --start 2024-11-21 --end 2025-12-31 --leads 15,30,45,60
 
+Storage is chosen entirely by --root (or the finer --frames-dir / --prior-dir), so the
+same script runs on any machine. The default suits the Exeter servers; on JASMIN pass a
+scratch volume explicitly, for example
+    --root /work/scratch-nopw2/$USER/dissertation
+which puts frames in <root>/frames and the multi-lead crops in <root>/prior_ml.
+JASMIN notes: compute nodes have outbound HTTPS via NAT so the S3 ingest works (verify
+with --check first); /work/scratch-* deletes files 28 days after last access, so treat
+the cache as temporary; and the CPU build needs many cores, which on LOTUS means the
+`high` QoS, since `standard` grants only 1 CPU.
+
 Connectivity self-test only (no data pulled):
     python build_advection_prior.py --check
 

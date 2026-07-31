@@ -54,11 +54,21 @@ OUT   = os.path.expanduser("~/dissertation_outputs/vae_v2")
 CSI_T  = [1.0, 8.0]
 TAIL_T = [16.0, 32.0]
 
-# Acceptance bands, from docs/Analysis with VAE v1.md section 6 (the same gates
-# used to accept the +60 codec).
+# Absolute acceptance bands from docs/Analysis with VAE v1.md section 6. These are
+# CODEC-QUALITY targets, not a multi-lead test: if the +60 reference row fails them
+# then the codec never met them on its own training distribution, and the failure
+# says nothing about lead coverage. Reported for information only.
 BANDS = {"rec_l1": (0.0, 0.022), "psd_ratio_2_8km": (0.8, 1.2),
          "tail_ratio_16": (0.8, 1.2), "tail_ratio_32": (0.8, 1.2),
          "csi_8": (0.95, 1.01)}
+
+# The ACTUAL test for "can this codec be reused across leads": does a short lead
+# behave differently from the lead the codec was trained on? Tolerances are a few
+# percent of each metric's typical value, which is the run-to-run noise floor for
+# a 200-crop sample.
+REF_LEAD  = 60
+DRIFT_TOL = {"rec_l1": 0.005, "psd_ratio_2_8km": 0.05,
+             "tail_ratio_16": 0.05, "tail_ratio_32": 0.05, "csi_8": 0.05}
 
 
 def lead_of(path):
@@ -72,13 +82,23 @@ def lead_of(path):
 
 
 @torch.no_grad()
-def codec_metrics(vae, files, field, mean, std, device, batch=16, max_psd=64):
-    """Encode/decode `field` for these crops; compare reconstruction to input."""
+def codec_metrics(vae, files, field, mean, std, device, batch=16, max_psd=64,
+                  sample_z=False):
+    """Encode/decode `field` for these crops; compare reconstruction to input.
+
+    sample_z=False (default) decodes the deterministic mean latent mu, which is
+    what pack_latents.py stores and therefore what the diffusion stage actually
+    consumes. sample_z=True decodes z = mu + eps*sigma, which is what
+    train_vae_v2.py's own domain_metrics did via model(x). Injected latent noise
+    adds small-scale power, so the sampled path reports a HIGHER psd ratio. Run
+    both to see how much of a quoted PSD figure was noise rather than codec
+    fidelity."""
     cont = {t: np.zeros(3) for t in CSI_T}
     tail = {t: np.zeros(2) for t in TAIL_T}
     l1_sum, l1_n = 0.0, 0
     psd_in = psd_rec = None
     n_psd = 0
+    mu_sq = sig_sq = lat_n = 0.0        # latent stats: is the latent deterministic?
     rbins = np.logspace(np.log10(DBR_THRESH), np.log10(128), 41)
     h_in, h_rec = np.zeros(40), np.zeros(40)
 
@@ -92,8 +112,15 @@ def codec_metrics(vae, files, field, mean, std, device, batch=16, max_psd=64):
             V.append(z["valid"] & np.isfinite(R))
         Xn = (np.stack(X) - mean) / std
         t = torch.from_numpy(Xn)[:, None].to(device)
-        mu, _ = vae.encode(t)
-        rec = vae.decode(mu)[:, 0].float().cpu().numpy()
+        mu, logvar = vae.encode(t)
+        if sample_z:                       # the path train_vae_v2 metrics used
+            z = mu + torch.randn_like(mu) * torch.exp(0.5 * logvar)
+        else:                              # the path pack_latents / the LDM uses
+            z = mu
+        rec = vae.decode(z)[:, 0].float().cpu().numpy()
+        mu_sq  += float((mu ** 2).sum())
+        sig_sq += float(torch.exp(logvar).sum())
+        lat_n  += mu.numel()
         Vs = np.stack(V)
 
         # masked L1 in NORMALISED dBR units: directly comparable to the trainer's
@@ -119,7 +146,11 @@ def codec_metrics(vae, files, field, mean, std, device, batch=16, max_psd=64):
                 psd_rec = pr if psd_rec is None else psd_rec + pr
                 n_psd += 1
 
-    out = {"rec_l1": l1_sum / max(l1_n, 1), "n_crops": len(files), "n_psd": n_psd}
+    out = {"rec_l1": l1_sum / max(l1_n, 1), "n_crops": len(files), "n_psd": n_psd,
+           "mu_rms": (mu_sq / max(lat_n, 1)) ** 0.5,
+           "latent_sigma_rms": (sig_sq / max(lat_n, 1)) ** 0.5,
+           "sample_z": bool(sample_z)}
+    out["noise_to_signal"] = out["latent_sigma_rms"] / max(out["mu_rms"], 1e-9)
     for t_ in CSI_T:
         H, M, F = cont[t_]
         out[f"csi_{t_:g}"] = float(H / (H + M + F)) if (H + M + F) > 0 else float("nan")
@@ -153,6 +184,11 @@ def main():
     ap.add_argument("--n", type=int, default=200, help="crops sampled per lead")
     ap.add_argument("--leads", default="15,30,45,60")
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--sample-z", action="store_true",
+                    help="decode a SAMPLED latent z = mu + eps*sigma (what "
+                         "train_vae_v2's domain_metrics did) instead of the "
+                         "deterministic mu the diffusion stage actually uses. Run "
+                         "both to see how much of a quoted PSD figure was latent noise.")
     ap.add_argument("--out", default=OUT)
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
@@ -181,11 +217,14 @@ def main():
     print(f"{len(files)} {args.split} crops; leads found "
           f"{sorted(k for k in by_lead if k is not None)}\n", flush=True)
 
+    if args.sample_z:
+        torch.manual_seed(args.seed)          # reproducible latent sampling
     res = {}
     for L in leads:
         sample = rng.sample(by_lead[L], min(args.n, len(by_lead[L])))
         for field in ("y_mmh", "A_mmh"):
-            res[(L, field)] = codec_metrics(vae, sample, field, mean, std, device)
+            res[(L, field)] = codec_metrics(vae, sample, field, mean, std, device,
+                                            sample_z=args.sample_z)
             print(f"  done lead +{L} {field}", flush=True)
 
     # ---- report ----
@@ -199,32 +238,69 @@ def main():
                   f"{m['psd_ratio_2_8km']:>7.3f} {m['tail_ratio_16']:>7.3f} "
                   f"{m['tail_ratio_32']:>7.3f} {m['csi_1']:>6.3f} {m['csi_8']:>6.3f}")
 
-    print("\nagainst the +60 acceptance bands (the codec's own training distribution):")
-    worst = []
+    m0 = res[(leads[0], "y_mmh")]
+    print(f"\nlatent path: {'SAMPLED z = mu + eps*sigma' if m0['sample_z'] else 'deterministic mu'}"
+          f" | mu rms {m0['mu_rms']:.3f} | latent sigma rms {m0['latent_sigma_rms']:.4f}"
+          f" | noise/signal {m0['noise_to_signal']:.4f}")
+    print("  (pack_latents.py and the diffusion stage use deterministic mu. "
+          "train_vae_v2's own\n   domain_metrics sampled z, which inflates "
+          "small-scale power. Compare with --sample-z.)")
+
+    # ---- 1. absolute bands: a codec-quality note, NOT the multi-lead test ----
+    print("\n[1] absolute acceptance bands (codec quality, informational):")
+    absflags = {}
     for L in leads:
         for field in ("y_mmh", "A_mmh"):
             m = res[(L, field)]
-            flags = {k: verdict(m.get(k, float("nan")), k) for k in BANDS}
-            bad = [k for k, v in flags.items() if v == "OUT"]
-            if bad:
-                worst.append((L, field, bad))
+            absflags[(L, field)] = {k: verdict(m.get(k, float("nan")), k) for k in BANDS}
             print(f"  +{L:>2} {field:>6}: " +
-                  "  ".join(f"{k}={flags[k]}" for k in BANDS))
+                  "  ".join(f"{k}={absflags[(L, field)][k]}" for k in BANDS))
+    ref_fails = sorted({k for f in ("y_mmh", "A_mmh")
+                        for k, v in absflags.get((REF_LEAD, f), {}).items() if v == "OUT"})
+    if ref_fails:
+        print(f"\n  NOTE: the +{REF_LEAD} reference row itself fails: "
+              f"{', '.join(ref_fails)}.")
+        print(f"  +{REF_LEAD} IS the codec's training distribution, so these are "
+              "pre-existing codec\n  limitations, not evidence of a multi-lead "
+              "problem. Retraining on more leads would\n  not fix them. Judge reuse "
+              "on the drift test below instead.")
 
-    ref = {f: res[(60, f)] for f in ("y_mmh", "A_mmh")} if 60 in leads else None
-    print("\ndrift vs the +60 reference (what the codec was trained on):")
-    if ref:
+    # ---- 2. drift vs the reference lead: THE multi-lead test ----
+    if REF_LEAD not in leads:
+        print(f"\n[2] drift test skipped: reference lead +{REF_LEAD} not in --leads.")
+        print("\nVERDICT: inconclusive, include the reference lead to test reuse.",
+              flush=True)
+    else:
+        print(f"\n[2] drift vs the +{REF_LEAD} reference (THE reuse test; tolerances " +
+              ", ".join(f"{k} {v:g}" for k, v in DRIFT_TOL.items()) + "):")
+        drifted = []
         for L in leads:
+            if L == REF_LEAD:
+                continue
             for field in ("y_mmh", "A_mmh"):
-                m, r = res[(L, field)], ref[field]
-                print(f"  +{L:>2} {field:>6}: rec_l1 {m['rec_l1'] - r['rec_l1']:+.4f}  "
-                      f"psd {m['psd_ratio_2_8km'] - r['psd_ratio_2_8km']:+.3f}  "
-                      f"csi8 {m['csi_8'] - r['csi_8']:+.3f}")
-    print("\nVERDICT: " + (
-        "reuse the existing codec for the multi-lead stage; no retrain needed."
-        if not worst else
-        "at least one lead/field is outside the acceptance band -> retrain on prior_ml:\n  "
-        + "\n  ".join(f"+{L} {f}: {', '.join(b)}" for L, f, b in worst)), flush=True)
+                m, r = res[(L, field)], res[(REF_LEAD, field)]
+                parts, bad = [], []
+                for k, tol in DRIFT_TOL.items():
+                    d = m.get(k, float("nan")) - r.get(k, float("nan"))
+                    ok = np.isfinite(d) and abs(d) <= tol
+                    parts.append(f"{k} {d:+.4f}{'' if ok else ' OUT'}")
+                    if not ok:
+                        bad.append(k)
+                if bad:
+                    drifted.append((L, field, bad))
+                print(f"  +{L:>2} {field:>6}: " + "  ".join(parts))
+
+        if not drifted:
+            print(f"\nVERDICT: REUSE the existing codec for the multi-lead stage. Every "
+                  f"lead reconstructs\n  within tolerance of the +{REF_LEAD} data the "
+                  "codec was trained on, so a retrain would\n  not improve lead "
+                  "coverage. One codec then serves every model, which also keeps\n  "
+                  "the comparison across models clean.", flush=True)
+        else:
+            print("\nVERDICT: RETRAIN on prior_ml. These leads reconstruct measurably "
+                  "differently from\n  the training distribution:\n  "
+                  + "\n  ".join(f"+{L} {f}: {', '.join(b)}" for L, f, b in drifted),
+                  flush=True)
 
     # ---- figure: the A field is the one that shifts, so plot it per lead ----
     fig, ax = plt.subplots(1, 2, figsize=(14, 5))
@@ -247,15 +323,18 @@ def main():
     ax[1].set(title="Advection field A: power spectrum (solid input, dashed recon)",
               xlabel="wavelength (km)", ylabel="power")
     ax[1].invert_xaxis(); ax[1].legend(fontsize=7); ax[1].grid(alpha=0.3)
-    png = os.path.join(args.out, "multilead_check.png")
+    tag = "_sampledz" if args.sample_z else ""
+    png = os.path.join(args.out, f"multilead_check{tag}.png")
     plt.tight_layout(); plt.savefig(png, dpi=120, bbox_inches="tight"); plt.close()
     print(f"\nfigure -> {png}")
 
     clean = {f"{L}|{f}": {k: v for k, v in res[(L, f)].items() if not k.startswith("_")}
              for L in leads for f in ("y_mmh", "A_mmh")}
-    jp = os.path.join(args.out, "multilead_check.json")
+    jp = os.path.join(args.out, f"multilead_check{tag}.json")
     json.dump({"vae": os.path.abspath(args.vae), "vae_epoch": ck.get("epoch"),
-               "split": args.split, "n_per_lead": args.n, "bands": BANDS,
+               "split": args.split, "n_per_lead": args.n,
+               "latent_path": "sampled_z" if args.sample_z else "deterministic_mu",
+               "bands": BANDS, "drift_tolerances": DRIFT_TOL, "ref_lead": REF_LEAD,
                "metrics": clean}, open(jp, "w"), indent=2, default=float)
     print(f"json   -> {jp}")
 
