@@ -54,7 +54,8 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import uniform_filter
 
 from sample_diffusion import (load_denoiser, load_codec, sample_ensemble,
-                              read_truth, open_split, LATENTS, DIFF, VAE_CKPT)
+                              read_truth, open_split, resolve_lead_idx,
+                              LATENTS, DIFF, VAE_CKPT)
 from train_vae_v2 import radial_psd, atomic_json
 
 USER = getpass.getuser()
@@ -133,7 +134,8 @@ def crps_fair(members, obs, valid):
 # ----------------------------------------------------------------------------
 def evaluate(args, device):
     mm, files, n, meta = open_split(args.latents_dir, args.split, args.lead, args.limit)
-    den, ck, cond_mode = load_denoiser(args.ckpt, device)
+    den, ck, cond_mode, ck_leads = load_denoiser(args.ckpt, device)
+    lead_idx = resolve_lead_idx(ck_leads, args.lead)
     vae = load_codec(args.vae, meta, device, strict_sha=not args.allow_vae_mismatch)
     latent_scale = float(meta["latent_scale"])
     mean, std = float(meta["norm"]["mean"]), float(meta["norm"]["std"])
@@ -171,7 +173,7 @@ def evaluate(args, device):
         members = sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
                                   members=M, steps=args.steps, guidance=args.guidance,
                                   churn=args.churn, seed=args.seed + 7919 * s0,
-                                  device=device)
+                                  device=device, lead_idx=lead_idx)
         ens = members.mean(axis=1)
 
         for b in range(len(sel)):

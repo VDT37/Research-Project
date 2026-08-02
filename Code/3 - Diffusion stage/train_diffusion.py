@@ -103,22 +103,41 @@ def sha256_file(path, chunk=1 << 20):
 # Data
 # ----------------------------------------------------------------------------
 class LatentRows(Dataset):
-    """Rows of the latent pack -> (24, 64, 64) float32. Channel layout
-    (pack_latents.py): 0:16 z_x1..z_x4, 16:20 z_A, 20:24 z_y."""
+    """Rows of one or more latent packs -> ((24, 64, 64) float32, lead_index).
 
-    def __init__(self, npy_path, limit=None):
-        shape = np.load(npy_path, mmap_mode="r").shape
-        self.n = min(limit, shape[0]) if limit else shape[0]
-        self.path = npy_path
+    Channel layout (pack_latents.py): 0:16 z_x1..z_x4, 16:20 z_A, 20:24 z_y.
+    A single-lead (+60) pack is simply the one-shard case, where lead_index is
+    always 0 and the model is built with no lead embedding, so the legacy path
+    behaves exactly as before."""
+
+    def __init__(self, paths, limit=None):
+        if isinstance(paths, str):
+            paths = [paths]
+        self.paths = list(paths)
+        sizes = [np.load(p, mmap_mode="r").shape[0] for p in self.paths]
+        # Flat index over the concatenated shards. int16 shard id + int64 row id
+        # costs ~10 bytes/row (6 MB for the 621k-row multi-lead train set).
+        self.shard = np.concatenate(
+            [np.full(n, s, dtype=np.int16) for s, n in enumerate(sizes)])
+        self.local = np.concatenate(
+            [np.arange(n, dtype=np.int64) for n in sizes])
+        if limit and limit < len(self.shard):
+            # Stride across the WHOLE concatenated index, so a --limit smoke run
+            # still sees every lead rather than only the first shard.
+            sel = np.linspace(0, len(self.shard) - 1, limit).astype(np.int64)
+            self.shard, self.local = self.shard[sel], self.local[sel]
+        self.sizes = sizes
         self._mm = None                          # lazy per-worker open
 
     def __len__(self):
-        return self.n
+        return len(self.shard)
 
     def __getitem__(self, i):
         if self._mm is None:
-            self._mm = np.load(self.path, mmap_mode="r")
-        return torch.from_numpy(np.asarray(self._mm[i], dtype="float32"))
+            self._mm = [np.load(p, mmap_mode="r") for p in self.paths]
+        s = int(self.shard[i])
+        row = np.asarray(self._mm[s][int(self.local[i])], dtype="float32")
+        return torch.from_numpy(row), s
 
 
 def shard_suffix(lead=None):
@@ -203,13 +222,21 @@ class UNet(nn.Module):
     """2D UNet on 64x64 latents. in_ch = zc (noised delta) + cond channels."""
 
     def __init__(self, in_ch, out_ch=ZC, width=128, mults=(1, 2, 4),
-                 dropout=0.0, attn_res=(16,), emb_dim=512):
+                 dropout=0.0, attn_res=(16,), emb_dim=512, n_leads=0):
         super().__init__()
         assert width % 8 == 0, "--width must be divisible by 8 (GroupNorm groups)"
         chans = [width * m for m in mults]
         self.noise_emb = NoiseEmb(dim=256)
         self.emb_mlp = nn.Sequential(nn.Linear(256, emb_dim), nn.SiLU(),
                                      nn.Linear(emb_dim, emb_dim))
+        # Lead-time conditioning: a learned embedding added to the noise embedding,
+        # so it FiLM-modulates every ResBlock (the standard ADM class-conditioning
+        # route). Zero-initialised, so a fresh model is numerically identical to the
+        # unconditioned one and the "loss starts at 1.0" property still holds.
+        # n_leads=0 disables it entirely for single-lead runs.
+        self.lead_emb = nn.Embedding(n_leads, emb_dim) if n_leads else None
+        if self.lead_emb is not None:
+            nn.init.zeros_(self.lead_emb.weight)
         self.stem = nn.Conv2d(in_ch, width, 3, padding=1)
 
         # ---- encoder ----
@@ -249,8 +276,13 @@ class UNet(nn.Module):
         nn.init.zeros_(self.out_conv.weight)          # D(x) = c_skip*x at init
         nn.init.zeros_(self.out_conv.bias)
 
-    def forward(self, x, c_noise):
+    def forward(self, x, c_noise, lead_idx=None):
         emb = self.emb_mlp(self.noise_emb(c_noise))
+        if self.lead_emb is not None:
+            if lead_idx is None:
+                raise ValueError("this model was built with lead conditioning; "
+                                 "lead_idx must be provided")
+            emb = emb + self.lead_emb(lead_idx)
         h = self.stem(x)
         skips = [h]
         for m in self.down:
@@ -281,14 +313,15 @@ class EDMDenoiser(nn.Module):
         self.out_ch = out_ch
         self.register_buffer("sigma_data", torch.tensor(float(sigma_data)))
 
-    def forward(self, x, sigma, cond):
-        # x: (B, zc, 64, 64) noised delta; sigma: (B,1,1,1); cond: clean latents
+    def forward(self, x, sigma, cond, lead_idx=None):
+        # x: (B, zc, 64, 64) noised delta; sigma: (B,1,1,1); cond: clean latents;
+        # lead_idx: (B,) long, index into the lead list (None for single-lead)
         sd = self.sigma_data
         c_skip = sd ** 2 / (sigma ** 2 + sd ** 2)
         c_out = sigma * sd / (sigma ** 2 + sd ** 2).sqrt()
         c_in = 1.0 / (sigma ** 2 + sd ** 2).sqrt()
         c_noise = 0.25 * sigma.clamp(min=1e-8).log().view(-1)
-        F_out = self.unet(torch.cat([c_in * x, cond], dim=1), c_noise)
+        F_out = self.unet(torch.cat([c_in * x, cond], dim=1), c_noise, lead_idx)
         return c_skip * x + c_out * F_out
 
 
@@ -332,7 +365,7 @@ def edm_sigma_schedule(steps, sigma_min, sigma_max, rho, device):
 
 @torch.no_grad()
 def edm_sample(denoiser, cond, steps=25, sigma_min=0.002, sigma_max=80.0, rho=7.0,
-               guidance=1.0, churn=0.0, generator=None):
+               guidance=1.0, churn=0.0, generator=None, lead_idx=None):
     B, dev = cond.shape[0], cond.device
     sig = edm_sigma_schedule(steps, sigma_min, sigma_max, rho, dev)
     x = torch.randn(B, denoiser.out_ch, cond.shape[2], cond.shape[3],
@@ -341,9 +374,12 @@ def edm_sample(denoiser, cond, steps=25, sigma_min=0.002, sigma_max=80.0, rho=7.
     def D(xt, s):
         sb = s.expand(B).view(B, 1, 1, 1)
         if guidance == 1.0:
-            return denoiser(xt, sb, cond)
-        d_c = denoiser(xt, sb, cond)
-        d_u = denoiser(xt, sb, torch.zeros_like(cond))
+            return denoiser(xt, sb, cond, lead_idx)
+        # Guidance strengthens the PAST-FRAMES/advection conditioning only. The
+        # lead index is a task selector (which lead time is being forecast), not
+        # something to guide on, so it is kept in both branches.
+        d_c = denoiser(xt, sb, cond, lead_idx)
+        d_u = denoiser(xt, sb, torch.zeros_like(cond), lead_idx)
         return d_u + guidance * (d_c - d_u)
 
     for i in range(steps):
@@ -368,7 +404,7 @@ def edm_sample(denoiser, cond, steps=25, sigma_min=0.002, sigma_max=80.0, rho=7.
 # Loss helpers
 # ----------------------------------------------------------------------------
 def edm_loss_terms(denoiser, rows, cond_mode, p_mean, p_std, cond_drop,
-                   device, generator=None):
+                   device, generator=None, lead_idx=None):
     """One EDM training/validation forward. Returns (weighted loss, raw mse)."""
     z_A = rows[:, 4 * ZC:5 * ZC]
     z_y = rows[:, 5 * ZC:6 * ZC]
@@ -390,7 +426,7 @@ def edm_loss_terms(denoiser, rows, cond_mode, p_mean, p_std, cond_drop,
         cond = cond * keep
 
     x = delta + sigma * eps
-    D = denoiser(x, sigma, cond)
+    D = denoiser(x, sigma, cond, lead_idx)
     sd = denoiser.sigma_data
     w = (sigma ** 2 + sd ** 2) / (sigma * sd) ** 2
     err2 = (D.float() - delta.float()) ** 2
@@ -412,15 +448,18 @@ def crps_ensemble(members, obs, valid):
 
 @torch.no_grad()
 def sampled_diagnostics(denoiser, vae, diag, cond_diag, zA_diag, latent_scale,
-                        mean, std, device, args, png_path):
+                        mean, std, device, args, png_path, lead_diag=None):
     """Sample an M-member ensemble on the fixed diagnostic crops, decode to
     mm/h, and score next to the advection baseline on the same crops."""
     K, M = cond_diag.shape[0], args.sample_members
     g = torch.Generator(device=device).manual_seed(4242)  # same noise every epoch
     cond = cond_diag.repeat_interleave(M, dim=0).to(device)
     zA = zA_diag.repeat_interleave(M, dim=0).to(device)
+    lead = (lead_diag.repeat_interleave(M, dim=0).to(device)
+            if lead_diag is not None else None)
     delta_hat = edm_sample(denoiser, cond, steps=args.sample_steps,
-                           guidance=args.guidance, churn=args.churn, generator=g)
+                           guidance=args.guidance, churn=args.churn, generator=g,
+                           lead_idx=lead)
     mu_hat = (zA + delta_hat) / latent_scale
     outs = []
     for s in range(0, mu_hat.shape[0], 32):
@@ -484,29 +523,37 @@ def sampled_diagnostics(denoiser, vae, diag, cond_diag, zA_diag, latent_scale,
     return out
 
 
-def load_diag_crops(latents_dir, va_ds, n_crops):
+def load_diag_crops(latents_dir, va_ds, n_crops, leads=None):
     """Fixed, evenly-spaced val crops with their pixel-space ground truth. If the
-    npz cache is unavailable (wiped scratch), diagnostics are disabled."""
-    idx_p = os.path.join(latents_dir, "val_latents_index.json")
-    if not os.path.exists(idx_p):
-        print("WARNING: val index json missing; sampled diagnostics disabled.", flush=True)
-        return None, None, None
-    index = json.load(open(idx_p))
+    npz cache is unavailable (wiped scratch), diagnostics are disabled.
+
+    With multiple lead shards the crops are strided across the whole concatenated
+    dataset, so the montage and the scores span every lead rather than one."""
+    suffixes = [shard_suffix(L) for L in (leads if leads else [None])]
+    index = []
+    for suf in suffixes:
+        idx_p = os.path.join(latents_dir, f"val_latents{suf}_index.json")
+        if not os.path.exists(idx_p):
+            print(f"WARNING: {idx_p} missing; sampled diagnostics disabled.", flush=True)
+            return None, None, None, None
+        index.append(json.load(open(idx_p)))
     K = min(n_crops, len(va_ds))
     diag_idx = np.linspace(0, len(va_ds) - 1, K).astype(int)
-    diag = []
+    diag, rows, lead_ids = [], [], []
     for i in diag_idx:
-        f = index[i]
+        row, s = va_ds[int(i)]                      # s = shard (lead) index
+        f = index[s][int(va_ds.local[int(i)])]      # provenance for THIS shard
         if not os.path.exists(f):
             print(f"WARNING: {f} missing (scratch wiped?); sampled diagnostics "
                   "disabled.", flush=True)
-            return None, None, None
+            return None, None, None, None
         z = np.load(f, allow_pickle=True)
         diag.append({"y": np.nan_to_num(z["y_mmh"].astype("float32")),
                      "A": np.nan_to_num(z["A_mmh"].astype("float32")),
                      "valid": z["valid"].astype(bool)})
-    rows = torch.stack([va_ds[int(i)] for i in diag_idx])
-    return diag, rows, diag_idx
+        rows.append(row)
+        lead_ids.append(s)
+    return diag, torch.stack(rows), diag_idx, torch.tensor(lead_ids, dtype=torch.long)
 
 
 # ----------------------------------------------------------------------------
@@ -591,6 +638,10 @@ def main():
     ap.add_argument("--limit", type=int, default=None, help="cap rows (smoke test)")
     ap.add_argument("--workers", type=int, default=8)
     ap.add_argument("--seed", type=int, default=0)
+    ap.add_argument("--leads", default=None,
+                    help="comma-separated lead times (e.g. 15,30,45,60) to train ONE "
+                         "lead-conditioned model over the per-lead shards written by "
+                         "pack_latents.py --lead. Omit for a single-lead pack.")
     ap.add_argument("--latents-dir", default=LATENTS)
     ap.add_argument("--vae", default=VAE_CKPT, help="codec ckpt (diagnostics decode)")
     ap.add_argument("--out", default=OUT)
@@ -615,22 +666,46 @@ def main():
         print("WARNING: no GPU found, running on CPU (very slow)", flush=True)
 
     # ---- data ---------------------------------------------------------------
-    tr_meta = load_pack_meta(args.latents_dir, "train")
-    va_meta = load_pack_meta(args.latents_dir, "val")
+    leads = ([int(x) for x in args.leads.split(",") if x.strip()]
+             if args.leads else None)
+    shard_leads = leads if leads else [None]        # [None] = legacy single pack
+    tr_metas = [load_pack_meta(args.latents_dir, "train", L) for L in shard_leads]
+    va_metas = [load_pack_meta(args.latents_dir, "val", L) for L in shard_leads]
+    tr_meta, va_meta = tr_metas[0], va_metas[0]
     if tr_meta.get("zc") != ZC:
         raise SystemExit(f"ERROR: pack zc={tr_meta.get('zc')} but trainer ZC={ZC}.")
-    if tr_meta.get("vae_sha256") != va_meta.get("vae_sha256"):
-        raise SystemExit("ERROR: train and val packs were encoded with different "
-                         "VAE checkpoints; re-run pack_latents.py.")
+    shas = {m.get("vae_sha256") for m in tr_metas + va_metas}
+    if len(shas) != 1:
+        raise SystemExit("ERROR: the latent packs were encoded with different VAE "
+                         "checkpoints; re-run pack_latents.py so every shard and "
+                         "split shares one codec.")
     latent_scale = float(tr_meta["latent_scale"])
     mean, std = float(tr_meta["norm"]["mean"]), float(tr_meta["norm"]["std"])
-    sigma_data = args.sigma_data if args.sigma_data else float(tr_meta["sigma_data"])
+    if args.sigma_data:
+        sigma_data = args.sigma_data
+    elif len(shard_leads) == 1:
+        sigma_data = float(tr_meta["sigma_data"])
+    else:
+        # A lead-conditioned model needs ONE sigma_data. The residual grows with
+        # lead time, so pool it exactly from the per-shard raw moments rather than
+        # averaging the per-shard standard deviations.
+        S = sum(m["delta_moments"]["sum"] for m in tr_metas)
+        SS = sum(m["delta_moments"]["sumsq"] for m in tr_metas)
+        N = sum(m["delta_moments"]["count"] for m in tr_metas)
+        sigma_data = float(math.sqrt(max(SS / N - (S / N) ** 2, 0.0)))
+        per = ", ".join(f"+{L}min {float(m['sigma_data']):.4f}"
+                        for L, m in zip(shard_leads, tr_metas))
+        print(f"pooled sigma_data {sigma_data:.4f} from [{per}]", flush=True)
     if not (0.02 <= sigma_data <= 2.0):
         raise SystemExit(f"ERROR: sigma_data={sigma_data:.4f} looks wrong "
                          "(expected ~0.1-1.0); check the latent pack.")
 
-    tr_ds = LatentRows(os.path.join(args.latents_dir, "train_latents.npy"), limit=args.limit)
-    va_ds = LatentRows(os.path.join(args.latents_dir, "val_latents.npy"),
+    tr_paths = [os.path.join(args.latents_dir, f"train_latents{shard_suffix(L)}.npy")
+                for L in shard_leads]
+    va_paths = [os.path.join(args.latents_dir, f"val_latents{shard_suffix(L)}.npy")
+                for L in shard_leads]
+    tr_ds = LatentRows(tr_paths, limit=args.limit)
+    va_ds = LatentRows(va_paths,
                        limit=max(400, args.limit // 10) if args.limit else None)
     dl_kw = dict(num_workers=args.workers, pin_memory=True,
                  persistent_workers=args.workers > 0,
@@ -661,12 +736,20 @@ def main():
                       f"{getattr(args, k)} -> {rc[k]} (from checkpoint)", flush=True)
             setattr(args, k, rc[k])
         sigma_data = rc["sigma_data"]
+        # The lead list fixes the embedding size, so a mismatch would silently
+        # build a different model or map leads to the wrong embedding rows.
+        if rc.get("leads") != leads:
+            raise SystemExit(
+                f"ERROR: checkpoint was trained with leads {rc.get('leads')} but "
+                f"--leads gives {leads}. Resuming would change the lead embedding. "
+                "Pass the original --leads, or start a fresh run with a new --out.")
 
     mults = tuple(int(m) for m in args.mults.split(","))
     attn_res = tuple(int(r) for r in args.attn.split(",") if r.strip())
     cond_ch = COND_CH[args.cond_mode]
+    n_leads = len(leads) if leads else 0
     unet = UNet(in_ch=ZC + cond_ch, out_ch=ZC, width=args.width, mults=mults,
-                dropout=args.dropout, attn_res=attn_res)
+                dropout=args.dropout, attn_res=attn_res, n_leads=n_leads)
     denoiser = EDMDenoiser(unet, sigma_data).to(device)
     n_par = sum(p.numel() for p in denoiser.parameters())
     opt = torch.optim.AdamW(denoiser.parameters(), lr=args.lr,
@@ -707,14 +790,16 @@ def main():
             vae = VAE(w=vck["config"]["width"], zc=vck["config"]["zc"]).to(device)
             vae.load_state_dict(vck["model"])
             vae.eval()
-            diag, rows_diag, diag_idx = load_diag_crops(args.latents_dir, va_ds,
-                                                        args.sample_crops)
+            diag, rows_diag, diag_idx, lead_diag = load_diag_crops(
+                args.latents_dir, va_ds, args.sample_crops, leads)
             if diag is None:
                 args.sample_every = 0
             else:
                 cond_diag = rows_diag[:, :5 * ZC] if args.cond_mode == "full" \
                     else rows_diag[:, 4 * ZC:5 * ZC]
                 zA_diag = rows_diag[:, 4 * ZC:5 * ZC]
+                if not leads:
+                    lead_diag = None
                 print(f"diagnostics: {len(diag)} fixed val crops "
                       f"(rows {diag_idx[0]}..{diag_idx[-1]}), "
                       f"{args.sample_members} members, {args.sample_steps} steps", flush=True)
@@ -746,6 +831,7 @@ def main():
             best_disk = None
 
     config = {"width": args.width, "mults": args.mults, "attn": args.attn,
+              "leads": leads,
               "dropout": args.dropout, "cond_mode": args.cond_mode,
               "cond_drop": args.cond_drop, "lr": args.lr, "warmup": args.warmup,
               "lr_schedule": args.lr_schedule, "batch": args.batch,
@@ -802,15 +888,16 @@ def main():
         if device == "cuda":
             torch.cuda.reset_peak_memory_stats()
 
-        for i, rows in enumerate(dl_tr, 1):
+        for i, (rows, lead_b) in enumerate(dl_tr, 1):
             rows = rows.to(device, non_blocking=True)
+            lead_b = lead_b.to(device, non_blocking=True).long() if leads else None
             lr = lr_at(global_step)
             for gparam in opt.param_groups:
                 gparam["lr"] = lr
             with amp():
                 loss_w, loss_raw = edm_loss_terms(
                     denoiser, rows, args.cond_mode, args.p_mean, args.p_std,
-                    args.cond_drop, device)
+                    args.cond_drop, device, lead_idx=lead_b)
             opt.zero_grad(set_to_none=True)
             loss_w.backward()
             gn = torch.nn.utils.clip_grad_norm_(denoiser.parameters(), 1.0)
@@ -835,19 +922,21 @@ def main():
         with ema_weights(denoiser, ema):
             g = torch.Generator(device=device).manual_seed(1234)
             with torch.no_grad():
-                for rows in dl_va:
+                for rows, lead_b in dl_va:
                     rows = rows.to(device, non_blocking=True)
+                    lead_b = lead_b.to(device, non_blocking=True).long() if leads else None
                     with amp():
                         lw, lraw = edm_loss_terms(
                             denoiser, rows, args.cond_mode, args.p_mean, args.p_std,
-                            0.0, device, generator=g)
+                            0.0, device, generator=g, lead_idx=lead_b)
                     vl_w += lw.item(); vl_raw += lraw.item()
             vl_w /= max(len(dl_va), 1); vl_raw /= max(len(dl_va), 1)
             if args.sample_every > 0 and (ep % args.sample_every == 0 or ep == args.epochs):
                 sampled = sampled_diagnostics(
                     denoiser, vae, diag, cond_diag, zA_diag, latent_scale,
                     mean, std, device, args,
-                    os.path.join(args.out, f"samples_ep{ep:03d}.png"))
+                    os.path.join(args.out, f"samples_ep{ep:03d}.png"),
+                    lead_diag=lead_diag)
         if not math.isfinite(vl_w):
             raise SystemExit(f"ERROR: validation loss is not finite at epoch {ep}; "
                              "training diverged. Resume from diff_last.pt with a "
