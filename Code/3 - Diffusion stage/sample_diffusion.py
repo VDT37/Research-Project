@@ -72,17 +72,19 @@ def load_denoiser(ckpt_path, device):
     mults = tuple(int(m) for m in cfg["mults"].split(","))
     attn = tuple(int(r) for r in cfg["attn"].split(",") if r.strip())
     cond_mode = ck.get("cond_mode", cfg["cond_mode"])
+    ck_leads = cfg.get("leads")                    # None for a single-lead model
     unet = UNet(in_ch=ZC + COND_CH[cond_mode], out_ch=ZC, width=cfg["width"],
-                mults=mults, dropout=cfg["dropout"], attn_res=attn)
+                mults=mults, dropout=cfg["dropout"], attn_res=attn,
+                n_leads=len(ck_leads) if ck_leads else 0)
     den = EDMDenoiser(unet, sigma_data).to(device)
     den.load_state_dict(ck["model"])
     den.eval()
     n = sum(p.numel() for p in den.parameters())
     print(f"denoiser: {ckpt_path}", flush=True)
     print(f"  epoch {ck.get('epoch')} | val_loss {ck.get('val_loss', float('nan')):.4f} "
-          f"| {n/1e6:.1f}M params | cond={cond_mode} | sigma_data={sigma_data:.4f}",
-          flush=True)
-    return den, ck, cond_mode
+          f"| {n/1e6:.1f}M params | cond={cond_mode} | sigma_data={sigma_data:.4f}"
+          f"{' | leads ' + str(ck_leads) if ck_leads else ''}", flush=True)
+    return den, ck, cond_mode, ck_leads
 
 
 def load_codec(vae_path, pack_meta, device, strict_sha=True):
@@ -117,7 +119,7 @@ def load_codec(vae_path, pack_meta, device, strict_sha=True):
 @torch.no_grad()
 def sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
                     members=8, steps=25, guidance=1.0, churn=0.0, seed=0,
-                    device="cuda", decode_batch=32):
+                    device="cuda", decode_batch=32, lead_idx=None):
     """rows: (K, 24, 64, 64) scaled latents -> (K, members, 256, 256) mm/h.
 
     One member at a time across all K crops, so peak memory scales with K, not
@@ -127,11 +129,13 @@ def sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
     rows = rows.to(device)
     cond = rows[:, :5 * ZC] if cond_mode == "full" else rows[:, 4 * ZC:5 * ZC]
     zA = rows[:, 4 * ZC:5 * ZC]
+    li = (torch.full((K,), int(lead_idx), dtype=torch.long, device=device)
+          if lead_idx is not None else None)
     out = np.empty((K, members, 256, 256), dtype="float32")
     for m in range(members):
         g = torch.Generator(device=device).manual_seed(seed + 1000 * m)
         delta = edm_sample(den, cond, steps=steps, guidance=guidance,
-                           churn=churn, generator=g)
+                           churn=churn, generator=g, lead_idx=li)
         mu = (zA + delta) / latent_scale
         dec = []
         for s in range(0, K, decode_batch):
@@ -139,6 +143,25 @@ def sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
         y_dbr = torch.cat(dec)[:, 0].numpy() * std + mean
         out[:, m] = from_dbr(y_dbr)
     return out
+
+
+def resolve_lead_idx(ck_leads, lead):
+    """Map a lead time (minutes) to its embedding row for a lead-conditioned
+    checkpoint. Returns None for a single-lead model."""
+    if not ck_leads:
+        if lead is not None:
+            print(f"NOTE: --lead {lead} selects the pack shard; this checkpoint is "
+                  "not lead-conditioned, so the model itself gets no lead input.",
+                  flush=True)
+        return None
+    if lead is None:
+        raise SystemExit(f"ERROR: this checkpoint is lead-conditioned on {ck_leads}. "
+                         "Pass --lead <minutes> so the right shard and embedding "
+                         "are used.")
+    if lead not in ck_leads:
+        raise SystemExit(f"ERROR: --lead {lead} was not trained; checkpoint leads "
+                         f"are {ck_leads}.")
+    return ck_leads.index(lead)
 
 
 def read_truth(npz_files):
@@ -224,7 +247,8 @@ def main():
         print("WARNING: no GPU found; sampling on CPU is very slow.", flush=True)
 
     mm, files, n, meta = open_split(args.latents_dir, args.split, args.lead)
-    den, _, cond_mode = load_denoiser(args.ckpt, device)
+    den, _, cond_mode, ck_leads = load_denoiser(args.ckpt, device)
+    lead_idx = resolve_lead_idx(ck_leads, args.lead)
     vae = load_codec(args.vae, meta, device, strict_sha=not args.allow_vae_mismatch)
     latent_scale = float(meta["latent_scale"])
     mean, std = float(meta["norm"]["mean"]), float(meta["norm"]["std"])
@@ -242,7 +266,7 @@ def main():
     members = sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
                               members=args.members, steps=args.steps,
                               guidance=args.guidance, churn=args.churn,
-                              seed=args.seed, device=device)
+                              seed=args.seed, device=device, lead_idx=lead_idx)
 
     npz = os.path.join(args.out, "ensembles.npz")
     np.savez_compressed(npz, y=y, A=A, persistence=P, valid=V, members=members,

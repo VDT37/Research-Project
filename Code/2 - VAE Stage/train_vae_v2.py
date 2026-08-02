@@ -454,10 +454,22 @@ def main():
     ap.add_argument("--out", default=OUT)
     ap.add_argument("--resume", default=None, help="path to vae_last.pt")
     ap.add_argument("--verify-only", action="store_true")
+    ap.add_argument("--psd-tol", type=float, default=0.15,
+                    help="vae_best_psd.pt only considers epochs whose val rec_w is "
+                         "within this fraction of the best, so chasing PSD can never "
+                         "select a badly-reconstructing codec")
+    ap.add_argument("--ignore-done", action="store_true",
+                    help="train even if a DONE marker exists in --out")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
     torch.manual_seed(0); random.seed(0); np.random.seed(0)
     device = "cuda" if torch.cuda.is_available() else "cpu"
+
+    done_p = os.path.join(args.out, "DONE")
+    if os.path.exists(done_p) and not (args.ignore_done or args.verify_only):
+        print(f"DONE marker exists ({done_p}); nothing to do. Use --ignore-done to "
+              "train further (raise --epochs too), or delete it.", flush=True)
+        return
 
     va_npz = sorted(glob.glob(os.path.join(args.root, "val", "*", "*.npz")))
     if not va_npz:
@@ -571,6 +583,7 @@ def main():
 
     # ---- resume ------------------------------------------------------------
     start_ep, best, best_ep, global_step = 1, float("inf"), 0, 0
+    best_psd_score, best_psd_ep, best_psd_val = float("inf"), 0, float("nan")
     log = []
     if resume_ck is not None:
         if "opt_g" not in resume_ck:
@@ -612,6 +625,10 @@ def main():
 
     # ---- training loop -----------------------------------------------------
     t_all = time.time()
+    ep = start_ep - 1        # bound even if the loop never runs (resume past --epochs)
+    if start_ep > args.epochs:
+        print(f"resume: checkpoint is already at epoch {start_ep - 1} >= --epochs "
+              f"{args.epochs}; nothing to train, writing DONE.", flush=True)
     for ep in range(start_ep, args.epochs + 1):
         model.train()
         if gan:
@@ -717,6 +734,22 @@ def main():
             best, best_ep = vl_w, ep
             atomic_save(ckpt_payload(lat, full=False), os.path.join(args.out, "vae_best.pt"))
             print(f"  new best (val rec_w {best:.4f}) -> vae_best.pt", flush=True)
+        # Second selection criterion: small-scale power. vae_best.pt ranks on
+        # reconstruction loss ALONE, which is why epoch 9 (PSD 0.739) was kept over
+        # epoch 10 (PSD 0.884) in the first v2 run. The diffusion stage cares about
+        # PSD, and vae_last.pt is overwritten every epoch, so a good-PSD epoch is
+        # otherwise unrecoverable. Score |psd - 1| (over-sharp is as wrong as blurred)
+        # and require the reconstruction to stay within psd-tol of the best seen, so
+        # this never selects a checkpoint that reconstructs badly.
+        psd_now = dm.get("psd_ratio_2_8km", float("nan"))
+        if ep > grace_ep and math.isfinite(psd_now) and vl_w <= best * (1.0 + args.psd_tol):
+            score = abs(psd_now - 1.0)
+            if score < best_psd_score:
+                best_psd_score, best_psd_ep, best_psd_val = score, ep, psd_now
+                atomic_save(ckpt_payload(lat, full=False),
+                            os.path.join(args.out, "vae_best_psd.pt"))
+                print(f"  new best PSD ({psd_now:.3f}, |psd-1| {score:.3f}, "
+                      f"val rec_w {vl_w:.4f}) -> vae_best_psd.pt", flush=True)
         atomic_save(ckpt_payload(lat, full=True), os.path.join(args.out, "vae_last.pt"))
         atomic_json(log, os.path.join(args.out, "train_log.json"))
         plot_curves(log, os.path.join(args.out, "training_curves.png"))
@@ -732,6 +765,16 @@ def main():
                   f"(best ep{best_ep or 'none'}, val rec_w {best:.4f})", flush=True)
             break
 
+    # ---- completion marker: stops the sbatch self-resubmit chain -----------
+    # Written on normal completion or early stop, so a chained job that starts
+    # afterwards exits immediately instead of retraining. Delete it (or pass
+    # --ignore-done) to extend a finished run with more epochs.
+    atomic_json({"reason": "early-stop" if ep < args.epochs else "completed",
+                 "epochs_run": ep, "best_val_rec_w": best, "best_ep": best_ep,
+                 "best_psd": best_psd_val, "best_psd_ep": best_psd_ep,
+                 "wall_min": round((time.time() - t_all) / 60, 1)},
+                os.path.join(args.out, "DONE"))
+
     # ---- final: reload best and run the full verification ------------------
     bp = os.path.join(args.out, "vae_best.pt")
     if os.path.exists(bp):
@@ -740,6 +783,10 @@ def main():
         print(f"\ntotal time {(time.time()-t_all)/60:.1f} min | "
               f"best val rec_w {best:.4f} (ep{best_ep}) | "
               f"latent_scale {ck['latent_scale']:.3f}", flush=True)
+        if best_psd_ep:
+            print(f"best PSD {best_psd_val:.3f} at ep{best_psd_ep} -> vae_best_psd.pt "
+                  "(use this one for the diffusion stage if PSD is the priority)",
+                  flush=True)
         verify(model, va_npz, mean, std, device, os.path.join(args.out, "vae_verify.png"))
     else:
         print("\nno vae_best.pt was saved (run ended before the grace period); "
