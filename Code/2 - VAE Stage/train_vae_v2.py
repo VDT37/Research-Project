@@ -598,11 +598,31 @@ def main():
             opt_d.load_state_dict(resume_ck["opt_d"])
         start_ep = resume_ck["epoch"] + 1
         best, best_ep = resume_ck.get("best", float("inf")), resume_ck.get("best_ep", 0)
+        # .get with defaults keeps older checkpoints (written before this existed)
+        # loadable; they simply start the PSD search fresh.
+        best_psd_score = resume_ck.get("best_psd_score", float("inf"))
+        best_psd_ep    = resume_ck.get("best_psd_ep", 0)
+        best_psd_val   = resume_ck.get("best_psd_val", float("nan"))
         global_step = resume_ck.get("global_step", (start_ep - 1) * nsteps)
         lp = os.path.join(args.out, "train_log.json")
         if os.path.exists(lp):
             log = json.load(open(lp))
         print(f"resumed at epoch {start_ep} (best {best:.4f} @ ep{best_ep})", flush=True)
+
+    # Second guard, for the window between the two saves: vae_best_psd.pt is
+    # written before vae_last.pt, so a kill in between leaves a good psd
+    # checkpoint on disk that the resumed (older) state does not know about.
+    # Trust whichever score is better.
+    bpp = os.path.join(args.out, "vae_best_psd.pt")
+    if os.path.exists(bpp):
+        try:
+            on_disk = torch.load(bpp, map_location="cpu").get("best_psd_score")
+        except Exception:
+            on_disk = None
+        if on_disk is not None and float(on_disk) < best_psd_score:
+            best_psd_score = float(on_disk)
+            print(f"vae_best_psd.pt on disk holds |psd-1| {best_psd_score:.3f}; "
+                  "keeping it unless beaten", flush=True)
 
     def latent_scale_now():
         with torch.no_grad():
@@ -615,7 +635,12 @@ def main():
               "norm": {"mean": mean, "std": std,
                        "dbr_thresh": DBR_THRESH, "dbr_zero": DBR_ZERO},
               "latent_scale": lat_scale, "epoch": ep,
-              "best": best, "best_ep": best_ep}
+              "best": best, "best_ep": best_ep,
+              # PSD-selection state must persist too: it is the ONLY thing that
+              # decides whether vae_best_psd.pt gets overwritten, so losing it on
+              # a chained resume would let a worse epoch replace a better one.
+              "best_psd_score": best_psd_score, "best_psd_ep": best_psd_ep,
+              "best_psd_val": best_psd_val}
         if full:
             ck.update({"disc": disc.state_dict() if gan else None,
                        "opt_g": opt_g.state_dict(),
