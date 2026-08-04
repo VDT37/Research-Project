@@ -457,9 +457,17 @@ def sampled_diagnostics(denoiser, vae, diag, cond_diag, zA_diag, latent_scale,
     zA = zA_diag.repeat_interleave(M, dim=0).to(device)
     lead = (lead_diag.repeat_interleave(M, dim=0).to(device)
             if lead_diag is not None else None)
-    delta_hat = edm_sample(denoiser, cond, steps=args.sample_steps,
-                           guidance=args.guidance, churn=args.churn, generator=g,
-                           lead_idx=lead)
+    # Sample in chunks so --sample-crops can be raised without OOM: the UNet sees
+    # K*M latents at once otherwise. The default chunk (128) equals the old
+    # K=16, M=8 batch, so a 16-crop run draws noise in exactly the same order and
+    # reproduces the previous numbers bit for bit.
+    lat = []
+    step = max(1, args.sample_batch)
+    for s in range(0, cond.shape[0], step):
+        lat.append(edm_sample(denoiser, cond[s:s + step], steps=args.sample_steps,
+                              guidance=args.guidance, churn=args.churn, generator=g,
+                              lead_idx=None if lead is None else lead[s:s + step]))
+    delta_hat = torch.cat(lat)
     mu_hat = (zA + delta_hat) / latent_scale
     outs = []
     for s in range(0, mu_hat.shape[0], 32):
@@ -484,7 +492,11 @@ def sampled_diagnostics(denoiser, vae, diag, cond_diag, zA_diag, latent_scale,
                 c[t] += [np.sum(V & o & p), np.sum(V & o & ~p), np.sum(V & ~o & p)]
         crps_m += crps_ensemble(members[k], y, V)
         crps_a += float(np.abs(A - y)[V].mean())    # CRPS of a point forecast = MAE
-        if V.mean() > 0.99 and n_psd < 8:
+        # PSD was hard-capped at 8 crops here, which is what made the preliminary
+        # +60 diagnostic report 0.955 against a true 0.644 on the full split
+        # (Diffusion_Run1_Results.md section 7). It is now a flag, because the
+        # codec comparison turns on this number.
+        if V.mean() > 0.99 and n_psd < args.psd_crops:
             po = radial_psd(y)
             ps = np.mean([radial_psd(members[k, m]) for m in range(M)], axis=0)
             psd_o = po if psd_o is None else psd_o + po
@@ -630,6 +642,12 @@ def main():
     ap.add_argument("--sample-steps", type=int, default=25)
     ap.add_argument("--sample-members", type=int, default=8)
     ap.add_argument("--sample-crops", type=int, default=16)
+    ap.add_argument("--sample-batch", type=int, default=128,
+                    help="latents per sampling pass in the diagnostic (crops x members). "
+                         "128 reproduces the old unchunked K=16, M=8 behaviour exactly.")
+    ap.add_argument("--psd-crops", type=int, default=64,
+                    help="crops contributing to the diagnostic PSD ratio (was hard-coded "
+                         "at 8, which is too few to be stable). Capped by --sample-crops.")
     ap.add_argument("--guidance", type=float, default=1.0,
                     help="CF guidance weight for diagnostics (1 = plain conditional)")
     ap.add_argument("--churn", type=float, default=0.0, help="EDM S_churn for diagnostics")
