@@ -645,6 +645,10 @@ def main():
     ap.add_argument("--sample-batch", type=int, default=128,
                     help="latents per sampling pass in the diagnostic (crops x members). "
                          "128 reproduces the old unchunked K=16, M=8 behaviour exactly.")
+    ap.add_argument("--no-keep-sampled", dest="keep_sampled", action="store_false",
+                    help="do not archive EMA weights as ckpt_epNNN.pt at each sampled "
+                         "epoch. Default is to keep them (~263 MB each); diff_best.pt "
+                         "ranks on val loss alone, which is anti-correlated with PSD.")
     ap.add_argument("--psd-crops", type=int, default=64,
                     help="crops contributing to the diagnostic PSD ratio (was hard-coded "
                          "at 8, which is too few to be stable). Capped by --sample-crops.")
@@ -990,6 +994,19 @@ def main():
             else:
                 print(f"  val improved ({vl_w:.4f}) but diff_best.pt already holds "
                       f"{best_disk:.4f} (from a run killed mid-save); kept", flush=True)
+        # Archive the EMA weights at every sampled epoch. diff_best.pt ranks on val
+        # loss alone, but val loss and small-scale power move in opposite
+        # directions, so the loss-best checkpoint is systematically the smoothest
+        # one the run produced (multi-lead run 1: ep15 beat ep40 by 35% on CSI@8
+        # and 24% on PSD for a 2.6% MAE cost, yet ep40 held diff_best.pt).
+        # diff_last.pt is overwritten every epoch, so without this a good-PSD
+        # epoch is unrecoverable. Keeping the sampled epochs lets the choice be
+        # made afterwards from a real evaluation instead of a few-crop proxy.
+        if sampled and args.keep_sampled:
+            ck = ckpt_best()
+            ck["val_loss"] = vl_w            # this epoch's, not the running best
+            ck["sampled"] = sampled
+            atomic_save(ck, os.path.join(args.out, f"ckpt_ep{ep:03d}.pt"))
         atomic_save(ckpt_last(), os.path.join(args.out, "diff_last.pt"))
         atomic_json(log, os.path.join(args.out, "train_log.json"))
         plot_curves(log, os.path.join(args.out, "curves.png"))
