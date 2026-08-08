@@ -133,7 +133,22 @@ def crps_fair(members, obs, valid):
 # Main evaluation stream
 # ----------------------------------------------------------------------------
 def evaluate(args, device):
-    mm, files, n, meta = open_split(args.latents_dir, args.split, args.lead, args.limit)
+    mm, files, n_all, meta = open_split(args.latents_dir, args.split, args.lead)
+    # --limit must SUBSAMPLE the split, never truncate it. Row order is pack order,
+    # which pack_latents.py builds as sorted(glob(prior_ml/{split}/YYYYMMDD/*.npz)),
+    # so it is chronological: taking the first N crops returns the earliest val days
+    # only (winter and early spring) and biases every regime-sensitive metric, CSI@8
+    # worst of all. A deterministic stride spans the whole record, needs no seed, and
+    # mirrors what train_diffusion.load_diag_crops already does for its fixed crops.
+    if args.limit and args.limit < n_all:
+        idx = np.unique(np.linspace(0, n_all - 1, args.limit).round().astype(int))
+    else:
+        idx = np.arange(n_all)
+    n = len(idx)
+    # Sanity line: a truncating --limit would show first and last on the same day.
+    print(f"  crops {n}/{n_all} ({'stride' if n < n_all else 'full split'}) | "
+          f"first {os.path.basename(os.path.dirname(files[idx[0]]))} | "
+          f"last {os.path.basename(os.path.dirname(files[idx[-1]]))}", flush=True)
     den, ck, cond_mode, ck_leads = load_denoiser(args.ckpt, device)
     lead_idx = resolve_lead_idx(ck_leads, args.lead)
     vae = load_codec(args.vae, meta, device, strict_sha=not args.allow_vae_mismatch)
@@ -162,12 +177,18 @@ def evaluate(args, device):
     n_psd = 0
     fss_done = 0
     fss_every = max(1, n // max(args.fss_sample, 1))
+    # PSD used to accept the first psd_sample crops that pass the validity filter,
+    # which on a full split meant the earliest ~200 crops, under half of one val day.
+    # Space them over the whole record instead. The >= n_psd * psd_stride test is
+    # self-correcting: if the validity filter rejects a crop the next qualifying one
+    # is taken, so the sample still fills to psd_sample where the data allows.
+    psd_stride = n / max(args.psd_sample, 1)
 
     rng = np.random.default_rng(args.seed)
     t0 = time.time()
     done = 0
     for s0 in range(0, n, args.batch):
-        sel = np.arange(s0, min(s0 + args.batch, n))
+        sel = idx[s0:s0 + args.batch]
         rows = torch.from_numpy(np.asarray(mm[sel], dtype="float32"))
         y, A, P, V = read_truth([files[i] for i in sel])
         members = sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
@@ -177,6 +198,7 @@ def evaluate(args, device):
         ens = members.mean(axis=1)
 
         for b in range(len(sel)):
+            pos = s0 + b                      # position within idx, not the raw row
             v = V[b]
             if not v.any():
                 continue
@@ -216,7 +238,8 @@ def evaluate(args, device):
                 vals = F[v]
                 hist[key] += np.histogram(vals[vals >= WET], bins=rbins)[0]
                 wet_area[key][0] += float((vals >= WET).mean()); wet_area[key][1] += 1
-            if v.mean() > 0.99 and n_psd < args.psd_sample:
+            if (v.mean() > 0.99 and n_psd < args.psd_sample
+                    and pos >= n_psd * psd_stride):
                 for key, F in (("obs", y[b]), ("model_mean", ens[b]),
                                ("model_member", members[b, 0]),
                                ("advection", A[b]), ("persistence", P[b])):
@@ -225,7 +248,7 @@ def evaluate(args, device):
                 n_psd += 1
 
             # ---- FSS on a subsample (uniform_filter is the expensive part) ----
-            if (s0 + b) % fss_every == 0:
+            if pos % fss_every == 0:
                 for name, F in (("model_mean", ens[b]), ("model_m0", members[b, 0]),
                                 ("advection", A[b]), ("persistence", P[b])):
                     for t in THRESHOLDS:
@@ -275,6 +298,8 @@ def evaluate(args, device):
             "n_psd": n_psd,
             "wet_area": {k: (v[0] / max(v[1], 1)) for k, v in wet_area.items()}}
     return {"split": args.split, "lead": args.lead, "n_crops": n,
+            "n_crops_available": n_all,
+            "subsample": "stride" if n < n_all else "full",
             "members": M, "steps": args.steps, "guidance": args.guidance,
             "churn": args.churn, "seed": args.seed,
             "ckpt": os.path.abspath(args.ckpt),
