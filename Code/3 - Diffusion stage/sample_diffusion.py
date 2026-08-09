@@ -41,10 +41,10 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-# train_diffusion.py sits next to this file and already resolves train_vae_v2
+# train_ldm.py sits next to this file and already resolves train_vae_v2
 # across the Code/<stage>/ layout, so importing it fixes both.
-from train_diffusion import (ZC, COND_CH, UNet, EDMDenoiser, edm_sample,
-                             LatentRows, load_pack_meta, shard_suffix)
+from train_ldm import (ZC, COND_CH, UNet, EDMDenoiser, edm_sample,
+                       LatentRows, load_pack_meta, shard_suffix)
 from train_vae_v2 import VAE, from_dbr
 
 USER    = getpass.getuser()
@@ -60,7 +60,14 @@ VAE_CKPT = os.path.expanduser("~/dissertation_outputs/vae_v2/vae_best.pt")
 # ----------------------------------------------------------------------------
 def load_denoiser(ckpt_path, device):
     """Rebuild the denoiser from a diff_best.pt / diff_last.pt checkpoint.
-    diff_best.pt holds the EMA weights, which is what should be sampled from."""
+    diff_best.pt holds the EMA weights, which is what should be sampled from.
+
+    The stem width is NOT a constant: a CorrDiff checkpoint trained with
+    --hr-mean-cond on carries 4 extra conditioning channels (mu_r), so its
+    stem.weight is (width, 28, 3, 3) and rebuilding a 24-channel stem raises a
+    size-mismatch RuntimeError on load_state_dict. The flag is read back out of
+    the checkpoint config, which is why train_corrdiff.py stores the RESOLVED
+    value there (CorrDiff_Design.md 3.8)."""
     if not os.path.exists(ckpt_path):
         raise SystemExit(f"ERROR: checkpoint not found: {ckpt_path}")
     ck = torch.load(ckpt_path, map_location=device)
@@ -68,12 +75,14 @@ def load_denoiser(ckpt_path, device):
     sigma_data = ck.get("sigma_data", cfg.get("sigma_data"))
     if sigma_data is None:
         raise SystemExit("ERROR: checkpoint has no sigma_data; it was not written "
-                         "by this version of train_diffusion.py")
+                         "by this version of train_ldm.py")
     mults = tuple(int(m) for m in cfg["mults"].split(","))
     attn = tuple(int(r) for r in cfg["attn"].split(",") if r.strip())
     cond_mode = ck.get("cond_mode", cfg["cond_mode"])
     ck_leads = cfg.get("leads")                    # None for a single-lead model
-    unet = UNet(in_ch=ZC + COND_CH[cond_mode], out_ch=ZC, width=cfg["width"],
+    hr_mean_cond = cfg.get("hr_mean_cond", "off") == "on"
+    in_ch = ZC + COND_CH[cond_mode] + (ZC if hr_mean_cond else 0)
+    unet = UNet(in_ch=in_ch, out_ch=ZC, width=cfg["width"],
                 mults=mults, dropout=cfg["dropout"], attn_res=attn,
                 n_leads=len(ck_leads) if ck_leads else 0)
     den = EDMDenoiser(unet, sigma_data).to(device)
@@ -82,9 +91,15 @@ def load_denoiser(ckpt_path, device):
     n = sum(p.numel() for p in den.parameters())
     print(f"denoiser: {ckpt_path}", flush=True)
     print(f"  epoch {ck.get('epoch')} | val_loss {ck.get('val_loss', float('nan')):.4f} "
-          f"| {n/1e6:.1f}M params | cond={cond_mode} | sigma_data={sigma_data:.4f}"
-          f"{' | leads ' + str(ck_leads) if ck_leads else ''}", flush=True)
-    return den, ck, cond_mode, ck_leads
+          f"| {n/1e6:.1f}M params | cond={cond_mode} | in_ch={in_ch} "
+          f"| sigma_data={sigma_data:.4f}"
+          f"{' | leads ' + str(ck_leads) if ck_leads else ''}"
+          f"{' | CorrDiff: hr_mean_cond on' if hr_mean_cond else ''}", flush=True)
+    if cfg.get("mu_dir") and not hr_mean_cond:
+        print("  NOTE: this checkpoint was trained on the residual r' = delta - mu_r "
+              "with hr_mean_cond off. The mean still enters through the ANCHOR, so "
+              "sampling it without a mu pack gives wrong fields.", flush=True)
+    return den, ck, cond_mode, ck_leads, hr_mean_cond
 
 
 def load_codec(vae_path, pack_meta, device, strict_sha=True):
@@ -119,16 +134,30 @@ def load_codec(vae_path, pack_meta, device, strict_sha=True):
 @torch.no_grad()
 def sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
                     members=8, steps=25, guidance=1.0, churn=0.0, seed=0,
-                    device="cuda", decode_batch=32, lead_idx=None):
+                    device="cuda", decode_batch=32, lead_idx=None,
+                    mu=None, hr_mean_cond=False):
     """rows: (K, 24, 64, 64) scaled latents -> (K, members, 256, 256) mm/h.
 
     One member at a time across all K crops, so peak memory scales with K, not
     K*members. Each member uses a distinct generator seed, which is what makes
-    the ensemble an ensemble (the Heun sampler itself is deterministic)."""
+    the ensemble an ensemble (the Heun sampler itself is deterministic).
+
+    CorrDiff arm: mu is the frozen regression mean (K, 4, 64, 64) for the same
+    crops, read from a pack_mu.py memmap. Note the asymmetry, which is the whole
+    point of the --hr-mean-cond flag: the mean always enters the target through
+    the ANCHOR (z_A + mu_r, because the sampler returns r' = delta - mu_r), but
+    it enters the CONDITIONING only when the flag is on. Moving the anchor
+    without widening the conditioning would crash on a 28-channel stem
+    (CorrDiff_Design.md 3.8)."""
     K = rows.shape[0]
     rows = rows.to(device)
     cond = rows[:, :5 * ZC] if cond_mode == "full" else rows[:, 4 * ZC:5 * ZC]
     zA = rows[:, 4 * ZC:5 * ZC]
+    if mu is not None:
+        mu = mu.to(device)
+        if hr_mean_cond:
+            cond = torch.cat([cond, mu], dim=1)
+    anchor = zA if mu is None else zA + mu
     li = (torch.full((K,), int(lead_idx), dtype=torch.long, device=device)
           if lead_idx is not None else None)
     out = np.empty((K, members, 256, 256), dtype="float32")
@@ -136,10 +165,10 @@ def sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
         g = torch.Generator(device=device).manual_seed(seed + 1000 * m)
         delta = edm_sample(den, cond, steps=steps, guidance=guidance,
                            churn=churn, generator=g, lead_idx=li)
-        mu = (zA + delta) / latent_scale
+        mu_lat = (anchor + delta) / latent_scale
         dec = []
         for s in range(0, K, decode_batch):
-            dec.append(vae.decode(mu[s:s + decode_batch]).float().cpu())
+            dec.append(vae.decode(mu_lat[s:s + decode_batch]).float().cpu())
         y_dbr = torch.cat(dec)[:, 0].numpy() * std + mean
         out[:, m] = from_dbr(y_dbr)
     return out
@@ -179,6 +208,28 @@ def read_truth(npz_files):
         P.append(z["x_mmh"].astype("float32")[-1])
         V.append(z["valid"] & np.isfinite(z["A_mmh"]) & np.isfinite(z["x_mmh"][-1]))
     return (np.stack(y), np.stack(A), np.stack(P), np.stack(V))
+
+
+def check_corrdiff_pairing(ck, mu_dir):
+    """A CorrDiff checkpoint sampled without its mu pack, or a plain checkpoint
+    sampled with one, produces silently wrong fields rather than an error: the
+    anchor would be missing (or spuriously carrying) the learned mean. Refuse
+    both (CorrDiff_Design.md 4.3).
+
+    This reads only the checkpoint's own config, so it carries no knowledge of the
+    mu pack format and this file stays independent of train_corrdiff.py. The pack
+    readers live there and are imported lazily by the callers that need them."""
+    trained_with_mu = bool(ck.get("config", {}).get("mu_dir"))
+    if trained_with_mu and not mu_dir:
+        raise SystemExit(
+            "ERROR: this checkpoint was trained on the CorrDiff residual "
+            f"r' = delta - mu_r (config mu_dir={ck['config']['mu_dir']}). Pass "
+            "--mu-dir pointing at the pack_mu.py output built from the SAME frozen "
+            "regression, or the reconstruction is missing the learned mean.")
+    if mu_dir and not trained_with_mu:
+        raise SystemExit(
+            "ERROR: --mu-dir was given but this checkpoint was trained on plain "
+            "delta = z_y - z_A. Adding mu_r to the anchor would double-count it.")
 
 
 def open_split(latents_dir, split, lead=None, limit=None):
@@ -239,6 +290,11 @@ def main():
     ap.add_argument("--stride", type=int, default=None,
                     help="pick crops every N rows (default: spread evenly)")
     ap.add_argument("--out", default=os.path.join(DIFF, "samples"))
+    ap.add_argument("--mu-dir", default=None,
+                    help="pack_mu.py directory, REQUIRED for a CorrDiff checkpoint "
+                         "(one trained with train_corrdiff.py)")
+    ap.add_argument("--reg-sha", default=None,
+                    help="assert the mu pack's regression sha256; fatal on mismatch")
     ap.add_argument("--allow-vae-mismatch", action="store_true")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
@@ -247,7 +303,15 @@ def main():
         print("WARNING: no GPU found; sampling on CPU is very slow.", flush=True)
 
     mm, files, n, meta = open_split(args.latents_dir, args.split, args.lead)
-    den, _, cond_mode, ck_leads = load_denoiser(args.ckpt, device)
+    den, ck, cond_mode, ck_leads, hr_mean_cond = load_denoiser(args.ckpt, device)
+    check_corrdiff_pairing(ck, args.mu_dir)
+    mu_mm = None
+    if args.mu_dir:
+        # Imported here, not at module scope: this file is the generic sampler and
+        # only needs the CorrDiff pack reader when a CorrDiff run is being sampled.
+        from train_corrdiff import open_mu_split
+        mu_mm = open_mu_split(args.mu_dir, args.latents_dir, args.split, args.lead,
+                              n_rows=n, reg_sha=args.reg_sha)[0]
     lead_idx = resolve_lead_idx(ck_leads, args.lead)
     vae = load_codec(args.vae, meta, device, strict_sha=not args.allow_vae_mismatch)
     latent_scale = float(meta["latent_scale"])
@@ -259,6 +323,8 @@ def main():
     else:
         sel = np.linspace(0, n - 1, K).astype(int)
     rows = torch.from_numpy(np.asarray(mm[sel], dtype="float32"))
+    mu_rows = (torch.from_numpy(np.asarray(mu_mm[sel], dtype="float32"))
+               if mu_mm is not None else None)
     y, A, P, V = read_truth([files[i] for i in sel])
 
     print(f"sampling {K} crops x {args.members} members, {args.steps} steps "
@@ -266,7 +332,8 @@ def main():
     members = sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
                               members=args.members, steps=args.steps,
                               guidance=args.guidance, churn=args.churn,
-                              seed=args.seed, device=device, lead_idx=lead_idx)
+                              seed=args.seed, device=device, lead_idx=lead_idx,
+                              mu=mu_rows, hr_mean_cond=hr_mean_cond)
 
     npz = os.path.join(args.out, "ensembles.npz")
     np.savez_compressed(npz, y=y, A=A, persistence=P, valid=V, members=members,

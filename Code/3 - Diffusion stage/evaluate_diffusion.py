@@ -39,12 +39,26 @@ defaults (8 members, 25 steps) that is ~392 forward passes per crop, so a full
 split takes hours on an A100. Use --limit for a first pass, and --members /
 --steps to trade cost against ensemble quality.
 
+CorrDiff arm: pass --mu-dir (and optionally --reg-sha) when scoring a checkpoint
+trained by train_corrdiff.py. The frozen regression mean is read from
+the pack_mu.py memmap, sliced with the same strided index as the latents, and
+passed to sample_ensemble, which moves the anchor to z_A + mu_r and widens the
+conditioning when the checkpoint was trained with hr_mean_cond on. Pairing is
+checked both ways and a mismatch is fatal.
+
+Every scorecard carries its git hash, host, GPU, argv and --batch, and appends a
+row to runs.jsonl in --out. The raw contingency counts, the FSS numerator and
+denominator, and the CRPS / spread / rank pixel counts are all stored, because
+four per-lead scorecards have to be pooled exactly by pool_scorecards.py and an
+average of four ratios is not a pooled ratio.
+
 Outputs -> --out (default ~/dissertation_outputs/diffusion/eval/)
     diffusion_eval.json    machine-readable scorecard (the runs-table record)
     diffusion_eval.md      paste-ready tables for the report
     diffusion_eval.png     histogram / PSD / CSI / reliability / rank / spread
+    runs.jsonl             append-only one row per invocation
 """
-import os, json, time, getpass, argparse
+import os, sys, json, time, socket, getpass, argparse
 
 import numpy as np
 import torch
@@ -54,8 +68,9 @@ import matplotlib.pyplot as plt
 from scipy.ndimage import uniform_filter
 
 from sample_diffusion import (load_denoiser, load_codec, sample_ensemble,
-                              read_truth, open_split, resolve_lead_idx,
-                              LATENTS, DIFF, VAE_CKPT)
+                              read_truth, open_split, check_corrdiff_pairing,
+                              resolve_lead_idx, LATENTS, DIFF, VAE_CKPT)
+from train_ldm import git_hash
 from train_vae_v2 import radial_psd, atomic_json
 
 USER = getpass.getuser()
@@ -63,6 +78,87 @@ THRESHOLDS = [0.5, 1.0, 2.0, 4.0, 8.0]          # mm/h, same as evaluate_advecti
 SCALES     = [1, 5, 11, 21, 51, 101]            # km, same as fss_analysis
 WET        = 0.1                                # mm/h -> "raining"
 METHODS    = ("model_mean", "model_member", "advection", "persistence")
+
+# Wavelength bands for the spectral decomposition, as half-open intervals so they
+# PARTITION the resolved spectrum. Overlapping edges are not cosmetic: an earlier
+# band table in this project double-counted them and its variance shares summed to
+# 105.3%. The 2-8 km headline band is exactly the union of the last two rows.
+PSD_BANDS = (("gt_32km", 32.0, None), ("16_32km", 16.0, 32.0),
+             ("8_16km", 8.0, 16.0), ("4_8km", 4.0, 8.0), ("2_4km", 2.0, 4.0))
+
+
+def psd_band_metrics(psd_model, psd_obs, domain_km=256.0):
+    """Band ratios from two radially averaged PSD arrays.
+
+    The 2-8 km band MASK is train_vae_v2.domain_metrics' verbatim (k = 1.., wl =
+    256/k, 2 <= wl <= 8, i.e. radial wavenumbers 32..128), so every PSD number in
+    this project sits on the same axis. The REDUCTION over that mask is NOT
+    inherited: train_vae_v2 line 336 is a mean of per-wavenumber ratios, and the
+    two estimators disagree materially (single60 member: 0.763 band power against
+    0.644 mean-of-ratios, and the apparent advantage over advection collapses from
+    about +15% to about +3%). Both are emitted, with the band POWER ratio as the
+    headline because it is the physically meaningful quantity, the fraction of
+    band variance the forecast reproduces (CorrDiff_Design.md 3.4 and 10.7)."""
+    if psd_model is None or psd_obs is None:
+        return None
+    m = np.asarray(psd_model, dtype="float64")[1:]     # drop the DC bin
+    o = np.asarray(psd_obs, dtype="float64")[1:]
+    n = min(len(m), len(o))
+    m, o = m[:n], o[:n]
+    wl = domain_km / np.arange(1, n + 1)
+    band = (wl >= 2.0) & (wl <= 8.0)
+    out = {"psd_band_power": float(m[band].sum() / max(o[band].sum(), 1e-12)),
+           "psd_mean_ratio": float(np.mean(m[band] / np.maximum(o[band], 1e-12))),
+           "n_wavenumbers_2_8km": int(band.sum()), "bands": {}}
+    total_o = float(o[wl >= 2.0].sum())
+    for name, lo, hi in PSD_BANDS:
+        b = (wl >= lo) if lo == 2.0 else (wl > lo)
+        if hi is not None:
+            b = b & (wl <= hi)
+        po, pm = float(o[b].sum()), float(m[b].sum())
+        out["bands"][name] = {"ratio": pm / max(po, 1e-12),
+                              "obs_power": po, "model_power": pm,
+                              "obs_share": po / max(total_o, 1e-12),
+                              "n_wavenumbers": int(b.sum())}
+    return out
+
+
+def run_stamp(args, extra=None):
+    """The provenance block every scorecard carries. The training scripts already
+    write runs.jsonl and stamp a git hash; the scoring scripts did not, and this
+    arm is about to produce a large number of scorecards, so the gap closes first
+    (CorrDiff_Design.md 3.6). --batch is here because evaluate_diffusion seeds per
+    crop-batch as seed + 7919*s0: a scorecard that does not record its batch size
+    cannot be paired with another one."""
+    s = {"git": git_hash(), "host": socket.gethostname(),
+         "gpu": (torch.cuda.get_device_name(0)
+                 if torch.cuda.is_available() else "cpu"),
+         "ts": time.strftime("%Y-%m-%dT%H:%M:%S"), "argv": sys.argv,
+         "batch": args.batch, "tag": args.tag}
+    if extra:
+        s.update(extra)
+    return s
+
+
+RUN_KEYS = ("ts", "git", "host", "gpu", "split", "lead", "n_crops",
+            "n_crops_available", "subsample", "members", "steps", "guidance",
+            "churn", "batch", "seed", "ckpt", "ckpt_epoch", "vae_sha256",
+            "sigma_data", "wall_min", "tag", "field", "reg_ckpt", "reg_sha256",
+            "mu_dir")
+
+
+def append_runs_row(r, methods, out_dir):
+    """One compact append-only row per scorecard. Built by intersection so the
+    same helper serves the probabilistic and the deterministic scorer."""
+    row = {k: r[k] for k in RUN_KEYS if k in r}
+    row["MAE"] = {m: r["deterministic"][m]["MAE_mmh"] for m in methods}
+    row["CSI8"] = {m: r["deterministic"][m]["by_threshold"][8.0]["CSI"]
+                   for m in methods}
+    if "probabilistic" in r:
+        row["CRPS_fair_mmh"] = r["probabilistic"]["CRPS_fair_mmh"]
+    with open(os.path.join(out_dir, "runs.jsonl"), "a") as fh:
+        fh.write(json.dumps(row) + "\n")
+    return row
 
 
 # ----------------------------------------------------------------------------
@@ -100,7 +196,11 @@ def finish_det(acc):
             "POD": H / (H + M) if (H + M) else float("nan"),
             "FAR": F / (H + F) if (H + F) else float("nan"),
             "CSI": H / (H + M + F) if (H + M + F) else float("nan"),
-            "freq_bias": (H + F) / (H + M) if (H + M) else float("nan")}
+            "freq_bias": (H + F) / (H + M) if (H + M) else float("nan"),
+            # Keep the raw contingency counts. Ratios cannot be pooled across the
+            # four per-lead JSONs (averaging four CSIs is not a CSI), and
+            # re-running one lead costs 3.26 A100-hours (design 3.6, 3.9).
+            "counts": [H, M, F]}
     return out
 
 
@@ -139,7 +239,7 @@ def evaluate(args, device):
     # so it is chronological: taking the first N crops returns the earliest val days
     # only (winter and early spring) and biases every regime-sensitive metric, CSI@8
     # worst of all. A deterministic stride spans the whole record, needs no seed, and
-    # mirrors what train_diffusion.load_diag_crops already does for its fixed crops.
+    # mirrors what train_ldm.load_diag_crops already does for its fixed crops.
     if args.limit and args.limit < n_all:
         idx = np.unique(np.linspace(0, n_all - 1, args.limit).round().astype(int))
     else:
@@ -149,7 +249,18 @@ def evaluate(args, device):
     print(f"  crops {n}/{n_all} ({'stride' if n < n_all else 'full split'}) | "
           f"first {os.path.basename(os.path.dirname(files[idx[0]]))} | "
           f"last {os.path.basename(os.path.dirname(files[idx[-1]]))}", flush=True)
-    den, ck, cond_mode, ck_leads = load_denoiser(args.ckpt, device)
+    den, ck, cond_mode, ck_leads, hr_mean_cond = load_denoiser(args.ckpt, device)
+    # CorrDiff arm: the frozen mean is read from the pack_mu.py memmap and sliced
+    # with the SAME strided index as the latents, so alignment is by construction.
+    check_corrdiff_pairing(ck, args.mu_dir)
+    mu_mm = mu_meta = None
+    if args.mu_dir:
+        # Imported here rather than at module scope, so the generic evaluator does
+        # not depend on the CorrDiff trainer unless a CorrDiff run is being scored.
+        from train_corrdiff import open_mu_split
+        mu_mm, mu_meta = open_mu_split(args.mu_dir, args.latents_dir, args.split,
+                                       args.lead, n_rows=n_all,
+                                       reg_sha=args.reg_sha)
     lead_idx = resolve_lead_idx(ck_leads, args.lead)
     vae = load_codec(args.vae, meta, device, strict_sha=not args.allow_vae_mismatch)
     latent_scale = float(meta["latent_scale"])
@@ -190,11 +301,14 @@ def evaluate(args, device):
     for s0 in range(0, n, args.batch):
         sel = idx[s0:s0 + args.batch]
         rows = torch.from_numpy(np.asarray(mm[sel], dtype="float32"))
+        mu_rows = (torch.from_numpy(np.asarray(mu_mm[sel], dtype="float32"))
+                   if mu_mm is not None else None)
         y, A, P, V = read_truth([files[i] for i in sel])
         members = sample_ensemble(den, vae, rows, cond_mode, latent_scale, mean, std,
                                   members=M, steps=args.steps, guidance=args.guidance,
                                   churn=args.churn, seed=args.seed + 7919 * s0,
-                                  device=device, lead_idx=lead_idx)
+                                  device=device, lead_idx=lead_idx,
+                                  mu=mu_rows, hr_mean_cond=hr_mean_cond)
         ens = members.mean(axis=1)
 
         for b in range(len(sel)):
@@ -273,8 +387,16 @@ def evaluate(args, device):
     fss_out = {}
     for (name, t, sc), (num, den_) in fss.items():
         fss_out[f"{name}|{t}|{sc}"] = (1 - num / den_) if den_ > 0 else float("nan")
+        # FSS pools as 1 - sum(num)/sum(den) across leads, which needs both terms;
+        # the ratio alone is not poolable (design 3.6, 3.9).
+        fss_out[f"{name}|{t}|{sc}|num"] = num
+        fss_out[f"{name}|{t}|{sc}|den"] = den_
     prob = {
         "CRPS_fair_mmh": crps_sum / max(crps_n, 1),
+        "CRPS_n_pixels": crps_n,
+        "spread_n_pixels": spread_n,
+        "rank_n": float(rank_hist.sum()),
+        "outlier_count": int(outliers),
         "CRPS_estimator": "fair (Ferro 2014), 1/(2M(M-1)) spread term",
         "spread_rmse_ratio": (spread_sq_sum / max(spread_n, 1)) ** 0.5 /
                              max((err_sq_sum / max(spread_n, 1)) ** 0.5, 1e-9),
@@ -291,12 +413,20 @@ def evaluate(args, device):
                                              np.maximum(rel[t][:, 0], 1)).tolist()}
                         for t in THRESHOLDS},
     }
+    psd_avg = {k: (None if v is None else (v / max(n_psd, 1))) for k, v in psd.items()}
     dist = {"rbins": rbins.tolist(),
             "hist": {k: v.tolist() for k, v in hist.items()},
-            "psd": {k: (None if v is None else (v / max(n_psd, 1)).tolist())
-                    for k, v in psd.items()},
+            "psd": {k: (None if v is None else v.tolist()) for k, v in psd_avg.items()},
             "n_psd": n_psd,
-            "wet_area": {k: (v[0] / max(v[1], 1)) for k, v in wet_area.items()}}
+            # Band ratios computed here rather than offline, so the ml_v2
+            # comparator and the CorrDiff arm sit on the same axis by
+            # construction rather than by whoever recomputes them (design 10.7).
+            "psd_bands": {k: psd_band_metrics(psd_avg[k], psd_avg["obs"])
+                          for k in psd_avg if k != "obs"},
+            "wet_area": {k: (v[0] / max(v[1], 1)) for k, v in wet_area.items()},
+            # the denominator, so wet area pools exactly rather than as an
+            # average of per-lead averages
+            "wet_area_n": int(wet_area["obs"][1])}
     return {"split": args.split, "lead": args.lead, "n_crops": n,
             "n_crops_available": n_all,
             "subsample": "stride" if n < n_all else "full",
@@ -306,7 +436,12 @@ def evaluate(args, device):
             "ckpt_epoch": ck.get("epoch"), "ckpt_val_loss": ck.get("val_loss"),
             "vae_sha256": meta.get("vae_sha256"),
             "sigma_data": meta.get("sigma_data"),
+            "sigma_data_model": ck.get("sigma_data", ck["config"].get("sigma_data")),
+            "mu_dir": (os.path.abspath(args.mu_dir) if args.mu_dir else None),
+            "reg_sha256": (mu_meta or {}).get("reg_sha256"),
+            "hr_mean_cond": ck["config"].get("hr_mean_cond", "off"),
             "n_fss_crops": fss_done,
+            **run_stamp(args),
             "deterministic": res, "fss": fss_out, "probabilistic": prob,
             "distribution": dist}
 
@@ -435,6 +570,28 @@ def write_markdown(r, md):
     for t in THRESHOLDS:
         row = " | ".join(f"{r['fss'][f'model_m0|{t}|{s}']:.3f}" for s in SCALES)
         L.append(f"| member, {t:g} mm/h | {row} |")
+    bands = dist.get("psd_bands") or {}
+    if any(bands.values()):
+        names = [k for k in ("model_member", "model_mean", "advection",
+                             "persistence") if bands.get(k)]
+        ref = bands[names[0]]["bands"]
+        L += [f"\n## Power spectrum by band ({dist['n_psd']} clean crops)\n",
+              "Ratio of forecast band power to observed band power, 1.0 = matched. "
+              "Bands partition the resolved spectrum, so `obs share` sums to 1. The "
+              "2-8 km headline is the union of the last two columns; both estimators "
+              "are given because they disagree materially (see "
+              "`docs/designs/Metrics_Catalogue.md`).\n",
+              "| field | " + " | ".join(b for b in ref) +
+              " | 2-8 km band power | 2-8 km mean-of-ratios |",
+              "|---" * (len(ref) + 3) + "|"]
+        for nm in names:
+            b = bands[nm]
+            L.append(f"| {nm} | " +
+                     " | ".join(f"{b['bands'][k]['ratio']:.3f}" for k in ref) +
+                     f" | {b['psd_band_power']:.3f} | {b['psd_mean_ratio']:.3f} |")
+        L.append("| _obs share of variance_ | " +
+                 " | ".join(f"{ref[k]['obs_share']*100:.1f}%" for k in ref) +
+                 " | | |")
     L += ["\n## Wet-area fraction (>= 0.1 mm/h)\n",
           "| field | % |", "|---|---|"]
     for k, v in dist["wet_area"].items():
@@ -447,9 +604,19 @@ def write_markdown(r, md):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt", default=os.path.join(DIFF, "diff_best.pt"))
+    ap.add_argument("--ckpt", default=os.path.join(DIFF, "diff_best.pt"),
+                    help="ALWAYS name an explicit ckpt_epNNN.pt. The default "
+                         "diff_best.pt ranks on val EDM loss alone, which is "
+                         "anti-correlated with small-scale power in every run of "
+                         "this project, so it is systematically the smoothest "
+                         "checkpoint the run produced.")
     ap.add_argument("--vae", default=VAE_CKPT)
     ap.add_argument("--latents-dir", default=LATENTS)
+    ap.add_argument("--mu-dir", default=None,
+                    help="directory of {split}_mu{_LNN}.npy packs (pack_mu.py). "
+                         "REQUIRED for a CorrDiff checkpoint, refused for a plain one.")
+    ap.add_argument("--reg-sha", default=None,
+                    help="assert the mu pack's reg_sha256; a mismatch is fatal")
     ap.add_argument("--split", default="val", choices=["val", "train", "test"])
     ap.add_argument("--lead", type=int, default=None)
     ap.add_argument("--members", type=int, default=8)
@@ -487,10 +654,19 @@ def main():
     print(f"  spread/RMSE    {prob['spread_rmse_ratio']:.3f} | "
           f"outliers {prob['outlier_rate']:.3f} (ideal {prob['outlier_rate_ideal']:.3f})")
 
+    pb = r["distribution"]["psd_bands"].get("model_member")
+    if pb:
+        pa = r["distribution"]["psd_bands"].get("advection")
+        print(f"  PSD 2-8 km     band power {pb['psd_band_power']:.3f} "
+              f"(mean-of-ratios {pb['psd_mean_ratio']:.3f}) | advection "
+              f"{pa['psd_band_power']:.3f} / {pa['psd_mean_ratio']:.3f}, "
+              f"member field, {r['distribution']['n_psd']} crops")
+
     tag = args.tag or ""
     atomic_json(r, os.path.join(args.out, f"diffusion_eval{tag}.json"))
     make_plots(r, os.path.join(args.out, f"diffusion_eval{tag}.png"))
     write_markdown(r, os.path.join(args.out, f"diffusion_eval{tag}.md"))
+    append_runs_row(r, METHODS, args.out)
     print(f"\ndone in {r['wall_min']:.1f} min", flush=True)
 
 

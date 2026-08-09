@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-train_diffusion.py - EDM latent diffusion for the residual delta = z_y - z_A.
+train_ldm.py - EDM latent diffusion for the residual delta = z_y - z_A.
 
 Implements LDM.md sections 3-5: Karras (2022) preconditioning and loss on the
 scaled latents produced by pack_latents.py, conditioned by channel-concatenation
@@ -32,11 +32,11 @@ chain (README_jasmin.md).
 
     conda activate nowcast
     # smoke test (~minutes)
-    python train_diffusion.py --limit 4000 --epochs 2 --warmup 20 --sample-every 1
+    python train_ldm.py --limit 4000 --epochs 2 --warmup 20 --sample-every 1
     # full run
-    python train_diffusion.py --epochs 100
+    python train_ldm.py --epochs 100
     # resume (or let the sbatch chain do it)
-    python train_diffusion.py --epochs 100 --resume auto
+    python train_ldm.py --epochs 100 --resume auto
 
 Outputs -> ~/dissertation_outputs/diffusion/ (override with --out):
     diff_last.pt, diff_best.pt, train_log.json, config.json, curves.png,
