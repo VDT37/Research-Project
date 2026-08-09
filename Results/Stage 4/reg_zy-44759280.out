@@ -1,0 +1,428 @@
+host gpuhost015.jc.rl.ac.uk | CUDA ok | Sun  9 Aug 14:46:44 BST 2026
+resume auto: fresh start
+  [train] measuring z_y moments for train_latents_L15.npy (153473 rows, one sequential pass) ...
+    done in 159s (E[z_y^2] = 2.0441)
+  [train] measuring z_y moments for train_latents_L30.npy (153473 rows, one sequential pass) ...
+    done in 221s (E[z_y^2] = 2.0410)
+  [train] measuring z_y moments for train_latents_L45.npy (153473 rows, one sequential pass) ...
+    done in 124s (E[z_y^2] = 2.0387)
+  [train] measuring z_y moments for train_latents_L60.npy (153473 rows, one sequential pass) ...
+    done in 114s (E[z_y^2] = 2.0375)
+  [val] measuring z_y moments for val_latents_L15.npy (13281 rows, one sequential pass) ...
+    done in 17s (E[z_y^2] = 2.0406)
+  [val] measuring z_y moments for val_latents_L30.npy (13281 rows, one sequential pass) ...
+    done in 16s (E[z_y^2] = 2.0387)
+  [val] measuring z_y moments for val_latents_L45.npy (13281 rows, one sequential pass) ...
+    done in 15s (E[z_y^2] = 2.0374)
+  [val] measuring z_y moments for val_latents_L60.npy (13281 rows, one sequential pass) ...
+    done in 14s (E[z_y^2] = 2.0372)
+target=z_y | pooled std 0.9988 | mean -1.0211 | E[target^2] train 2.0403 val 2.0385
+  per shard: [+15min sd 0.9981 E[t^2] 2.0441, +30min sd 0.9987 E[t^2] 2.0410, +45min sd 0.9992 E[t^2] 2.0387, +60min sd 0.9993 E[t^2] 2.0375]
+diagnostics: 64 fixed val crops (rows 0..53123)
+device=cuda | R_phi 65.7M params | cond=x-only (16ch) -> 4ch | latent_scale=0.784
+train rows 613892 | val rows 53124 | 9592 steps/epoch (batch 64)
+data-path check: batch E[target^2] 1.7457 vs pack meta 2.0385 (ratio 0.856) | untrained MSE 1.7457 -> EV +0.0000 (must be ~0.000 on a fresh start)
+  ep1 step 200/9592 | mse 1.3758 (win 1.3758) | EV 0.326 (win 0.326) | lr 1.99e-05 | gn 18.33 | 305 img/s
+  ep1 step 400/9592 | mse 0.9115 (win 0.4473) | EV 0.553 (win 0.781) | lr 3.99e-05 | gn 10.04 | 315 img/s
+  ep1 step 600/9592 | mse 0.7424 (win 0.4041) | EV 0.636 (win 0.802) | lr 5.99e-05 | gn 7.22 | 319 img/s
+  ep1 step 800/9592 | mse 0.6507 (win 0.3757) | EV 0.681 (win 0.816) | lr 7.99e-05 | gn 5.74 | 320 img/s
+  ep1 step 1000/9592 | mse 0.5944 (win 0.3691) | EV 0.709 (win 0.819) | lr 9.99e-05 | gn 4.80 | 321 img/s
+  ep1 step 1200/9592 | mse 0.5551 (win 0.3588) | EV 0.728 (win 0.824) | lr 1.00e-04 | gn 4.15 | 322 img/s
+  ep1 step 1400/9592 | mse 0.5261 (win 0.3518) | EV 0.742 (win 0.828) | lr 1.00e-04 | gn 3.66 | 323 img/s
+  ep1 step 1600/9592 | mse 0.5040 (win 0.3497) | EV 0.753 (win 0.829) | lr 1.00e-04 | gn 3.29 | 323 img/s
+  ep1 step 1800/9592 | mse 0.4862 (win 0.3436) | EV 0.762 (win 0.832) | lr 1.00e-04 | gn 3.00 | 323 img/s
+  ep1 step 2000/9592 | mse 0.4718 (win 0.3417) | EV 0.769 (win 0.833) | lr 1.00e-04 | gn 2.76 | 324 img/s
+  ep1 step 2200/9592 | mse 0.4596 (win 0.3385) | EV 0.775 (win 0.834) | lr 9.99e-05 | gn 2.56 | 324 img/s
+  ep1 step 2400/9592 | mse 0.4495 (win 0.3385) | EV 0.780 (win 0.834) | lr 9.99e-05 | gn 2.40 | 324 img/s
+  ep1 step 2600/9592 | mse 0.4409 (win 0.3373) | EV 0.784 (win 0.835) | lr 9.99e-05 | gn 2.26 | 324 img/s
+  ep1 step 2800/9592 | mse 0.4333 (win 0.3345) | EV 0.788 (win 0.836) | lr 9.99e-05 | gn 2.13 | 324 img/s
+  ep1 step 3000/9592 | mse 0.4268 (win 0.3350) | EV 0.791 (win 0.836) | lr 9.98e-05 | gn 2.02 | 324 img/s
+  ep1 step 3200/9592 | mse 0.4209 (win 0.3324) | EV 0.794 (win 0.837) | lr 9.98e-05 | gn 1.93 | 324 img/s
+  ep1 step 3400/9592 | mse 0.4157 (win 0.3331) | EV 0.796 (win 0.837) | lr 9.98e-05 | gn 1.85 | 324 img/s
+  ep1 step 3600/9592 | mse 0.4111 (win 0.3322) | EV 0.799 (win 0.837) | lr 9.97e-05 | gn 1.77 | 324 img/s
+  ep1 step 3800/9592 | mse 0.4068 (win 0.3301) | EV 0.801 (win 0.838) | lr 9.97e-05 | gn 1.70 | 324 img/s
+  ep1 step 4000/9592 | mse 0.4028 (win 0.3259) | EV 0.803 (win 0.840) | lr 9.96e-05 | gn 1.64 | 325 img/s
+  ep1 step 4200/9592 | mse 0.3992 (win 0.3274) | EV 0.804 (win 0.840) | lr 9.96e-05 | gn 1.59 | 325 img/s
+  ep1 step 4400/9592 | mse 0.3960 (win 0.3284) | EV 0.806 (win 0.839) | lr 9.95e-05 | gn 1.53 | 325 img/s
+  ep1 step 4600/9592 | mse 0.3931 (win 0.3294) | EV 0.807 (win 0.839) | lr 9.94e-05 | gn 1.49 | 325 img/s
+  ep1 step 4800/9592 | mse 0.3904 (win 0.3293) | EV 0.809 (win 0.839) | lr 9.94e-05 | gn 1.44 | 325 img/s
+  ep1 step 5000/9592 | mse 0.3879 (win 0.3280) | EV 0.810 (win 0.839) | lr 9.93e-05 | gn 1.41 | 325 img/s
+  ABORT-A (PASS) at step 5000: windowed train EV 0.8392 against threshold 0.010. Continue.
+  ep1 step 5200/9592 | mse 0.3856 (win 0.3274) | EV 0.811 (win 0.840) | lr 9.92e-05 | gn 1.37 | 325 img/s
+  ep1 step 5400/9592 | mse 0.3834 (win 0.3256) | EV 0.812 (win 0.840) | lr 9.92e-05 | gn 1.33 | 325 img/s
+  ep1 step 5600/9592 | mse 0.3813 (win 0.3268) | EV 0.813 (win 0.840) | lr 9.91e-05 | gn 1.30 | 325 img/s
+  ep1 step 5800/9592 | mse 0.3793 (win 0.3225) | EV 0.814 (win 0.842) | lr 9.90e-05 | gn 1.27 | 325 img/s
+  ep1 step 6000/9592 | mse 0.3774 (win 0.3215) | EV 0.815 (win 0.842) | lr 9.89e-05 | gn 1.24 | 325 img/s
+  ep1 step 6200/9592 | mse 0.3756 (win 0.3235) | EV 0.816 (win 0.841) | lr 9.88e-05 | gn 1.22 | 325 img/s
+  ep1 step 6400/9592 | mse 0.3740 (win 0.3215) | EV 0.817 (win 0.842) | lr 9.88e-05 | gn 1.19 | 325 img/s
+  ep1 step 6600/9592 | mse 0.3723 (win 0.3207) | EV 0.818 (win 0.843) | lr 9.87e-05 | gn 1.17 | 325 img/s
+  ep1 step 6800/9592 | mse 0.3708 (win 0.3203) | EV 0.818 (win 0.843) | lr 9.86e-05 | gn 1.15 | 325 img/s
+  ep1 step 7000/9592 | mse 0.3695 (win 0.3240) | EV 0.819 (win 0.841) | lr 9.85e-05 | gn 1.13 | 325 img/s
+  ep1 step 7200/9592 | mse 0.3682 (win 0.3236) | EV 0.820 (win 0.841) | lr 9.84e-05 | gn 1.11 | 325 img/s
+  ep1 step 7400/9592 | mse 0.3669 (win 0.3186) | EV 0.820 (win 0.844) | lr 9.82e-05 | gn 1.09 | 325 img/s
+  ep1 step 7600/9592 | mse 0.3656 (win 0.3188) | EV 0.821 (win 0.844) | lr 9.81e-05 | gn 1.07 | 325 img/s
+  ep1 step 7800/9592 | mse 0.3645 (win 0.3218) | EV 0.821 (win 0.842) | lr 9.80e-05 | gn 1.05 | 325 img/s
+  ep1 step 8000/9592 | mse 0.3634 (win 0.3208) | EV 0.822 (win 0.843) | lr 9.79e-05 | gn 1.04 | 325 img/s
+  ep1 step 8200/9592 | mse 0.3623 (win 0.3199) | EV 0.822 (win 0.843) | lr 9.78e-05 | gn 1.02 | 325 img/s
+  ep1 step 8400/9592 | mse 0.3613 (win 0.3200) | EV 0.823 (win 0.843) | lr 9.77e-05 | gn 1.00 | 325 img/s
+  ep1 step 8600/9592 | mse 0.3603 (win 0.3163) | EV 0.823 (win 0.845) | lr 9.75e-05 | gn 0.99 | 325 img/s
+  ep1 step 8800/9592 | mse 0.3593 (win 0.3169) | EV 0.824 (win 0.845) | lr 9.74e-05 | gn 0.97 | 325 img/s
+  ep1 step 9000/9592 | mse 0.3584 (win 0.3197) | EV 0.824 (win 0.843) | lr 9.73e-05 | gn 0.96 | 325 img/s
+  ep1 step 9200/9592 | mse 0.3575 (win 0.3175) | EV 0.825 (win 0.844) | lr 9.71e-05 | gn 0.95 | 325 img/s
+  ep1 step 9400/9592 | mse 0.3567 (win 0.3194) | EV 0.825 (win 0.843) | lr 9.70e-05 | gn 0.94 | 325 img/s
+epoch   1/8 | train mse 0.35595 (EV 0.8255) | val mse 0.32184 (EV 0.8421) | 1888s | 325 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.8983, +30min 0.8547, +45min 0.8209, +60min 0.7945
+  ABORT-B (PASS) after epoch 1: val EV 0.8421 against threshold 0.020
+  new best (val MSE 0.32184, EV 0.8421) -> reg_best.pt
+  ep2 step 200/9592 | mse 0.3133 (win 0.3133) | EV 0.846 (win 0.846) | lr 9.67e-05 | gn 0.34 | 322 img/s
+  ep2 step 400/9592 | mse 0.3152 (win 0.3171) | EV 0.846 (win 0.845) | lr 9.66e-05 | gn 0.36 | 324 img/s
+  ep2 step 600/9592 | mse 0.3155 (win 0.3162) | EV 0.845 (win 0.845) | lr 9.64e-05 | gn 0.38 | 324 img/s
+  ep2 step 800/9592 | mse 0.3162 (win 0.3181) | EV 0.845 (win 0.844) | lr 9.63e-05 | gn 0.38 | 325 img/s
+  ep2 step 1000/9592 | mse 0.3162 (win 0.3164) | EV 0.845 (win 0.845) | lr 9.61e-05 | gn 0.37 | 325 img/s
+  ep2 step 1200/9592 | mse 0.3165 (win 0.3178) | EV 0.845 (win 0.844) | lr 9.59e-05 | gn 0.37 | 325 img/s
+  ep2 step 1400/9592 | mse 0.3159 (win 0.3122) | EV 0.845 (win 0.847) | lr 9.58e-05 | gn 0.36 | 325 img/s
+  ep2 step 1600/9592 | mse 0.3160 (win 0.3169) | EV 0.845 (win 0.845) | lr 9.56e-05 | gn 0.36 | 325 img/s
+  ep2 step 1800/9592 | mse 0.3157 (win 0.3132) | EV 0.845 (win 0.847) | lr 9.54e-05 | gn 0.36 | 325 img/s
+  ep2 step 2000/9592 | mse 0.3156 (win 0.3144) | EV 0.845 (win 0.846) | lr 9.53e-05 | gn 0.36 | 325 img/s
+  ep2 step 2200/9592 | mse 0.3157 (win 0.3166) | EV 0.845 (win 0.845) | lr 9.51e-05 | gn 0.36 | 325 img/s
+  ep2 step 2400/9592 | mse 0.3155 (win 0.3134) | EV 0.845 (win 0.846) | lr 9.49e-05 | gn 0.36 | 325 img/s
+  ep2 step 2600/9592 | mse 0.3152 (win 0.3125) | EV 0.845 (win 0.847) | lr 9.47e-05 | gn 0.36 | 325 img/s
+  ep2 step 2800/9592 | mse 0.3150 (win 0.3120) | EV 0.846 (win 0.847) | lr 9.45e-05 | gn 0.36 | 325 img/s
+  ep2 step 3000/9592 | mse 0.3149 (win 0.3133) | EV 0.846 (win 0.846) | lr 9.43e-05 | gn 0.36 | 325 img/s
+  ep2 step 3200/9592 | mse 0.3147 (win 0.3125) | EV 0.846 (win 0.847) | lr 9.41e-05 | gn 0.36 | 325 img/s
+  ep2 step 3400/9592 | mse 0.3145 (win 0.3111) | EV 0.846 (win 0.848) | lr 9.39e-05 | gn 0.36 | 325 img/s
+  ep2 step 3600/9592 | mse 0.3144 (win 0.3114) | EV 0.846 (win 0.847) | lr 9.37e-05 | gn 0.35 | 325 img/s
+  ep2 step 3800/9592 | mse 0.3142 (win 0.3121) | EV 0.846 (win 0.847) | lr 9.35e-05 | gn 0.35 | 325 img/s
+  ep2 step 4000/9592 | mse 0.3141 (win 0.3116) | EV 0.846 (win 0.847) | lr 9.33e-05 | gn 0.36 | 325 img/s
+  ep2 step 4200/9592 | mse 0.3140 (win 0.3121) | EV 0.846 (win 0.847) | lr 9.31e-05 | gn 0.36 | 325 img/s
+  ep2 step 4400/9592 | mse 0.3139 (win 0.3112) | EV 0.846 (win 0.847) | lr 9.29e-05 | gn 0.35 | 325 img/s
+  ep2 step 4600/9592 | mse 0.3137 (win 0.3096) | EV 0.846 (win 0.848) | lr 9.27e-05 | gn 0.35 | 325 img/s
+  ep2 step 4800/9592 | mse 0.3135 (win 0.3095) | EV 0.846 (win 0.848) | lr 9.25e-05 | gn 0.35 | 325 img/s
+  ep2 step 5000/9592 | mse 0.3135 (win 0.3117) | EV 0.846 (win 0.847) | lr 9.23e-05 | gn 0.35 | 325 img/s
+  ep2 step 5200/9592 | mse 0.3133 (win 0.3107) | EV 0.846 (win 0.848) | lr 9.20e-05 | gn 0.35 | 325 img/s
+  ep2 step 5400/9592 | mse 0.3132 (win 0.3083) | EV 0.847 (win 0.849) | lr 9.18e-05 | gn 0.35 | 325 img/s
+  ep2 step 5600/9592 | mse 0.3131 (win 0.3101) | EV 0.847 (win 0.848) | lr 9.16e-05 | gn 0.35 | 325 img/s
+  ep2 step 5800/9592 | mse 0.3129 (win 0.3089) | EV 0.847 (win 0.849) | lr 9.14e-05 | gn 0.35 | 325 img/s
+  ep2 step 6000/9592 | mse 0.3128 (win 0.3105) | EV 0.847 (win 0.848) | lr 9.11e-05 | gn 0.35 | 325 img/s
+  ep2 step 6200/9592 | mse 0.3129 (win 0.3145) | EV 0.847 (win 0.846) | lr 9.09e-05 | gn 0.35 | 325 img/s
+  ep2 step 6400/9592 | mse 0.3128 (win 0.3096) | EV 0.847 (win 0.848) | lr 9.06e-05 | gn 0.35 | 325 img/s
+  ep2 step 6600/9592 | mse 0.3127 (win 0.3102) | EV 0.847 (win 0.848) | lr 9.04e-05 | gn 0.35 | 325 img/s
+  ep2 step 6800/9592 | mse 0.3127 (win 0.3112) | EV 0.847 (win 0.847) | lr 9.02e-05 | gn 0.35 | 325 img/s
+  ep2 step 7000/9592 | mse 0.3126 (win 0.3108) | EV 0.847 (win 0.848) | lr 8.99e-05 | gn 0.35 | 325 img/s
+  ep2 step 7200/9592 | mse 0.3126 (win 0.3135) | EV 0.847 (win 0.846) | lr 8.97e-05 | gn 0.35 | 325 img/s
+  ep2 step 7400/9592 | mse 0.3126 (win 0.3113) | EV 0.847 (win 0.847) | lr 8.94e-05 | gn 0.35 | 325 img/s
+  ep2 step 7600/9592 | mse 0.3125 (win 0.3081) | EV 0.847 (win 0.849) | lr 8.91e-05 | gn 0.35 | 325 img/s
+  ep2 step 7800/9592 | mse 0.3124 (win 0.3077) | EV 0.847 (win 0.849) | lr 8.89e-05 | gn 0.35 | 325 img/s
+  ep2 step 8000/9592 | mse 0.3123 (win 0.3108) | EV 0.847 (win 0.848) | lr 8.86e-05 | gn 0.35 | 325 img/s
+  ep2 step 8200/9592 | mse 0.3122 (win 0.3093) | EV 0.847 (win 0.848) | lr 8.84e-05 | gn 0.35 | 325 img/s
+  ep2 step 8400/9592 | mse 0.3121 (win 0.3071) | EV 0.847 (win 0.849) | lr 8.81e-05 | gn 0.35 | 325 img/s
+  ep2 step 8600/9592 | mse 0.3121 (win 0.3096) | EV 0.847 (win 0.848) | lr 8.78e-05 | gn 0.34 | 325 img/s
+  ep2 step 8800/9592 | mse 0.3119 (win 0.3042) | EV 0.847 (win 0.851) | lr 8.75e-05 | gn 0.34 | 325 img/s
+  ep2 step 9000/9592 | mse 0.3117 (win 0.3053) | EV 0.847 (win 0.850) | lr 8.73e-05 | gn 0.34 | 325 img/s
+  ep2 step 9200/9592 | mse 0.3116 (win 0.3044) | EV 0.847 (win 0.851) | lr 8.70e-05 | gn 0.34 | 325 img/s
+  ep2 step 9400/9592 | mse 0.3115 (win 0.3060) | EV 0.847 (win 0.850) | lr 8.67e-05 | gn 0.34 | 326 img/s
+epoch   2/8 | train mse 0.31130 (EV 0.8474) | val mse 0.31683 (EV 0.8446) | 1886s | 326 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9011, +30min 0.8572, +45min 0.8233, +60min 0.7967
+  decoded: MAE 0.181 (adv 0.238) | CSI@1 0.449 (adv 0.407) | CSI@8 0.027 (adv 0.059) | PSD 2-8km band power 0.06 (adv 1.12)
+  new best (val MSE 0.31683, EV 0.8446) -> reg_best.pt
+  ep3 step 200/9592 | mse 0.3056 (win 0.3056) | EV 0.850 (win 0.850) | lr 8.62e-05 | gn 0.31 | 323 img/s
+  ep3 step 400/9592 | mse 0.3060 (win 0.3064) | EV 0.850 (win 0.850) | lr 8.59e-05 | gn 0.31 | 324 img/s
+  ep3 step 600/9592 | mse 0.3057 (win 0.3053) | EV 0.850 (win 0.850) | lr 8.56e-05 | gn 0.31 | 325 img/s
+  ep3 step 800/9592 | mse 0.3053 (win 0.3038) | EV 0.850 (win 0.851) | lr 8.53e-05 | gn 0.31 | 325 img/s
+  ep3 step 1000/9592 | mse 0.3054 (win 0.3057) | EV 0.850 (win 0.850) | lr 8.50e-05 | gn 0.31 | 325 img/s
+  ep3 step 1200/9592 | mse 0.3046 (win 0.3007) | EV 0.851 (win 0.853) | lr 8.47e-05 | gn 0.31 | 325 img/s
+  ep3 step 1400/9592 | mse 0.3044 (win 0.3031) | EV 0.851 (win 0.851) | lr 8.44e-05 | gn 0.31 | 325 img/s
+  ep3 step 1600/9592 | mse 0.3043 (win 0.3038) | EV 0.851 (win 0.851) | lr 8.41e-05 | gn 0.31 | 325 img/s
+  ep3 step 1800/9592 | mse 0.3040 (win 0.3019) | EV 0.851 (win 0.852) | lr 8.38e-05 | gn 0.31 | 325 img/s
+  ep3 step 2000/9592 | mse 0.3041 (win 0.3043) | EV 0.851 (win 0.851) | lr 8.35e-05 | gn 0.31 | 325 img/s
+  ep3 step 2200/9592 | mse 0.3039 (win 0.3026) | EV 0.851 (win 0.852) | lr 8.32e-05 | gn 0.31 | 325 img/s
+  ep3 step 2400/9592 | mse 0.3037 (win 0.3018) | EV 0.851 (win 0.852) | lr 8.29e-05 | gn 0.31 | 325 img/s
+  ep3 step 2600/9592 | mse 0.3037 (win 0.3038) | EV 0.851 (win 0.851) | lr 8.25e-05 | gn 0.31 | 325 img/s
+  ep3 step 2800/9592 | mse 0.3038 (win 0.3040) | EV 0.851 (win 0.851) | lr 8.22e-05 | gn 0.31 | 325 img/s
+  ep3 step 3000/9592 | mse 0.3036 (win 0.3020) | EV 0.851 (win 0.852) | lr 8.19e-05 | gn 0.31 | 325 img/s
+  ep3 step 3200/9592 | mse 0.3036 (win 0.3028) | EV 0.851 (win 0.852) | lr 8.16e-05 | gn 0.31 | 325 img/s
+  ep3 step 3400/9592 | mse 0.3033 (win 0.2993) | EV 0.851 (win 0.853) | lr 8.13e-05 | gn 0.31 | 325 img/s
+  ep3 step 3600/9592 | mse 0.3032 (win 0.3014) | EV 0.851 (win 0.852) | lr 8.09e-05 | gn 0.31 | 325 img/s
+  ep3 step 3800/9592 | mse 0.3032 (win 0.3021) | EV 0.851 (win 0.852) | lr 8.06e-05 | gn 0.31 | 325 img/s
+  ep3 step 4000/9592 | mse 0.3031 (win 0.3010) | EV 0.851 (win 0.852) | lr 8.03e-05 | gn 0.31 | 325 img/s
+  ep3 step 4200/9592 | mse 0.3030 (win 0.3019) | EV 0.851 (win 0.852) | lr 8.00e-05 | gn 0.31 | 325 img/s
+  ep3 step 4400/9592 | mse 0.3029 (win 0.3013) | EV 0.852 (win 0.852) | lr 7.96e-05 | gn 0.31 | 325 img/s
+  ep3 step 4600/9592 | mse 0.3028 (win 0.3006) | EV 0.852 (win 0.853) | lr 7.93e-05 | gn 0.31 | 325 img/s
+  ep3 step 4800/9592 | mse 0.3027 (win 0.2999) | EV 0.852 (win 0.853) | lr 7.89e-05 | gn 0.31 | 325 img/s
+  ep3 step 5000/9592 | mse 0.3026 (win 0.3002) | EV 0.852 (win 0.853) | lr 7.86e-05 | gn 0.31 | 325 img/s
+  ep3 step 5200/9592 | mse 0.3025 (win 0.2998) | EV 0.852 (win 0.853) | lr 7.83e-05 | gn 0.31 | 325 img/s
+  ep3 step 5400/9592 | mse 0.3024 (win 0.2987) | EV 0.852 (win 0.854) | lr 7.79e-05 | gn 0.31 | 325 img/s
+  ep3 step 5600/9592 | mse 0.3023 (win 0.3021) | EV 0.852 (win 0.852) | lr 7.76e-05 | gn 0.31 | 325 img/s
+  ep3 step 5800/9592 | mse 0.3023 (win 0.2999) | EV 0.852 (win 0.853) | lr 7.72e-05 | gn 0.31 | 325 img/s
+  ep3 step 6000/9592 | mse 0.3021 (win 0.2989) | EV 0.852 (win 0.854) | lr 7.69e-05 | gn 0.31 | 325 img/s
+  ep3 step 6200/9592 | mse 0.3020 (win 0.2980) | EV 0.852 (win 0.854) | lr 7.65e-05 | gn 0.31 | 325 img/s
+  ep3 step 6400/9592 | mse 0.3019 (win 0.2996) | EV 0.852 (win 0.853) | lr 7.62e-05 | gn 0.31 | 325 img/s
+  ep3 step 6600/9592 | mse 0.3018 (win 0.2982) | EV 0.852 (win 0.854) | lr 7.58e-05 | gn 0.31 | 325 img/s
+  ep3 step 6800/9592 | mse 0.3018 (win 0.3006) | EV 0.852 (win 0.853) | lr 7.55e-05 | gn 0.31 | 325 img/s
+  ep3 step 7000/9592 | mse 0.3017 (win 0.2980) | EV 0.852 (win 0.854) | lr 7.51e-05 | gn 0.31 | 325 img/s
+  ep3 step 7200/9592 | mse 0.3015 (win 0.2963) | EV 0.852 (win 0.855) | lr 7.48e-05 | gn 0.31 | 325 img/s
+  ep3 step 7400/9592 | mse 0.3015 (win 0.2989) | EV 0.852 (win 0.854) | lr 7.44e-05 | gn 0.31 | 325 img/s
+  ep3 step 7600/9592 | mse 0.3014 (win 0.2984) | EV 0.852 (win 0.854) | lr 7.40e-05 | gn 0.31 | 325 img/s
+  ep3 step 7800/9592 | mse 0.3013 (win 0.2978) | EV 0.852 (win 0.854) | lr 7.37e-05 | gn 0.30 | 325 img/s
+  ep3 step 8000/9592 | mse 0.3012 (win 0.2978) | EV 0.852 (win 0.854) | lr 7.33e-05 | gn 0.30 | 325 img/s
+  ep3 step 8200/9592 | mse 0.3011 (win 0.2987) | EV 0.852 (win 0.854) | lr 7.29e-05 | gn 0.30 | 325 img/s
+  ep3 step 8400/9592 | mse 0.3010 (win 0.2969) | EV 0.852 (win 0.854) | lr 7.26e-05 | gn 0.30 | 325 img/s
+  ep3 step 8600/9592 | mse 0.3010 (win 0.2991) | EV 0.852 (win 0.853) | lr 7.22e-05 | gn 0.30 | 325 img/s
+  ep3 step 8800/9592 | mse 0.3008 (win 0.2940) | EV 0.853 (win 0.856) | lr 7.18e-05 | gn 0.30 | 325 img/s
+  ep3 step 9000/9592 | mse 0.3007 (win 0.2953) | EV 0.853 (win 0.855) | lr 7.14e-05 | gn 0.30 | 325 img/s
+  ep3 step 9200/9592 | mse 0.3006 (win 0.2947) | EV 0.853 (win 0.856) | lr 7.11e-05 | gn 0.30 | 325 img/s
+  ep3 step 9400/9592 | mse 0.3005 (win 0.2951) | EV 0.853 (win 0.855) | lr 7.07e-05 | gn 0.30 | 325 img/s
+epoch   3/8 | train mse 0.30035 (EV 0.8528) | val mse 0.31718 (EV 0.8444) | 1886s | 326 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9019, +30min 0.8574, +45min 0.8227, +60min 0.7955
+  ep4 step 200/9592 | mse 0.2896 (win 0.2896) | EV 0.858 (win 0.858) | lr 6.99e-05 | gn 0.28 | 324 img/s
+  ep4 step 400/9592 | mse 0.2904 (win 0.2911) | EV 0.858 (win 0.857) | lr 6.96e-05 | gn 0.29 | 325 img/s
+  ep4 step 600/9592 | mse 0.2904 (win 0.2905) | EV 0.858 (win 0.858) | lr 6.92e-05 | gn 0.29 | 325 img/s
+  ep4 step 800/9592 | mse 0.2905 (win 0.2908) | EV 0.858 (win 0.857) | lr 6.88e-05 | gn 0.29 | 325 img/s
+  ep4 step 1000/9592 | mse 0.2913 (win 0.2947) | EV 0.857 (win 0.856) | lr 6.84e-05 | gn 0.28 | 325 img/s
+  ep4 step 1200/9592 | mse 0.2913 (win 0.2910) | EV 0.857 (win 0.857) | lr 6.80e-05 | gn 0.28 | 325 img/s
+  ep4 step 1400/9592 | mse 0.2912 (win 0.2904) | EV 0.857 (win 0.858) | lr 6.76e-05 | gn 0.28 | 325 img/s
+  ep4 step 1600/9592 | mse 0.2912 (win 0.2916) | EV 0.857 (win 0.857) | lr 6.73e-05 | gn 0.28 | 325 img/s
+  ep4 step 1800/9592 | mse 0.2908 (win 0.2879) | EV 0.857 (win 0.859) | lr 6.69e-05 | gn 0.28 | 325 img/s
+  ep4 step 2000/9592 | mse 0.2906 (win 0.2882) | EV 0.858 (win 0.859) | lr 6.65e-05 | gn 0.28 | 325 img/s
+  ep4 step 2200/9592 | mse 0.2907 (win 0.2918) | EV 0.858 (win 0.857) | lr 6.61e-05 | gn 0.29 | 325 img/s
+  ep4 step 2400/9592 | mse 0.2908 (win 0.2922) | EV 0.857 (win 0.857) | lr 6.57e-05 | gn 0.29 | 325 img/s
+  ep4 step 2600/9592 | mse 0.2906 (win 0.2885) | EV 0.858 (win 0.859) | lr 6.53e-05 | gn 0.29 | 325 img/s
+  ep4 step 2800/9592 | mse 0.2906 (win 0.2903) | EV 0.858 (win 0.858) | lr 6.49e-05 | gn 0.29 | 325 img/s
+  ep4 step 3000/9592 | mse 0.2906 (win 0.2907) | EV 0.858 (win 0.858) | lr 6.45e-05 | gn 0.29 | 325 img/s
+  ep4 step 3200/9592 | mse 0.2904 (win 0.2866) | EV 0.858 (win 0.860) | lr 6.41e-05 | gn 0.29 | 325 img/s
+  ep4 step 3400/9592 | mse 0.2901 (win 0.2867) | EV 0.858 (win 0.859) | lr 6.37e-05 | gn 0.29 | 325 img/s
+  ep4 step 3600/9592 | mse 0.2901 (win 0.2899) | EV 0.858 (win 0.858) | lr 6.33e-05 | gn 0.29 | 325 img/s
+  ep4 step 3800/9592 | mse 0.2901 (win 0.2905) | EV 0.858 (win 0.858) | lr 6.29e-05 | gn 0.29 | 325 img/s
+  ep4 step 4000/9592 | mse 0.2901 (win 0.2883) | EV 0.858 (win 0.859) | lr 6.25e-05 | gn 0.29 | 325 img/s
+  ep4 step 4200/9592 | mse 0.2900 (win 0.2896) | EV 0.858 (win 0.858) | lr 6.21e-05 | gn 0.29 | 325 img/s
+  ep4 step 4400/9592 | mse 0.2900 (win 0.2883) | EV 0.858 (win 0.859) | lr 6.17e-05 | gn 0.29 | 325 img/s
+  ep4 step 4600/9592 | mse 0.2899 (win 0.2877) | EV 0.858 (win 0.859) | lr 6.13e-05 | gn 0.29 | 325 img/s
+  ep4 step 4800/9592 | mse 0.2897 (win 0.2853) | EV 0.858 (win 0.860) | lr 6.09e-05 | gn 0.29 | 325 img/s
+  ep4 step 5000/9592 | mse 0.2895 (win 0.2859) | EV 0.858 (win 0.860) | lr 6.05e-05 | gn 0.29 | 325 img/s
+  ep4 step 5200/9592 | mse 0.2895 (win 0.2903) | EV 0.858 (win 0.858) | lr 6.01e-05 | gn 0.29 | 325 img/s
+  ep4 step 5400/9592 | mse 0.2894 (win 0.2868) | EV 0.858 (win 0.859) | lr 5.97e-05 | gn 0.29 | 325 img/s
+  ep4 step 5600/9592 | mse 0.2894 (win 0.2870) | EV 0.858 (win 0.859) | lr 5.93e-05 | gn 0.29 | 325 img/s
+  ep4 step 5800/9592 | mse 0.2892 (win 0.2860) | EV 0.858 (win 0.860) | lr 5.89e-05 | gn 0.29 | 325 img/s
+  ep4 step 6000/9592 | mse 0.2891 (win 0.2863) | EV 0.858 (win 0.860) | lr 5.84e-05 | gn 0.29 | 325 img/s
+  ep4 step 6200/9592 | mse 0.2890 (win 0.2847) | EV 0.858 (win 0.860) | lr 5.80e-05 | gn 0.29 | 325 img/s
+  ep4 step 6400/9592 | mse 0.2889 (win 0.2855) | EV 0.858 (win 0.860) | lr 5.76e-05 | gn 0.29 | 325 img/s
+  ep4 step 6600/9592 | mse 0.2888 (win 0.2864) | EV 0.858 (win 0.860) | lr 5.72e-05 | gn 0.29 | 325 img/s
+  ep4 step 6800/9592 | mse 0.2888 (win 0.2866) | EV 0.858 (win 0.860) | lr 5.68e-05 | gn 0.29 | 325 img/s
+  ep4 step 7000/9592 | mse 0.2887 (win 0.2865) | EV 0.859 (win 0.860) | lr 5.64e-05 | gn 0.29 | 325 img/s
+  ep4 step 7200/9592 | mse 0.2887 (win 0.2874) | EV 0.859 (win 0.859) | lr 5.60e-05 | gn 0.29 | 325 img/s
+  ep4 step 7400/9592 | mse 0.2886 (win 0.2857) | EV 0.859 (win 0.860) | lr 5.56e-05 | gn 0.29 | 325 img/s
+  ep4 step 7600/9592 | mse 0.2884 (win 0.2834) | EV 0.859 (win 0.861) | lr 5.52e-05 | gn 0.29 | 325 img/s
+  ep4 step 7800/9592 | mse 0.2884 (win 0.2856) | EV 0.859 (win 0.860) | lr 5.47e-05 | gn 0.29 | 325 img/s
+  ep4 step 8000/9592 | mse 0.2883 (win 0.2838) | EV 0.859 (win 0.861) | lr 5.43e-05 | gn 0.29 | 325 img/s
+  ep4 step 8200/9592 | mse 0.2881 (win 0.2832) | EV 0.859 (win 0.861) | lr 5.39e-05 | gn 0.29 | 325 img/s
+  ep4 step 8400/9592 | mse 0.2880 (win 0.2832) | EV 0.859 (win 0.861) | lr 5.35e-05 | gn 0.29 | 325 img/s
+  ep4 step 8600/9592 | mse 0.2879 (win 0.2842) | EV 0.859 (win 0.861) | lr 5.31e-05 | gn 0.29 | 325 img/s
+  ep4 step 8800/9592 | mse 0.2878 (win 0.2841) | EV 0.859 (win 0.861) | lr 5.27e-05 | gn 0.29 | 325 img/s
+  ep4 step 9000/9592 | mse 0.2878 (win 0.2852) | EV 0.859 (win 0.860) | lr 5.23e-05 | gn 0.29 | 325 img/s
+  ep4 step 9200/9592 | mse 0.2877 (win 0.2856) | EV 0.859 (win 0.860) | lr 5.19e-05 | gn 0.29 | 325 img/s
+  ep4 step 9400/9592 | mse 0.2876 (win 0.2813) | EV 0.859 (win 0.862) | lr 5.14e-05 | gn 0.29 | 325 img/s
+epoch   4/8 | train mse 0.28751 (EV 0.8591) | val mse 0.32083 (EV 0.8426) | 1887s | 325 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9022, +30min 0.8565, +45min 0.8202, +60min 0.7915
+  decoded: MAE 0.181 (adv 0.238) | CSI@1 0.455 (adv 0.407) | CSI@8 0.028 (adv 0.059) | PSD 2-8km band power 0.05 (adv 1.12)
+  ep5 step 200/9592 | mse 0.2774 (win 0.2774) | EV 0.864 (win 0.864) | lr 5.06e-05 | gn 0.27 | 324 img/s
+  ep5 step 400/9592 | mse 0.2772 (win 0.2770) | EV 0.864 (win 0.864) | lr 5.02e-05 | gn 0.27 | 325 img/s
+  ep5 step 600/9592 | mse 0.2768 (win 0.2761) | EV 0.864 (win 0.865) | lr 4.98e-05 | gn 0.27 | 325 img/s
+  ep5 step 800/9592 | mse 0.2769 (win 0.2771) | EV 0.864 (win 0.864) | lr 4.94e-05 | gn 0.27 | 325 img/s
+  ep5 step 1000/9592 | mse 0.2768 (win 0.2767) | EV 0.864 (win 0.864) | lr 4.90e-05 | gn 0.27 | 325 img/s
+  ep5 step 1200/9592 | mse 0.2767 (win 0.2761) | EV 0.864 (win 0.865) | lr 4.86e-05 | gn 0.27 | 325 img/s
+  ep5 step 1400/9592 | mse 0.2771 (win 0.2791) | EV 0.864 (win 0.863) | lr 4.81e-05 | gn 0.27 | 325 img/s
+  ep5 step 1600/9592 | mse 0.2771 (win 0.2773) | EV 0.864 (win 0.864) | lr 4.77e-05 | gn 0.27 | 325 img/s
+  ep5 step 1800/9592 | mse 0.2770 (win 0.2761) | EV 0.864 (win 0.865) | lr 4.73e-05 | gn 0.27 | 325 img/s
+  ep5 step 2000/9592 | mse 0.2769 (win 0.2766) | EV 0.864 (win 0.864) | lr 4.69e-05 | gn 0.27 | 325 img/s
+  ep5 step 2200/9592 | mse 0.2769 (win 0.2769) | EV 0.864 (win 0.864) | lr 4.65e-05 | gn 0.27 | 325 img/s
+  ep5 step 2400/9592 | mse 0.2769 (win 0.2767) | EV 0.864 (win 0.864) | lr 4.61e-05 | gn 0.27 | 325 img/s
+  ep5 step 2600/9592 | mse 0.2767 (win 0.2739) | EV 0.864 (win 0.866) | lr 4.57e-05 | gn 0.27 | 325 img/s
+  ep5 step 2800/9592 | mse 0.2767 (win 0.2773) | EV 0.864 (win 0.864) | lr 4.52e-05 | gn 0.27 | 325 img/s
+  ep5 step 3000/9592 | mse 0.2766 (win 0.2741) | EV 0.864 (win 0.866) | lr 4.48e-05 | gn 0.27 | 325 img/s
+  ep5 step 3200/9592 | mse 0.2765 (win 0.2758) | EV 0.864 (win 0.865) | lr 4.44e-05 | gn 0.27 | 325 img/s
+  ep5 step 3400/9592 | mse 0.2763 (win 0.2733) | EV 0.865 (win 0.866) | lr 4.40e-05 | gn 0.27 | 325 img/s
+  ep5 step 3600/9592 | mse 0.2763 (win 0.2765) | EV 0.865 (win 0.864) | lr 4.36e-05 | gn 0.27 | 325 img/s
+  ep5 step 3800/9592 | mse 0.2763 (win 0.2762) | EV 0.865 (win 0.865) | lr 4.32e-05 | gn 0.27 | 325 img/s
+  ep5 step 4000/9592 | mse 0.2762 (win 0.2742) | EV 0.865 (win 0.866) | lr 4.28e-05 | gn 0.27 | 325 img/s
+  ep5 step 4200/9592 | mse 0.2761 (win 0.2735) | EV 0.865 (win 0.866) | lr 4.24e-05 | gn 0.27 | 325 img/s
+  ep5 step 4400/9592 | mse 0.2760 (win 0.2736) | EV 0.865 (win 0.866) | lr 4.19e-05 | gn 0.27 | 325 img/s
+  ep5 step 4600/9592 | mse 0.2759 (win 0.2735) | EV 0.865 (win 0.866) | lr 4.15e-05 | gn 0.26 | 325 img/s
+  ep5 step 4800/9592 | mse 0.2759 (win 0.2755) | EV 0.865 (win 0.865) | lr 4.11e-05 | gn 0.26 | 325 img/s
+  ep5 step 5000/9592 | mse 0.2758 (win 0.2741) | EV 0.865 (win 0.866) | lr 4.07e-05 | gn 0.26 | 325 img/s
+  ep5 step 5200/9592 | mse 0.2757 (win 0.2739) | EV 0.865 (win 0.866) | lr 4.03e-05 | gn 0.26 | 325 img/s
+  ep5 step 5400/9592 | mse 0.2756 (win 0.2733) | EV 0.865 (win 0.866) | lr 3.99e-05 | gn 0.26 | 325 img/s
+  ep5 step 5600/9592 | mse 0.2756 (win 0.2743) | EV 0.865 (win 0.866) | lr 3.95e-05 | gn 0.26 | 325 img/s
+  ep5 step 5800/9592 | mse 0.2755 (win 0.2724) | EV 0.865 (win 0.867) | lr 3.91e-05 | gn 0.26 | 325 img/s
+  ep5 step 6000/9592 | mse 0.2754 (win 0.2744) | EV 0.865 (win 0.866) | lr 3.87e-05 | gn 0.26 | 325 img/s
+  ep5 step 6200/9592 | mse 0.2754 (win 0.2750) | EV 0.865 (win 0.865) | lr 3.83e-05 | gn 0.26 | 325 img/s
+  ep5 step 6400/9592 | mse 0.2753 (win 0.2728) | EV 0.865 (win 0.866) | lr 3.79e-05 | gn 0.26 | 325 img/s
+  ep5 step 6600/9592 | mse 0.2752 (win 0.2721) | EV 0.865 (win 0.867) | lr 3.75e-05 | gn 0.26 | 325 img/s
+  ep5 step 6800/9592 | mse 0.2752 (win 0.2736) | EV 0.865 (win 0.866) | lr 3.71e-05 | gn 0.26 | 325 img/s
+  ep5 step 7000/9592 | mse 0.2751 (win 0.2713) | EV 0.865 (win 0.867) | lr 3.67e-05 | gn 0.26 | 325 img/s
+  ep5 step 7200/9592 | mse 0.2750 (win 0.2715) | EV 0.865 (win 0.867) | lr 3.63e-05 | gn 0.26 | 325 img/s
+  ep5 step 7400/9592 | mse 0.2749 (win 0.2728) | EV 0.865 (win 0.866) | lr 3.59e-05 | gn 0.26 | 325 img/s
+  ep5 step 7600/9592 | mse 0.2748 (win 0.2708) | EV 0.865 (win 0.867) | lr 3.55e-05 | gn 0.26 | 325 img/s
+  ep5 step 7800/9592 | mse 0.2747 (win 0.2724) | EV 0.865 (win 0.867) | lr 3.51e-05 | gn 0.26 | 325 img/s
+  ep5 step 8000/9592 | mse 0.2746 (win 0.2700) | EV 0.865 (win 0.868) | lr 3.47e-05 | gn 0.26 | 325 img/s
+  ep5 step 8200/9592 | mse 0.2746 (win 0.2720) | EV 0.865 (win 0.867) | lr 3.43e-05 | gn 0.26 | 325 img/s
+  ep5 step 8400/9592 | mse 0.2745 (win 0.2709) | EV 0.865 (win 0.867) | lr 3.39e-05 | gn 0.26 | 325 img/s
+  ep5 step 8600/9592 | mse 0.2744 (win 0.2723) | EV 0.866 (win 0.867) | lr 3.35e-05 | gn 0.26 | 325 img/s
+  ep5 step 8800/9592 | mse 0.2744 (win 0.2720) | EV 0.866 (win 0.867) | lr 3.31e-05 | gn 0.26 | 325 img/s
+  ep5 step 9000/9592 | mse 0.2743 (win 0.2711) | EV 0.866 (win 0.867) | lr 3.27e-05 | gn 0.26 | 325 img/s
+  ep5 step 9200/9592 | mse 0.2742 (win 0.2708) | EV 0.866 (win 0.867) | lr 3.23e-05 | gn 0.26 | 325 img/s
+  ep5 step 9400/9592 | mse 0.2741 (win 0.2688) | EV 0.866 (win 0.868) | lr 3.20e-05 | gn 0.26 | 325 img/s
+epoch   5/8 | train mse 0.27400 (EV 0.8657) | val mse 0.32551 (EV 0.8403) | 1887s | 325 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9021, +30min 0.8550, +45min 0.8170, +60min 0.7870
+  ep6 step 200/9592 | mse 0.2630 (win 0.2630) | EV 0.871 (win 0.871) | lr 3.12e-05 | gn 0.24 | 324 img/s
+  ep6 step 400/9592 | mse 0.2637 (win 0.2643) | EV 0.871 (win 0.870) | lr 3.08e-05 | gn 0.24 | 324 img/s
+  ep6 step 600/9592 | mse 0.2639 (win 0.2644) | EV 0.871 (win 0.870) | lr 3.04e-05 | gn 0.24 | 325 img/s
+  ep6 step 800/9592 | mse 0.2638 (win 0.2635) | EV 0.871 (win 0.871) | lr 3.01e-05 | gn 0.24 | 325 img/s
+  ep6 step 1000/9592 | mse 0.2644 (win 0.2668) | EV 0.870 (win 0.869) | lr 2.97e-05 | gn 0.24 | 325 img/s
+  ep6 step 1200/9592 | mse 0.2642 (win 0.2634) | EV 0.870 (win 0.871) | lr 2.93e-05 | gn 0.24 | 325 img/s
+  ep6 step 1400/9592 | mse 0.2644 (win 0.2657) | EV 0.870 (win 0.870) | lr 2.89e-05 | gn 0.24 | 325 img/s
+  ep6 step 1600/9592 | mse 0.2643 (win 0.2635) | EV 0.870 (win 0.871) | lr 2.85e-05 | gn 0.24 | 325 img/s
+  ep6 step 1800/9592 | mse 0.2644 (win 0.2648) | EV 0.870 (win 0.870) | lr 2.82e-05 | gn 0.24 | 325 img/s
+  ep6 step 2000/9592 | mse 0.2643 (win 0.2633) | EV 0.870 (win 0.871) | lr 2.78e-05 | gn 0.25 | 325 img/s
+  ep6 step 2200/9592 | mse 0.2641 (win 0.2620) | EV 0.871 (win 0.872) | lr 2.74e-05 | gn 0.24 | 325 img/s
+  ep6 step 2400/9592 | mse 0.2640 (win 0.2631) | EV 0.871 (win 0.871) | lr 2.71e-05 | gn 0.24 | 325 img/s
+  ep6 step 2600/9592 | mse 0.2640 (win 0.2640) | EV 0.871 (win 0.871) | lr 2.67e-05 | gn 0.24 | 325 img/s
+  ep6 step 2800/9592 | mse 0.2638 (win 0.2614) | EV 0.871 (win 0.872) | lr 2.63e-05 | gn 0.24 | 325 img/s
+  ep6 step 3000/9592 | mse 0.2638 (win 0.2632) | EV 0.871 (win 0.871) | lr 2.60e-05 | gn 0.24 | 325 img/s
+  ep6 step 3200/9592 | mse 0.2636 (win 0.2614) | EV 0.871 (win 0.872) | lr 2.56e-05 | gn 0.24 | 325 img/s
+  ep6 step 3400/9592 | mse 0.2635 (win 0.2622) | EV 0.871 (win 0.871) | lr 2.52e-05 | gn 0.24 | 325 img/s
+  ep6 step 3600/9592 | mse 0.2634 (win 0.2621) | EV 0.871 (win 0.872) | lr 2.49e-05 | gn 0.24 | 325 img/s
+  ep6 step 3800/9592 | mse 0.2633 (win 0.2607) | EV 0.871 (win 0.872) | lr 2.45e-05 | gn 0.24 | 325 img/s
+  ep6 step 4000/9592 | mse 0.2633 (win 0.2623) | EV 0.871 (win 0.871) | lr 2.42e-05 | gn 0.24 | 325 img/s
+  ep6 step 4200/9592 | mse 0.2633 (win 0.2636) | EV 0.871 (win 0.871) | lr 2.38e-05 | gn 0.24 | 325 img/s
+  ep6 step 4400/9592 | mse 0.2633 (win 0.2631) | EV 0.871 (win 0.871) | lr 2.35e-05 | gn 0.24 | 325 img/s
+  ep6 step 4600/9592 | mse 0.2632 (win 0.2630) | EV 0.871 (win 0.871) | lr 2.31e-05 | gn 0.24 | 325 img/s
+  ep6 step 4800/9592 | mse 0.2633 (win 0.2638) | EV 0.871 (win 0.871) | lr 2.28e-05 | gn 0.24 | 325 img/s
+  ep6 step 5000/9592 | mse 0.2632 (win 0.2626) | EV 0.871 (win 0.871) | lr 2.24e-05 | gn 0.24 | 325 img/s
+  ep6 step 5200/9592 | mse 0.2631 (win 0.2601) | EV 0.871 (win 0.873) | lr 2.21e-05 | gn 0.24 | 325 img/s
+  ep6 step 5400/9592 | mse 0.2630 (win 0.2601) | EV 0.871 (win 0.872) | lr 2.17e-05 | gn 0.24 | 325 img/s
+  ep6 step 5600/9592 | mse 0.2629 (win 0.2604) | EV 0.871 (win 0.872) | lr 2.14e-05 | gn 0.24 | 325 img/s
+  ep6 step 5800/9592 | mse 0.2629 (win 0.2615) | EV 0.871 (win 0.872) | lr 2.10e-05 | gn 0.24 | 325 img/s
+  ep6 step 6000/9592 | mse 0.2629 (win 0.2624) | EV 0.871 (win 0.871) | lr 2.07e-05 | gn 0.24 | 325 img/s
+  ep6 step 6200/9592 | mse 0.2628 (win 0.2603) | EV 0.871 (win 0.872) | lr 2.04e-05 | gn 0.24 | 325 img/s
+  ep6 step 6400/9592 | mse 0.2627 (win 0.2617) | EV 0.871 (win 0.872) | lr 2.00e-05 | gn 0.24 | 325 img/s
+  ep6 step 6600/9592 | mse 0.2626 (win 0.2590) | EV 0.871 (win 0.873) | lr 1.97e-05 | gn 0.24 | 325 img/s
+  ep6 step 6800/9592 | mse 0.2626 (win 0.2623) | EV 0.871 (win 0.871) | lr 1.94e-05 | gn 0.24 | 325 img/s
+  ep6 step 7000/9592 | mse 0.2626 (win 0.2613) | EV 0.871 (win 0.872) | lr 1.91e-05 | gn 0.24 | 325 img/s
+  ep6 step 7200/9592 | mse 0.2626 (win 0.2616) | EV 0.871 (win 0.872) | lr 1.87e-05 | gn 0.24 | 325 img/s
+  ep6 step 7400/9592 | mse 0.2625 (win 0.2609) | EV 0.871 (win 0.872) | lr 1.84e-05 | gn 0.24 | 325 img/s
+  ep6 step 7600/9592 | mse 0.2625 (win 0.2609) | EV 0.871 (win 0.872) | lr 1.81e-05 | gn 0.24 | 325 img/s
+  ep6 step 7800/9592 | mse 0.2624 (win 0.2612) | EV 0.871 (win 0.872) | lr 1.78e-05 | gn 0.24 | 325 img/s
+  ep6 step 8000/9592 | mse 0.2624 (win 0.2593) | EV 0.871 (win 0.873) | lr 1.74e-05 | gn 0.24 | 325 img/s
+  ep6 step 8200/9592 | mse 0.2623 (win 0.2602) | EV 0.871 (win 0.872) | lr 1.71e-05 | gn 0.24 | 325 img/s
+  ep6 step 8400/9592 | mse 0.2623 (win 0.2607) | EV 0.871 (win 0.872) | lr 1.68e-05 | gn 0.24 | 325 img/s
+  ep6 step 8600/9592 | mse 0.2622 (win 0.2613) | EV 0.871 (win 0.872) | lr 1.65e-05 | gn 0.24 | 325 img/s
+  ep6 step 8800/9592 | mse 0.2622 (win 0.2604) | EV 0.871 (win 0.872) | lr 1.62e-05 | gn 0.24 | 325 img/s
+  ep6 step 9000/9592 | mse 0.2621 (win 0.2597) | EV 0.872 (win 0.873) | lr 1.59e-05 | gn 0.24 | 325 img/s
+  ep6 step 9200/9592 | mse 0.2620 (win 0.2577) | EV 0.872 (win 0.874) | lr 1.56e-05 | gn 0.24 | 325 img/s
+  ep6 step 9400/9592 | mse 0.2620 (win 0.2601) | EV 0.872 (win 0.873) | lr 1.53e-05 | gn 0.24 | 325 img/s
+epoch   6/8 | train mse 0.26190 (EV 0.8716) | val mse 0.33106 (EV 0.8376) | 1887s | 325 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9018, +30min 0.8531, +45min 0.8132, +60min 0.7822
+  decoded: MAE 0.180 (adv 0.238) | CSI@1 0.456 (adv 0.407) | CSI@8 0.023 (adv 0.059) | PSD 2-8km band power 0.05 (adv 1.12)
+  ep7 step 200/9592 | mse 0.2525 (win 0.2525) | EV 0.876 (win 0.876) | lr 1.47e-05 | gn 0.22 | 324 img/s
+  ep7 step 400/9592 | mse 0.2530 (win 0.2536) | EV 0.876 (win 0.876) | lr 1.44e-05 | gn 0.22 | 325 img/s
+  ep7 step 600/9592 | mse 0.2537 (win 0.2552) | EV 0.876 (win 0.875) | lr 1.41e-05 | gn 0.22 | 325 img/s
+  ep7 step 800/9592 | mse 0.2535 (win 0.2526) | EV 0.876 (win 0.876) | lr 1.38e-05 | gn 0.23 | 325 img/s
+  ep7 step 1000/9592 | mse 0.2538 (win 0.2549) | EV 0.876 (win 0.875) | lr 1.36e-05 | gn 0.23 | 325 img/s
+  ep7 step 1200/9592 | mse 0.2536 (win 0.2529) | EV 0.876 (win 0.876) | lr 1.33e-05 | gn 0.23 | 325 img/s
+  ep7 step 1400/9592 | mse 0.2537 (win 0.2539) | EV 0.876 (win 0.876) | lr 1.30e-05 | gn 0.23 | 325 img/s
+  ep7 step 1600/9592 | mse 0.2538 (win 0.2549) | EV 0.876 (win 0.875) | lr 1.27e-05 | gn 0.23 | 325 img/s
+  ep7 step 1800/9592 | mse 0.2540 (win 0.2550) | EV 0.876 (win 0.875) | lr 1.24e-05 | gn 0.23 | 325 img/s
+  ep7 step 2000/9592 | mse 0.2539 (win 0.2537) | EV 0.876 (win 0.876) | lr 1.22e-05 | gn 0.23 | 325 img/s
+  ep7 step 2200/9592 | mse 0.2539 (win 0.2537) | EV 0.876 (win 0.876) | lr 1.19e-05 | gn 0.23 | 325 img/s
+  ep7 step 2400/9592 | mse 0.2540 (win 0.2554) | EV 0.875 (win 0.875) | lr 1.16e-05 | gn 0.23 | 325 img/s
+  ep7 step 2600/9592 | mse 0.2540 (win 0.2541) | EV 0.875 (win 0.875) | lr 1.14e-05 | gn 0.23 | 325 img/s
+  ep7 step 2800/9592 | mse 0.2539 (win 0.2522) | EV 0.876 (win 0.876) | lr 1.11e-05 | gn 0.23 | 325 img/s
+  ep7 step 3000/9592 | mse 0.2540 (win 0.2553) | EV 0.876 (win 0.875) | lr 1.09e-05 | gn 0.23 | 325 img/s
+  ep7 step 3200/9592 | mse 0.2538 (win 0.2517) | EV 0.876 (win 0.877) | lr 1.06e-05 | gn 0.23 | 325 img/s
+  ep7 step 3400/9592 | mse 0.2538 (win 0.2534) | EV 0.876 (win 0.876) | lr 1.03e-05 | gn 0.23 | 325 img/s
+  ep7 step 3600/9592 | mse 0.2538 (win 0.2530) | EV 0.876 (win 0.876) | lr 1.01e-05 | gn 0.23 | 325 img/s
+  ep7 step 3800/9592 | mse 0.2538 (win 0.2550) | EV 0.876 (win 0.875) | lr 9.84e-06 | gn 0.23 | 325 img/s
+  ep7 step 4000/9592 | mse 0.2538 (win 0.2538) | EV 0.876 (win 0.876) | lr 9.60e-06 | gn 0.23 | 325 img/s
+  ep7 step 4200/9592 | mse 0.2537 (win 0.2517) | EV 0.876 (win 0.877) | lr 9.35e-06 | gn 0.23 | 325 img/s
+  ep7 step 4400/9592 | mse 0.2538 (win 0.2543) | EV 0.876 (win 0.875) | lr 9.11e-06 | gn 0.23 | 325 img/s
+  ep7 step 4600/9592 | mse 0.2537 (win 0.2524) | EV 0.876 (win 0.876) | lr 8.87e-06 | gn 0.23 | 325 img/s
+  ep7 step 4800/9592 | mse 0.2537 (win 0.2524) | EV 0.876 (win 0.876) | lr 8.64e-06 | gn 0.23 | 325 img/s
+  ep7 step 5000/9592 | mse 0.2536 (win 0.2514) | EV 0.876 (win 0.877) | lr 8.41e-06 | gn 0.23 | 325 img/s
+  ep7 step 5200/9592 | mse 0.2535 (win 0.2527) | EV 0.876 (win 0.876) | lr 8.18e-06 | gn 0.23 | 325 img/s
+  ep7 step 5400/9592 | mse 0.2535 (win 0.2541) | EV 0.876 (win 0.875) | lr 7.95e-06 | gn 0.23 | 325 img/s
+  ep7 step 5600/9592 | mse 0.2535 (win 0.2531) | EV 0.876 (win 0.876) | lr 7.73e-06 | gn 0.23 | 325 img/s
+  ep7 step 5800/9592 | mse 0.2535 (win 0.2531) | EV 0.876 (win 0.876) | lr 7.51e-06 | gn 0.23 | 325 img/s
+  ep7 step 6000/9592 | mse 0.2535 (win 0.2529) | EV 0.876 (win 0.876) | lr 7.29e-06 | gn 0.23 | 325 img/s
+  ep7 step 6200/9592 | mse 0.2534 (win 0.2513) | EV 0.876 (win 0.877) | lr 7.08e-06 | gn 0.23 | 325 img/s
+  ep7 step 6400/9592 | mse 0.2534 (win 0.2519) | EV 0.876 (win 0.877) | lr 6.87e-06 | gn 0.23 | 325 img/s
+  ep7 step 6600/9592 | mse 0.2534 (win 0.2527) | EV 0.876 (win 0.876) | lr 6.66e-06 | gn 0.23 | 325 img/s
+  ep7 step 6800/9592 | mse 0.2533 (win 0.2524) | EV 0.876 (win 0.876) | lr 6.45e-06 | gn 0.23 | 325 img/s
+  ep7 step 7000/9592 | mse 0.2533 (win 0.2532) | EV 0.876 (win 0.876) | lr 6.25e-06 | gn 0.23 | 325 img/s
+  ep7 step 7200/9592 | mse 0.2533 (win 0.2531) | EV 0.876 (win 0.876) | lr 6.05e-06 | gn 0.23 | 325 img/s
+  ep7 step 7400/9592 | mse 0.2533 (win 0.2524) | EV 0.876 (win 0.876) | lr 5.86e-06 | gn 0.23 | 325 img/s
+  ep7 step 7600/9592 | mse 0.2533 (win 0.2539) | EV 0.876 (win 0.876) | lr 5.66e-06 | gn 0.23 | 325 img/s
+  ep7 step 7800/9592 | mse 0.2533 (win 0.2528) | EV 0.876 (win 0.876) | lr 5.47e-06 | gn 0.23 | 325 img/s
+  ep7 step 8000/9592 | mse 0.2533 (win 0.2525) | EV 0.876 (win 0.876) | lr 5.29e-06 | gn 0.23 | 325 img/s
+  ep7 step 8200/9592 | mse 0.2532 (win 0.2505) | EV 0.876 (win 0.877) | lr 5.10e-06 | gn 0.23 | 325 img/s
+  ep7 step 8400/9592 | mse 0.2532 (win 0.2529) | EV 0.876 (win 0.876) | lr 4.92e-06 | gn 0.23 | 325 img/s
+  ep7 step 8600/9592 | mse 0.2531 (win 0.2510) | EV 0.876 (win 0.877) | lr 4.74e-06 | gn 0.23 | 325 img/s
+  ep7 step 8800/9592 | mse 0.2531 (win 0.2531) | EV 0.876 (win 0.876) | lr 4.57e-06 | gn 0.23 | 325 img/s
+  ep7 step 9000/9592 | mse 0.2531 (win 0.2518) | EV 0.876 (win 0.877) | lr 4.40e-06 | gn 0.23 | 325 img/s
+  ep7 step 9200/9592 | mse 0.2531 (win 0.2501) | EV 0.876 (win 0.877) | lr 4.23e-06 | gn 0.23 | 325 img/s
+  ep7 step 9400/9592 | mse 0.2530 (win 0.2509) | EV 0.876 (win 0.877) | lr 4.06e-06 | gn 0.23 | 325 img/s
+epoch   7/8 | train mse 0.25301 (EV 0.8760) | val mse 0.33560 (EV 0.8354) | 1887s | 325 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9014, +30min 0.8515, +45min 0.8101, +60min 0.7783
+  ep8 step 200/9592 | mse 0.2476 (win 0.2476) | EV 0.879 (win 0.879) | lr 3.75e-06 | gn 0.21 | 324 img/s
+  ep8 step 400/9592 | mse 0.2482 (win 0.2488) | EV 0.878 (win 0.878) | lr 3.59e-06 | gn 0.21 | 325 img/s
+  ep8 step 600/9592 | mse 0.2479 (win 0.2472) | EV 0.879 (win 0.879) | lr 3.44e-06 | gn 0.21 | 325 img/s
+  ep8 step 800/9592 | mse 0.2480 (win 0.2484) | EV 0.878 (win 0.878) | lr 3.29e-06 | gn 0.21 | 325 img/s
+  ep8 step 1000/9592 | mse 0.2481 (win 0.2485) | EV 0.878 (win 0.878) | lr 3.14e-06 | gn 0.21 | 325 img/s
+  ep8 step 1200/9592 | mse 0.2484 (win 0.2496) | EV 0.878 (win 0.878) | lr 3.00e-06 | gn 0.22 | 325 img/s
+  ep8 step 1400/9592 | mse 0.2483 (win 0.2480) | EV 0.878 (win 0.878) | lr 2.86e-06 | gn 0.22 | 325 img/s
+  ep8 step 1600/9592 | mse 0.2483 (win 0.2479) | EV 0.878 (win 0.879) | lr 2.72e-06 | gn 0.22 | 325 img/s
+  ep8 step 1800/9592 | mse 0.2481 (win 0.2469) | EV 0.878 (win 0.879) | lr 2.59e-06 | gn 0.22 | 325 img/s
+  ep8 step 2000/9592 | mse 0.2479 (win 0.2464) | EV 0.878 (win 0.879) | lr 2.46e-06 | gn 0.22 | 325 img/s
+  ep8 step 2200/9592 | mse 0.2482 (win 0.2510) | EV 0.878 (win 0.877) | lr 2.33e-06 | gn 0.22 | 325 img/s
+  ep8 step 2400/9592 | mse 0.2483 (win 0.2493) | EV 0.878 (win 0.878) | lr 2.21e-06 | gn 0.22 | 325 img/s
+  ep8 step 2600/9592 | mse 0.2482 (win 0.2474) | EV 0.878 (win 0.879) | lr 2.09e-06 | gn 0.22 | 325 img/s
+  ep8 step 2800/9592 | mse 0.2482 (win 0.2482) | EV 0.878 (win 0.878) | lr 1.97e-06 | gn 0.22 | 325 img/s
+  ep8 step 3000/9592 | mse 0.2482 (win 0.2486) | EV 0.878 (win 0.878) | lr 1.86e-06 | gn 0.22 | 325 img/s
+  ep8 step 3200/9592 | mse 0.2481 (win 0.2466) | EV 0.878 (win 0.879) | lr 1.75e-06 | gn 0.22 | 325 img/s
+  ep8 step 3400/9592 | mse 0.2483 (win 0.2505) | EV 0.878 (win 0.877) | lr 1.64e-06 | gn 0.22 | 325 img/s
+  ep8 step 3600/9592 | mse 0.2483 (win 0.2495) | EV 0.878 (win 0.878) | lr 1.54e-06 | gn 0.22 | 325 img/s
+  ep8 step 3800/9592 | mse 0.2483 (win 0.2477) | EV 0.878 (win 0.879) | lr 1.44e-06 | gn 0.22 | 325 img/s
+  ep8 step 4000/9592 | mse 0.2484 (win 0.2496) | EV 0.878 (win 0.878) | lr 1.34e-06 | gn 0.22 | 325 img/s
+  ep8 step 4200/9592 | mse 0.2484 (win 0.2494) | EV 0.878 (win 0.878) | lr 1.25e-06 | gn 0.22 | 325 img/s
+  ep8 step 4400/9592 | mse 0.2485 (win 0.2502) | EV 0.878 (win 0.877) | lr 1.16e-06 | gn 0.22 | 325 img/s
+  ep8 step 4600/9592 | mse 0.2485 (win 0.2479) | EV 0.878 (win 0.878) | lr 1.07e-06 | gn 0.22 | 325 img/s
+  ep8 step 4800/9592 | mse 0.2484 (win 0.2477) | EV 0.878 (win 0.879) | lr 9.85e-07 | gn 0.22 | 325 img/s
+  ep8 step 5000/9592 | mse 0.2484 (win 0.2484) | EV 0.878 (win 0.878) | lr 9.05e-07 | gn 0.22 | 325 img/s
+  ep8 step 5200/9592 | mse 0.2485 (win 0.2493) | EV 0.878 (win 0.878) | lr 8.28e-07 | gn 0.22 | 325 img/s
+  ep8 step 5400/9592 | mse 0.2485 (win 0.2487) | EV 0.878 (win 0.878) | lr 7.54e-07 | gn 0.22 | 325 img/s
+  ep8 step 5600/9592 | mse 0.2485 (win 0.2488) | EV 0.878 (win 0.878) | lr 6.84e-07 | gn 0.22 | 325 img/s
+  ep8 step 5800/9592 | mse 0.2485 (win 0.2485) | EV 0.878 (win 0.878) | lr 6.18e-07 | gn 0.22 | 325 img/s
+  ep8 step 6000/9592 | mse 0.2485 (win 0.2490) | EV 0.878 (win 0.878) | lr 5.54e-07 | gn 0.22 | 325 img/s
+  ep8 step 6200/9592 | mse 0.2486 (win 0.2495) | EV 0.878 (win 0.878) | lr 4.94e-07 | gn 0.22 | 325 img/s
+  ep8 step 6400/9592 | mse 0.2485 (win 0.2477) | EV 0.878 (win 0.879) | lr 4.38e-07 | gn 0.22 | 325 img/s
+  ep8 step 6600/9592 | mse 0.2485 (win 0.2471) | EV 0.878 (win 0.879) | lr 3.85e-07 | gn 0.22 | 325 img/s
+  ep8 step 6800/9592 | mse 0.2485 (win 0.2483) | EV 0.878 (win 0.878) | lr 3.35e-07 | gn 0.22 | 325 img/s
+  ep8 step 7000/9592 | mse 0.2485 (win 0.2480) | EV 0.878 (win 0.878) | lr 2.89e-07 | gn 0.22 | 325 img/s
+  ep8 step 7200/9592 | mse 0.2484 (win 0.2479) | EV 0.878 (win 0.879) | lr 2.46e-07 | gn 0.22 | 325 img/s
+  ep8 step 7400/9592 | mse 0.2484 (win 0.2480) | EV 0.878 (win 0.878) | lr 2.07e-07 | gn 0.22 | 325 img/s
+  ep8 step 7600/9592 | mse 0.2485 (win 0.2496) | EV 0.878 (win 0.878) | lr 1.71e-07 | gn 0.22 | 325 img/s
+  ep8 step 7800/9592 | mse 0.2485 (win 0.2485) | EV 0.878 (win 0.878) | lr 1.38e-07 | gn 0.22 | 325 img/s
+  ep8 step 8000/9592 | mse 0.2485 (win 0.2509) | EV 0.878 (win 0.877) | lr 1.09e-07 | gn 0.22 | 325 img/s
+  ep8 step 8200/9592 | mse 0.2485 (win 0.2479) | EV 0.878 (win 0.879) | lr 8.34e-08 | gn 0.22 | 325 img/s
+  ep8 step 8400/9592 | mse 0.2485 (win 0.2482) | EV 0.878 (win 0.878) | lr 6.12e-08 | gn 0.22 | 325 img/s
+  ep8 step 8600/9592 | mse 0.2485 (win 0.2492) | EV 0.878 (win 0.878) | lr 4.24e-08 | gn 0.22 | 325 img/s
+  ep8 step 8800/9592 | mse 0.2485 (win 0.2498) | EV 0.878 (win 0.878) | lr 2.70e-08 | gn 0.22 | 325 img/s
+  ep8 step 9000/9592 | mse 0.2486 (win 0.2496) | EV 0.878 (win 0.878) | lr 1.51e-08 | gn 0.22 | 325 img/s
+  ep8 step 9200/9592 | mse 0.2486 (win 0.2476) | EV 0.878 (win 0.879) | lr 6.64e-09 | gn 0.22 | 325 img/s
+  ep8 step 9400/9592 | mse 0.2485 (win 0.2483) | EV 0.878 (win 0.878) | lr 1.60e-09 | gn 0.22 | 325 img/s
+epoch   8/8 | train mse 0.24852 (EV 0.8782) | val mse 0.33798 (EV 0.8342) | 1887s | 325 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.9012, +30min 0.8507, +45min 0.8086, +60min 0.7762
+  decoded: MAE 0.181 (adv 0.238) | CSI@1 0.456 (adv 0.407) | CSI@8 0.021 (adv 0.059) | PSD 2-8km band power 0.05 (adv 1.12)
+
+GATE-C (PASS): pooled val EV 0.8446 against threshold 0.10. sigma_data would fall 0.9988 -> 0.3938 (60.6%).
+
+completed: total 260.7 min | best val MSE 0.31683 (ep2) | DONE written -> the sbatch chain will stop

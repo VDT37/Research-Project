@@ -1,0 +1,33 @@
+host gpuhost009.jc.rl.ac.uk | CUDA ok | Sun  9 Aug 14:26:35 BST 2026
+  crops 256/13281 (stride) | first 20241121 | last 20251202
+denoiser: /home/users/dv321/dissertation_outputs/diffusion_ml_v2/ckpt_ep050.pt
+  epoch 50 | val_loss 0.3314 | 65.7M params | cond=full | in_ch=24 | sigma_data=0.7407 | leads [15, 30, 45, 60]
+  16/256 crops | 2.37 crops/s | eta 2 min
+  32/256 crops | 2.45 crops/s | eta 2 min
+  48/256 crops | 2.50 crops/s | eta 1 min
+  64/256 crops | 2.51 crops/s | eta 1 min
+  80/256 crops | 2.52 crops/s | eta 1 min
+  96/256 crops | 2.53 crops/s | eta 1 min
+  112/256 crops | 2.54 crops/s | eta 1 min
+  128/256 crops | 2.54 crops/s | eta 1 min
+  144/256 crops | 2.55 crops/s | eta 1 min
+  160/256 crops | 2.55 crops/s | eta 1 min
+  176/256 crops | 2.55 crops/s | eta 1 min
+  192/256 crops | 2.55 crops/s | eta 0 min
+  208/256 crops | 2.55 crops/s | eta 0 min
+  224/256 crops | 2.55 crops/s | eta 0 min
+  240/256 crops | 2.55 crops/s | eta 0 min
+  256/256 crops | 2.55 crops/s | eta 0 min
+
+=== val split, 256 crops, 4 members ===
+  model_mean     MAE 0.293 | RMSE 0.932 | CSI@1 0.378 | CSI@8 0.070
+  model_member   MAE 0.341 | RMSE 1.168 | CSI@1 0.318 | CSI@8 0.062
+  advection      MAE 0.327 | RMSE 1.128 | CSI@1 0.323 | CSI@8 0.030
+  persistence    MAE 0.393 | RMSE 1.287 | CSI@1 0.226 | CSI@8 0.034
+  CRPS (fair)    0.1713  (advection MAE 0.327)
+  spread/RMSE    0.873 | outliers 0.456 (ideal 0.400)
+  PSD 2-8 km     band power 0.953 (mean-of-ratios 0.905) | advection 0.714 / 0.565, member field, 163 crops
+plots -> /work/scratch-nopw2/dv321/dissertation/eval_smoke/diffusion_eval_smoke.png
+tables -> /work/scratch-nopw2/dv321/dissertation/eval_smoke/diffusion_eval_smoke.md
+
+done in 1.7 min

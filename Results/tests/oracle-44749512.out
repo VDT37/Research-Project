@@ -1,0 +1,41 @@
+host gpuhost009.jc.rl.ac.uk | CUDA ok | Sun  9 Aug 14:06:23 BST 2026
+  crops 512/13281 (stride) | first 20241121 | last 20251202
+  32/512 crops | 3.50 crops/s | eta 2.3 min
+  64/512 crops | 4.02 crops/s | eta 1.9 min
+  96/512 crops | 4.36 crops/s | eta 1.6 min
+  128/512 crops | 4.51 crops/s | eta 1.4 min
+  160/512 crops | 4.62 crops/s | eta 1.3 min
+  192/512 crops | 4.72 crops/s | eta 1.1 min
+  224/512 crops | 4.81 crops/s | eta 1.0 min
+  256/512 crops | 4.87 crops/s | eta 0.9 min
+  288/512 crops | 4.92 crops/s | eta 0.8 min
+  320/512 crops | 4.96 crops/s | eta 0.6 min
+  352/512 crops | 5.00 crops/s | eta 0.5 min
+  384/512 crops | 5.02 crops/s | eta 0.4 min
+  416/512 crops | 5.06 crops/s | eta 0.3 min
+  448/512 crops | 5.06 crops/s | eta 0.2 min
+  480/512 crops | 5.08 crops/s | eta 0.1 min
+  512/512 crops | 5.10 crops/s | eta 0.0 min
+
+=== val split, lead 60, 512 crops, field advection ===
+  regression_mean  MAE 0.3350 | RMSE 1.1385 | CSI@1 0.3325 | CSI@8 0.0427
+  codec_advection  MAE 0.3372 | RMSE 1.1415 | CSI@1 0.3340 | CSI@8 0.0437
+  codec_oracle     MAE 0.0448 | RMSE 0.1953 | CSI@1 0.8904 | CSI@8 0.7409
+  advection        MAE 0.3350 | RMSE 1.1385 | CSI@1 0.3325 | CSI@8 0.0427
+  persistence      MAE 0.3909 | RMSE 1.2749 | CSI@1 0.2539 | CSI@8 0.0598
+  GATE-D PASS: +0.0022 mm/h against the codec floor | +0.0000 against raw advection
+  reproduction check (PASS) against the single60 full-split advection column (13,281 crops), tolerance 10%:
+    MAE_mmh   here 0.3350 | recorded 0.3230 (+3.7%)
+    RMSE_mmh  here 1.1385 | recorded 1.1400 (-0.1%)
+    CSI@1     here 0.3325 | recorded 0.3210 (+3.6%)
+    CSI@8     here 0.0427 | recorded 0.0400 (+6.9%)
+    codec round trip on the same field costs +0.0022 mm/h of MAE (codec_advection vs advection).
+  PSD 2-8 km  regression_mean  band power 0.603 | mean-of-ratios 0.470
+  PSD 2-8 km  codec_advection  band power 0.595 | mean-of-ratios 0.447
+  PSD 2-8 km  codec_oracle     band power 0.980 | mean-of-ratios 0.910
+  PSD 2-8 km  advection        band power 0.603 | mean-of-ratios 0.470
+  codec bounds on these 512 crops: floor 0.3372 -> ceiling 0.0448 mm/h MAE. The ceiling is what NO latent method in this arm can beat, measured on the same crops under the same mask, so it replaces the approximate 0.9568 codec figure currently in circulation.
+plots -> /home/users/dv321/dissertation_outputs/regression/eval/det_eval_sanity_L60.png
+tables -> /home/users/dv321/dissertation_outputs/regression/eval/det_eval_sanity_L60.md
+
+done in 1.7 min

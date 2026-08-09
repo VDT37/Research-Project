@@ -172,14 +172,22 @@ def pack_shard(split, lead, args, net, ck, cond_mode, target, device):
     d_mean = d_sum / count
     var_r = max(r_sumsq / count - r_mean ** 2, 0.0)
     var_d = max(d_sumsq / count - d_mean ** 2, 0.0)
+    sq_r, sq_d = r_sumsq / count, d_sumsq / count
     sd_resid = float(math.sqrt(var_r))
-    ev = float(1.0 - var_r / var_d) if var_d > 0 else float("nan")
+    # EV against the target's SECOND MOMENT, which is the single definition the
+    # whole arm uses (design 3.1) and what train_regression.py prints, so the two
+    # are directly comparable. The variance-normalised form is kept alongside
+    # because it is what an R^2 conventionally means, and the two differ by
+    # mean(delta)^2, which is 0.0038 here and shifts EV by about 0.003.
+    ev = float(1.0 - sq_r / sq_d) if sq_d > 0 else float("nan")
+    ev_var = float(1.0 - var_r / var_d) if var_d > 0 else float("nan")
     print(f"[{tag}] sigma_data_resid {sd_resid:.4f} (target sd "
-          f"{math.sqrt(var_d):.4f}) | EV {ev:.4f} | resid mean {r_mean:+.5f} "
+          f"{math.sqrt(var_d):.4f}) | EV {ev:.4f} (variance-normalised "
+          f"{ev_var:.4f}) | resid mean {r_mean:+.5f} "
           f"| {time.time() - t0:.0f}s", flush=True)
 
     if not spot_check(part, lat_npy, net, cond_mode, lead_idx, device,
-                      n=args.spot, seed=args.seed):
+                      n=args.spot, seed=args.seed, atol=args.spot_atol):
         print(f"[{tag}] VERIFICATION FAILED: leaving {part} for inspection, "
               "pack NOT installed", flush=True)
         return None
@@ -197,7 +205,7 @@ def pack_shard(split, lead, args, net, ck, cond_mode, target, device):
             "sigma_data_resid": sd_resid,
             "resid_moments": {"sum": r_sum, "sumsq": r_sumsq, "count": count},
             "resid_mean": r_mean,
-            "ev": ev,
+            "ev": ev, "ev_var": ev_var,
             "sigma_data_delta": lat_meta.get("sigma_data"),
             "sigma_data_target_measured": float(math.sqrt(var_d)),
             "git": git_hash(), "host": socket.gethostname(),
@@ -214,11 +222,24 @@ def pack_shard(split, lead, args, net, ck, cond_mode, target, device):
 
 @torch.no_grad()
 def spot_check(mu_path, lat_path, net, cond_mode, lead_idx, device, n=8, seed=0,
-               atol=2e-2):
+               atol=6e-2):
     """Re-run the frozen regression on a random sample of rows and compare to the
-    stored float16. atol covers float16 storage rounding plus GPU
-    non-determinism; latents are O(1) so 2e-2 is far below signal, and it is the
-    same tolerance pack_latents.py uses."""
+    stored float16.
+
+    The tolerance is NOT pack_latents.py's 2e-2. That figure covers an fp32
+    encoder forward plus float16 storage rounding, which is tiny. This forward
+    runs under bf16 autocast (an 8-bit mantissa, roughly 3.9e-3 relative) and the
+    check re-runs single rows at batch 1 against values produced at batch 256, so
+    it compares two equally valid bf16 evaluations that select different kernels
+    and reduction orders. Observed spread on real data is 0.02 to 0.035 on
+    latents of order 1. Real corruption (wrong rows, wrong network, wrong slice)
+    produces O(1) differences, so 6e-2 still catches everything that matters
+    while not failing on arithmetic noise. Float16 STORAGE contributes about
+    1.7e-4 here and is not the issue.
+
+    A useful tell if this ever fires for real: rounding noise makes the SAME rows
+    fail across independent shards, because it scales with latent magnitude.
+    Corruption hits different rows in each shard."""
     mu_mm = np.load(mu_path, mmap_mode="r")
     lat_mm = np.load(lat_path, mmap_mode="r")
     rng = np.random.default_rng(seed)
@@ -260,6 +281,9 @@ def main():
                          "stay bounded on Lustre (0 = only at the end)")
     ap.add_argument("--spot", type=int, default=8,
                     help="rows re-run through the net and compared")
+    ap.add_argument("--spot-atol", type=float, default=6e-2,
+                    help="spot-check tolerance. Sized for a bf16 forward compared "
+                         "across batch sizes, not for fp32; see spot_check()")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--force", action="store_true", help="repack even if present")
     ap.add_argument("--check-only", action="store_true",

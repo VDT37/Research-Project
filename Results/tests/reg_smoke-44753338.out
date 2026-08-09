@@ -1,0 +1,31 @@
+host gpuhost009.jc.rl.ac.uk | CUDA ok | Sun  9 Aug 14:21:30 BST 2026
+target=delta | pooled std 0.7407 | mean +0.0619 | E[target^2] train 0.5525 val 0.5604
+  per shard: [+15min sd 0.5800 E[t^2] 0.3395, +30min sd 0.7073 E[t^2] 0.5038, +45min sd 0.7921 E[t^2] 0.6314, +60min sd 0.8546 E[t^2] 0.7352]
+diagnostics: 16 fixed val crops (rows 0..399)
+device=cuda | R_phi 65.7M params | cond=full (20ch) -> 4ch | latent_scale=0.784
+train rows 4000 | val rows 400 | 62 steps/epoch (batch 64)
+data-path check: batch E[target^2] 0.3122 vs pack meta 0.5604 (ratio 0.557) | untrained MSE 0.3122 -> EV +0.0000 (must be ~0.000 on a fresh start)
+  ep1 step 12/62 | mse 0.5406 (win 0.5406) | EV 0.022 (win 0.022) | lr 5.50e-05 | gn 1.41 | 151 img/s
+  ep1 step 24/62 | mse 0.5379 (win 0.5352) | EV 0.026 (win 0.031) | lr 9.98e-05 | gn 1.22 | 207 img/s
+  ep1 step 36/62 | mse 0.5138 (win 0.4654) | EV 0.070 (win 0.158) | lr 9.50e-05 | gn 1.02 | 236 img/s
+  ep1 step 48/62 | mse 0.4991 (win 0.4551) | EV 0.097 (win 0.176) | lr 8.43e-05 | gn 0.90 | 253 img/s
+  ep1 step 60/62 | mse 0.4886 (win 0.4468) | EV 0.116 (win 0.191) | lr 6.91e-05 | gn 0.80 | 265 img/s
+epoch   1/2 | train mse 0.48701 (EV 0.1185) | val mse 0.56847 (EV -0.0144) | 15s | 267 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.0112, +30min -0.0841, +45min 0.0261, +60min -0.0133
+  decoded: MAE 0.343 (adv 0.341) | CSI@1 0.353 (adv 0.351) | CSI@8 0.064 (adv 0.063) | PSD 2-8km band power 0.62 (adv 0.58)
+  ABORT-B (FAIL) after epoch 1: val EV -0.0144 against threshold 0.020
+  new best (val MSE 0.56847, EV -0.0144) -> reg_best.pt
+  ep2 step 12/62 | mse 0.4384 (win 0.4384) | EV 0.207 (win 0.207) | lr 4.85e-05 | gn 0.45 | 311 img/s
+  ep2 step 24/62 | mse 0.4362 (win 0.4340) | EV 0.211 (win 0.215) | lr 3.09e-05 | gn 0.58 | 319 img/s
+  ep2 step 36/62 | mse 0.4328 (win 0.4260) | EV 0.217 (win 0.229) | lr 1.57e-05 | gn 0.55 | 321 img/s
+  ep2 step 48/62 | mse 0.4300 (win 0.4215) | EV 0.222 (win 0.237) | lr 5.05e-06 | gn 0.51 | 323 img/s
+  ep2 step 60/62 | mse 0.4308 (win 0.4341) | EV 0.220 (win 0.214) | lr 2.05e-07 | gn 0.48 | 324 img/s
+epoch   2/2 | train mse 0.42995 (EV 0.2218) | val mse 0.56150 (EV -0.0019) | 12s | 324 img/s | GPU 14.1 GB
+  val EV per lead: +15min 0.0222, +30min -0.0717, +45min 0.0383, +60min 0.0000
+  decoded: MAE 0.344 (adv 0.341) | CSI@1 0.353 (adv 0.351) | CSI@8 0.064 (adv 0.063) | PSD 2-8km band power 0.64 (adv 0.58)
+  new best (val MSE 0.56150, EV -0.0019) -> reg_best.pt
+
+GATE-C (FAIL): pooled val EV -0.0019 against threshold 0.10. sigma_data would fall 0.7407 -> 0.7414 (-0.1%).
+  This is a RESULT, not a bug. Do not add capacity or weight the loss to chase it: report EV per lead next to the ridge gate's linear lower bound, and the conclusion that the residual against a pysteps prior is close to unpredictable in the mean at these leads (design 9.4, 9.5).
+
+completed: total 0.7 min | best val MSE 0.56150 (ep2) | DONE written -> the sbatch chain will stop

@@ -148,14 +148,14 @@ def open_mu_split(mu_dir, latents_dir, split, lead=None, n_rows=None, reg_sha=No
 
 
 def pool_moments(metas, key):
-    """Exact pooled (std, variance) over shards from raw moments. A
-    lead-conditioned model needs ONE sigma_data and the residual grows with lead,
-    so averaging per-shard standard deviations would be wrong."""
+    """Exact pooled (std, variance, second moment) over shards from raw moments.
+    A lead-conditioned model needs ONE sigma_data and the residual grows with
+    lead, so averaging per-shard standard deviations would be wrong."""
     S = sum(m[key]["sum"] for m in metas)
     SS = sum(m[key]["sumsq"] for m in metas)
     N = sum(m[key]["count"] for m in metas)
     var = max(SS / N - (S / N) ** 2, 0.0)
-    return float(math.sqrt(var)), var
+    return float(math.sqrt(var)), var, float(SS / N)
 
 
 # ----------------------------------------------------------------------------
@@ -386,9 +386,12 @@ def main():
                          "regression checkpoints; re-run pack_mu.py so every "
                          "shard and split shares one frozen mean.")
     reg_sha256 = reg_shas.pop()
-    sigma_data_resid, var_r = pool_moments(mu_tr_metas, "resid_moments")
-    sd_delta, var_d = pool_moments(tr_metas, "delta_moments")
-    ev_pack = float(1.0 - var_r / var_d) if var_d > 0 else float("nan")
+    sigma_data_resid, var_r, sq_r = pool_moments(mu_tr_metas, "resid_moments")
+    sd_delta, var_d, sq_d = pool_moments(tr_metas, "delta_moments")
+    # Second-moment normalised, matching train_regression.py and design 3.1. The
+    # variance-normalised form differs by mean(delta)^2 and is kept for reference.
+    ev_pack = float(1.0 - sq_r / sq_d) if sq_d > 0 else float("nan")
+    ev_pack_var = float(1.0 - var_r / var_d) if var_d > 0 else float("nan")
     per = ", ".join(f"+{L}min sd' {float(m['sigma_data_resid']):.4f}/EV {float(m['ev']):.3f}"
                     for L, m in zip(shard_leads, mu_tr_metas))
     print(f"CorrDiff: mu packs from {args.mu_dir} (reg {str(reg_sha256)[:12]})\n"
@@ -535,7 +538,8 @@ def main():
               "hr_mean_cond": args.hr_mean_cond,
               "reg_sha256": reg_sha256,
               "sigma_data_resid": sigma_data_resid,
-              "sigma_data_delta": sd_delta, "ev": ev_pack,
+              "sigma_data_delta": sd_delta,
+              "ev": ev_pack, "ev_var": ev_pack_var,
               "in_ch": ZC + cond_ch,
               "vae_sha256": tr_meta.get("vae_sha256"), "git": git_hash(),
               "argv": sys.argv,

@@ -1,0 +1,710 @@
+host gpuhost015.jc.rl.ac.uk | CUDA ok | Sun  9 Aug 14:46:44 BST 2026
+target=delta | pooled std 0.7407 | mean +0.0619 | E[target^2] train 0.5525 val 0.5604
+  per shard: [+15min sd 0.5800 E[t^2] 0.3395, +30min sd 0.7073 E[t^2] 0.5038, +45min sd 0.7921 E[t^2] 0.6314, +60min sd 0.8546 E[t^2] 0.7352]
+device=cuda | R_phi 65.7M params | cond=full (20ch) -> 4ch | latent_scale=0.784
+train rows 512 | val rows 400 | 16 steps/epoch (batch 32)
+data-path check: batch E[target^2] 0.3122 vs pack meta 0.5604 (ratio 0.557) | untrained MSE 0.3122 -> EV +0.0000 (must be ~0.000 on a fresh start)
+  ep1 step 10/16 | mse 0.5546 (win 0.5546) | EV -0.004 (win -0.004) | lr 1.35e-04 | gn 1.30 | 88 img/s
+epoch   1/200 | train mse 0.52648 (EV 0.0471) | val mse 0.57202 (EV -0.0207) | 4s | 119 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0049, +30min -0.0905, +45min 0.0200, +60min -0.0199
+  ABORT-B (FAIL) after epoch 1: val EV -0.0207 against threshold 0.020
+  new best (val MSE 0.57202, EV -0.0207) -> reg_best.pt
+  ep2 step 10/16 | mse 0.4848 (win 0.4848) | EV 0.123 (win 0.123) | lr 3.00e-04 | gn 0.84 | 275 img/s
+epoch   2/200 | train mse 0.47052 (EV 0.1484) | val mse 0.57013 (EV -0.0173) | 2s | 282 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0083, +30min -0.0871, +45min 0.0233, +60min -0.0164
+  new best (val MSE 0.57013, EV -0.0173) -> reg_best.pt
+  ep3 step 10/16 | mse 0.4398 (win 0.4398) | EV 0.204 (win 0.204) | lr 3.00e-04 | gn 0.53 | 281 img/s
+epoch   3/200 | train mse 0.44502 (EV 0.1945) | val mse 0.56777 (EV -0.0131) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0124, +30min -0.0828, +45min 0.0273, +60min -0.0121
+  new best (val MSE 0.56777, EV -0.0131) -> reg_best.pt
+  ep4 step 10/16 | mse 0.4382 (win 0.4382) | EV 0.207 (win 0.207) | lr 3.00e-04 | gn 0.90 | 278 img/s
+epoch   4/200 | train mse 0.43102 (EV 0.2199) | val mse 0.56526 (EV -0.0087) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0165, +30min -0.0783, +45min 0.0317, +60min -0.0073
+  new best (val MSE 0.56526, EV -0.0087) -> reg_best.pt
+  ep5 step 10/16 | mse 0.4325 (win 0.4325) | EV 0.217 (win 0.217) | lr 3.00e-04 | gn 0.43 | 278 img/s
+epoch   5/200 | train mse 0.41543 (EV 0.2481) | val mse 0.56264 (EV -0.0040) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0207, +30min -0.0736, +45min 0.0363, +60min -0.0024
+  new best (val MSE 0.56264, EV -0.0040) -> reg_best.pt
+  ep6 step 10/16 | mse 0.4158 (win 0.4158) | EV 0.247 (win 0.247) | lr 3.00e-04 | gn 0.83 | 280 img/s
+epoch   6/200 | train mse 0.40447 (EV 0.2679) | val mse 0.55991 (EV 0.0009) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0250, +30min -0.0686, +45min 0.0410, +60min 0.0028
+  new best (val MSE 0.55991, EV 0.0009) -> reg_best.pt
+  ep7 step 10/16 | mse 0.3972 (win 0.3972) | EV 0.281 (win 0.281) | lr 2.99e-04 | gn 0.56 | 284 img/s
+epoch   7/200 | train mse 0.39142 (EV 0.2915) | val mse 0.55707 (EV 0.0060) | 2s | 288 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0294, +30min -0.0634, +45min 0.0460, +60min 0.0081
+  new best (val MSE 0.55707, EV 0.0060) -> reg_best.pt
+  ep8 step 10/16 | mse 0.3857 (win 0.3857) | EV 0.302 (win 0.302) | lr 2.99e-04 | gn 0.54 | 279 img/s
+epoch   8/200 | train mse 0.38214 (EV 0.3083) | val mse 0.55409 (EV 0.0113) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0340, +30min -0.0579, +45min 0.0512, +60min 0.0137
+  new best (val MSE 0.55409, EV 0.0113) -> reg_best.pt
+  ep9 step 10/16 | mse 0.3662 (win 0.3662) | EV 0.337 (win 0.337) | lr 2.99e-04 | gn 0.84 | 279 img/s
+epoch   9/200 | train mse 0.37394 (EV 0.3232) | val mse 0.55105 (EV 0.0167) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0386, +30min -0.0523, +45min 0.0565, +60min 0.0195
+  new best (val MSE 0.55105, EV 0.0167) -> reg_best.pt
+  ep10 step 10/16 | mse 0.3723 (win 0.3723) | EV 0.326 (win 0.326) | lr 2.99e-04 | gn 0.66 | 279 img/s
+epoch  10/200 | train mse 0.36559 (EV 0.3383) | val mse 0.54794 (EV 0.0223) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0432, +30min -0.0465, +45min 0.0619, +60min 0.0254
+  new best (val MSE 0.54794, EV 0.0223) -> reg_best.pt
+  ep11 step 10/16 | mse 0.3632 (win 0.3632) | EV 0.343 (win 0.343) | lr 2.98e-04 | gn 0.57 | 279 img/s
+epoch  11/200 | train mse 0.35880 (EV 0.3506) | val mse 0.54474 (EV 0.0280) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0480, +30min -0.0405, +45min 0.0675, +60min 0.0314
+  new best (val MSE 0.54474, EV 0.0280) -> reg_best.pt
+  ep12 step 10/16 | mse 0.3562 (win 0.3562) | EV 0.355 (win 0.355) | lr 2.98e-04 | gn 0.73 | 279 img/s
+epoch  12/200 | train mse 0.35608 (EV 0.3555) | val mse 0.54142 (EV 0.0339) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0528, +30min -0.0343, +45min 0.0733, +60min 0.0377
+  new best (val MSE 0.54142, EV 0.0339) -> reg_best.pt
+  ep13 step 10/16 | mse 0.3601 (win 0.3601) | EV 0.348 (win 0.348) | lr 2.98e-04 | gn 0.55 | 282 img/s
+epoch  13/200 | train mse 0.35122 (EV 0.3643) | val mse 0.53806 (EV 0.0399) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0578, +30min -0.0280, +45min 0.0792, +60min 0.0441
+  new best (val MSE 0.53806, EV 0.0399) -> reg_best.pt
+  ep14 step 10/16 | mse 0.3539 (win 0.3539) | EV 0.359 (win 0.359) | lr 2.97e-04 | gn 0.55 | 282 img/s
+epoch  14/200 | train mse 0.34818 (EV 0.3698) | val mse 0.53464 (EV 0.0460) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0627, +30min -0.0216, +45min 0.0852, +60min 0.0506
+  new best (val MSE 0.53464, EV 0.0460) -> reg_best.pt
+  ep15 step 10/16 | mse 0.3344 (win 0.3344) | EV 0.395 (win 0.395) | lr 2.97e-04 | gn 0.62 | 282 img/s
+epoch  15/200 | train mse 0.34431 (EV 0.3768) | val mse 0.53120 (EV 0.0521) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0677, +30min -0.0151, +45min 0.0912, +60min 0.0572
+  new best (val MSE 0.53120, EV 0.0521) -> reg_best.pt
+  ep16 step 10/16 | mse 0.3374 (win 0.3374) | EV 0.389 (win 0.389) | lr 2.96e-04 | gn 0.66 | 277 img/s
+epoch  16/200 | train mse 0.34322 (EV 0.3788) | val mse 0.52774 (EV 0.0583) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0727, +30min -0.0086, +45min 0.0973, +60min 0.0638
+  new best (val MSE 0.52774, EV 0.0583) -> reg_best.pt
+  ep17 step 10/16 | mse 0.3343 (win 0.3343) | EV 0.395 (win 0.395) | lr 2.96e-04 | gn 0.47 | 280 img/s
+epoch  17/200 | train mse 0.33871 (EV 0.3869) | val mse 0.52428 (EV 0.0645) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0777, +30min -0.0021, +45min 0.1033, +60min 0.0704
+  new best (val MSE 0.52428, EV 0.0645) -> reg_best.pt
+  ep18 step 10/16 | mse 0.3366 (win 0.3366) | EV 0.391 (win 0.391) | lr 2.95e-04 | gn 0.62 | 284 img/s
+epoch  18/200 | train mse 0.33690 (EV 0.3902) | val mse 0.52081 (EV 0.0707) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0826, +30min 0.0045, +45min 0.1093, +60min 0.0770
+  new best (val MSE 0.52081, EV 0.0707) -> reg_best.pt
+  ep19 step 10/16 | mse 0.3302 (win 0.3302) | EV 0.402 (win 0.402) | lr 2.94e-04 | gn 0.76 | 280 img/s
+epoch  19/200 | train mse 0.33369 (EV 0.3960) | val mse 0.51735 (EV 0.0768) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0876, +30min 0.0110, +45min 0.1154, +60min 0.0836
+  new best (val MSE 0.51735, EV 0.0768) -> reg_best.pt
+  ep20 step 10/16 | mse 0.3304 (win 0.3304) | EV 0.402 (win 0.402) | lr 2.94e-04 | gn 0.83 | 279 img/s
+epoch  20/200 | train mse 0.32891 (EV 0.4047) | val mse 0.51390 (EV 0.0830) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0925, +30min 0.0175, +45min 0.1214, +60min 0.0901
+  new best (val MSE 0.51390, EV 0.0830) -> reg_best.pt
+  ep21 step 10/16 | mse 0.3149 (win 0.3149) | EV 0.430 (win 0.430) | lr 2.93e-04 | gn 0.50 | 281 img/s
+epoch  21/200 | train mse 0.32294 (EV 0.4155) | val mse 0.51046 (EV 0.0891) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0975, +30min 0.0240, +45min 0.1274, +60min 0.0967
+  new best (val MSE 0.51046, EV 0.0891) -> reg_best.pt
+  ep22 step 10/16 | mse 0.3111 (win 0.3111) | EV 0.437 (win 0.437) | lr 2.92e-04 | gn 0.62 | 279 img/s
+epoch  22/200 | train mse 0.31479 (EV 0.4302) | val mse 0.50706 (EV 0.0952) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1024, +30min 0.0305, +45min 0.1333, +60min 0.1031
+  new best (val MSE 0.50706, EV 0.0952) -> reg_best.pt
+  ep23 step 10/16 | mse 0.3158 (win 0.3158) | EV 0.428 (win 0.428) | lr 2.92e-04 | gn 0.51 | 281 img/s
+epoch  23/200 | train mse 0.30482 (EV 0.4483) | val mse 0.50365 (EV 0.1013) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1072, +30min 0.0369, +45min 0.1393, +60min 0.1096
+  new best (val MSE 0.50365, EV 0.1013) -> reg_best.pt
+  ep24 step 10/16 | mse 0.2922 (win 0.2922) | EV 0.471 (win 0.471) | lr 2.91e-04 | gn 0.63 | 281 img/s
+epoch  24/200 | train mse 0.29804 (EV 0.4606) | val mse 0.50025 (EV 0.1073) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1121, +30min 0.0434, +45min 0.1452, +60min 0.1161
+  new best (val MSE 0.50025, EV 0.1073) -> reg_best.pt
+  ep25 step 10/16 | mse 0.2947 (win 0.2947) | EV 0.467 (win 0.467) | lr 2.90e-04 | gn 0.56 | 282 img/s
+epoch  25/200 | train mse 0.28985 (EV 0.4754) | val mse 0.49685 (EV 0.1134) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1169, +30min 0.0499, +45min 0.1511, +60min 0.1226
+  new best (val MSE 0.49685, EV 0.1134) -> reg_best.pt
+  ep26 step 10/16 | mse 0.2711 (win 0.2711) | EV 0.509 (win 0.509) | lr 2.89e-04 | gn 0.54 | 283 img/s
+epoch  26/200 | train mse 0.28081 (EV 0.4917) | val mse 0.49344 (EV 0.1195) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1217, +30min 0.0563, +45min 0.1570, +60min 0.1291
+  new best (val MSE 0.49344, EV 0.1195) -> reg_best.pt
+  ep27 step 10/16 | mse 0.2755 (win 0.2755) | EV 0.501 (win 0.501) | lr 2.88e-04 | gn 0.70 | 280 img/s
+epoch  27/200 | train mse 0.27715 (EV 0.4984) | val mse 0.49010 (EV 0.1255) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1264, +30min 0.0627, +45min 0.1628, +60min 0.1356
+  new best (val MSE 0.49010, EV 0.1255) -> reg_best.pt
+  ep28 step 10/16 | mse 0.2647 (win 0.2647) | EV 0.521 (win 0.521) | lr 2.87e-04 | gn 0.44 | 283 img/s
+epoch  28/200 | train mse 0.26586 (EV 0.5188) | val mse 0.48678 (EV 0.1314) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1310, +30min 0.0690, +45min 0.1686, +60min 0.1419
+  new best (val MSE 0.48678, EV 0.1314) -> reg_best.pt
+  ep29 step 10/16 | mse 0.2631 (win 0.2631) | EV 0.524 (win 0.524) | lr 2.86e-04 | gn 0.53 | 284 img/s
+epoch  29/200 | train mse 0.25714 (EV 0.5346) | val mse 0.48356 (EV 0.1371) | 2s | 288 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1355, +30min 0.0751, +45min 0.1742, +60min 0.1481
+  new best (val MSE 0.48356, EV 0.1371) -> reg_best.pt
+  ep30 step 10/16 | mse 0.2459 (win 0.2459) | EV 0.555 (win 0.555) | lr 2.85e-04 | gn 0.40 | 282 img/s
+epoch  30/200 | train mse 0.24756 (EV 0.5519) | val mse 0.48032 (EV 0.1429) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1400, +30min 0.0813, +45min 0.1798, +60min 0.1544
+  new best (val MSE 0.48032, EV 0.1429) -> reg_best.pt
+  ep31 step 10/16 | mse 0.2383 (win 0.2383) | EV 0.569 (win 0.569) | lr 2.84e-04 | gn 0.59 | 281 img/s
+epoch  31/200 | train mse 0.24123 (EV 0.5634) | val mse 0.47710 (EV 0.1487) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1444, +30min 0.0874, +45min 0.1854, +60min 0.1605
+  new best (val MSE 0.47710, EV 0.1487) -> reg_best.pt
+  ep32 step 10/16 | mse 0.2326 (win 0.2326) | EV 0.579 (win 0.579) | lr 2.83e-04 | gn 0.49 | 279 img/s
+epoch  32/200 | train mse 0.23396 (EV 0.5765) | val mse 0.47398 (EV 0.1542) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1487, +30min 0.0934, +45min 0.1908, +60min 0.1665
+  new best (val MSE 0.47398, EV 0.1542) -> reg_best.pt
+  ep33 step 10/16 | mse 0.2277 (win 0.2277) | EV 0.588 (win 0.588) | lr 2.82e-04 | gn 0.49 | 281 img/s
+epoch  33/200 | train mse 0.22710 (EV 0.5889) | val mse 0.47089 (EV 0.1597) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1529, +30min 0.0992, +45min 0.1962, +60min 0.1725
+  new best (val MSE 0.47089, EV 0.1597) -> reg_best.pt
+  ep34 step 10/16 | mse 0.2187 (win 0.2187) | EV 0.604 (win 0.604) | lr 2.81e-04 | gn 0.45 | 282 img/s
+epoch  34/200 | train mse 0.21866 (EV 0.6042) | val mse 0.46786 (EV 0.1652) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1570, +30min 0.1051, +45min 0.2015, +60min 0.1784
+  new best (val MSE 0.46786, EV 0.1652) -> reg_best.pt
+  ep35 step 10/16 | mse 0.2140 (win 0.2140) | EV 0.613 (win 0.613) | lr 2.80e-04 | gn 0.48 | 281 img/s
+epoch  35/200 | train mse 0.21162 (EV 0.6170) | val mse 0.46487 (EV 0.1705) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1611, +30min 0.1108, +45min 0.2066, +60min 0.1841
+  new best (val MSE 0.46487, EV 0.1705) -> reg_best.pt
+  ep36 step 10/16 | mse 0.2101 (win 0.2101) | EV 0.620 (win 0.620) | lr 2.78e-04 | gn 0.62 | 279 img/s
+epoch  36/200 | train mse 0.20675 (EV 0.6258) | val mse 0.46194 (EV 0.1757) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1651, +30min 0.1163, +45min 0.2118, +60min 0.1898
+  new best (val MSE 0.46194, EV 0.1757) -> reg_best.pt
+  ep37 step 10/16 | mse 0.1984 (win 0.1984) | EV 0.641 (win 0.641) | lr 2.77e-04 | gn 0.35 | 282 img/s
+epoch  37/200 | train mse 0.19854 (EV 0.6407) | val mse 0.45905 (EV 0.1809) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1691, +30min 0.1219, +45min 0.2168, +60min 0.1953
+  new best (val MSE 0.45905, EV 0.1809) -> reg_best.pt
+  ep38 step 10/16 | mse 0.1911 (win 0.1911) | EV 0.654 (win 0.654) | lr 2.76e-04 | gn 0.42 | 282 img/s
+epoch  38/200 | train mse 0.19115 (EV 0.6540) | val mse 0.45624 (EV 0.1859) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1729, +30min 0.1273, +45min 0.2216, +60min 0.2008
+  new best (val MSE 0.45624, EV 0.1859) -> reg_best.pt
+  ep39 step 10/16 | mse 0.1835 (win 0.1835) | EV 0.668 (win 0.668) | lr 2.75e-04 | gn 0.41 | 281 img/s
+epoch  39/200 | train mse 0.18467 (EV 0.6658) | val mse 0.45350 (EV 0.1908) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1766, +30min 0.1325, +45min 0.2264, +60min 0.2060
+  new best (val MSE 0.45350, EV 0.1908) -> reg_best.pt
+  ep40 step 10/16 | mse 0.1807 (win 0.1807) | EV 0.673 (win 0.673) | lr 2.73e-04 | gn 0.40 | 278 img/s
+epoch  40/200 | train mse 0.18075 (EV 0.6728) | val mse 0.45083 (EV 0.1955) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1802, +30min 0.1377, +45min 0.2310, +60min 0.2112
+  new best (val MSE 0.45083, EV 0.1955) -> reg_best.pt
+  ep41 step 10/16 | mse 0.1730 (win 0.1730) | EV 0.687 (win 0.687) | lr 2.72e-04 | gn 0.41 | 278 img/s
+epoch  41/200 | train mse 0.17493 (EV 0.6834) | val mse 0.44827 (EV 0.2001) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1837, +30min 0.1426, +45min 0.2354, +60min 0.2161
+  new best (val MSE 0.44827, EV 0.2001) -> reg_best.pt
+  ep42 step 10/16 | mse 0.1738 (win 0.1738) | EV 0.685 (win 0.685) | lr 2.71e-04 | gn 0.51 | 279 img/s
+epoch  42/200 | train mse 0.17169 (EV 0.6893) | val mse 0.44572 (EV 0.2046) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1872, +30min 0.1476, +45min 0.2398, +60min 0.2210
+  new best (val MSE 0.44572, EV 0.2046) -> reg_best.pt
+  ep43 step 10/16 | mse 0.1734 (win 0.1734) | EV 0.686 (win 0.686) | lr 2.69e-04 | gn 0.67 | 283 img/s
+epoch  43/200 | train mse 0.17197 (EV 0.6887) | val mse 0.44322 (EV 0.2091) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1906, +30min 0.1524, +45min 0.2441, +60min 0.2258
+  new best (val MSE 0.44322, EV 0.2091) -> reg_best.pt
+  ep44 step 10/16 | mse 0.1648 (win 0.1648) | EV 0.702 (win 0.702) | lr 2.68e-04 | gn 0.42 | 288 img/s
+epoch  44/200 | train mse 0.16653 (EV 0.6986) | val mse 0.44084 (EV 0.2134) | 2s | 290 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1939, +30min 0.1570, +45min 0.2482, +60min 0.2303
+  new best (val MSE 0.44084, EV 0.2134) -> reg_best.pt
+  ep45 step 10/16 | mse 0.1615 (win 0.1615) | EV 0.708 (win 0.708) | lr 2.66e-04 | gn 0.46 | 282 img/s
+epoch  45/200 | train mse 0.16059 (EV 0.7093) | val mse 0.43848 (EV 0.2176) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1972, +30min 0.1617, +45min 0.2523, +60min 0.2348
+  new best (val MSE 0.43848, EV 0.2176) -> reg_best.pt
+  ep46 step 10/16 | mse 0.1573 (win 0.1573) | EV 0.715 (win 0.715) | lr 2.65e-04 | gn 0.39 | 281 img/s
+epoch  46/200 | train mse 0.15530 (EV 0.7189) | val mse 0.43621 (EV 0.2216) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2004, +30min 0.1661, +45min 0.2562, +60min 0.2391
+  new best (val MSE 0.43621, EV 0.2216) -> reg_best.pt
+  ep47 step 10/16 | mse 0.1514 (win 0.1514) | EV 0.726 (win 0.726) | lr 2.63e-04 | gn 0.38 | 281 img/s
+epoch  47/200 | train mse 0.15218 (EV 0.7246) | val mse 0.43403 (EV 0.2255) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2034, +30min 0.1703, +45min 0.2599, +60min 0.2433
+  new best (val MSE 0.43403, EV 0.2255) -> reg_best.pt
+  ep48 step 10/16 | mse 0.1533 (win 0.1533) | EV 0.722 (win 0.722) | lr 2.62e-04 | gn 0.47 | 283 img/s
+epoch  48/200 | train mse 0.15043 (EV 0.7277) | val mse 0.43185 (EV 0.2294) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2064, +30min 0.1746, +45min 0.2637, +60min 0.2474
+  new best (val MSE 0.43185, EV 0.2294) -> reg_best.pt
+  ep49 step 10/16 | mse 0.1483 (win 0.1483) | EV 0.731 (win 0.731) | lr 2.60e-04 | gn 0.41 | 283 img/s
+epoch  49/200 | train mse 0.14732 (EV 0.7334) | val mse 0.42972 (EV 0.2332) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2094, +30min 0.1788, +45min 0.2673, +60min 0.2515
+  new best (val MSE 0.42972, EV 0.2332) -> reg_best.pt
+  ep50 step 10/16 | mse 0.1422 (win 0.1422) | EV 0.743 (win 0.743) | lr 2.58e-04 | gn 0.47 | 278 img/s
+epoch  50/200 | train mse 0.14390 (EV 0.7395) | val mse 0.42767 (EV 0.2369) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2123, +30min 0.1828, +45min 0.2708, +60min 0.2554
+  new best (val MSE 0.42767, EV 0.2369) -> reg_best.pt
+  ep51 step 10/16 | mse 0.1425 (win 0.1425) | EV 0.742 (win 0.742) | lr 2.57e-04 | gn 0.37 | 284 img/s
+epoch  51/200 | train mse 0.14062 (EV 0.7455) | val mse 0.42565 (EV 0.2405) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2151, +30min 0.1868, +45min 0.2743, +60min 0.2592
+  new best (val MSE 0.42565, EV 0.2405) -> reg_best.pt
+  ep52 step 10/16 | mse 0.1364 (win 0.1364) | EV 0.753 (win 0.753) | lr 2.55e-04 | gn 0.29 | 280 img/s
+epoch  52/200 | train mse 0.13584 (EV 0.7541) | val mse 0.42370 (EV 0.2440) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2179, +30min 0.1907, +45min 0.2776, +60min 0.2629
+  new best (val MSE 0.42370, EV 0.2440) -> reg_best.pt
+  ep53 step 10/16 | mse 0.1338 (win 0.1338) | EV 0.758 (win 0.758) | lr 2.53e-04 | gn 0.35 | 282 img/s
+epoch  53/200 | train mse 0.13362 (EV 0.7582) | val mse 0.42180 (EV 0.2473) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2205, +30min 0.1944, +45min 0.2809, +60min 0.2665
+  new best (val MSE 0.42180, EV 0.2473) -> reg_best.pt
+  ep54 step 10/16 | mse 0.1337 (win 0.1337) | EV 0.758 (win 0.758) | lr 2.52e-04 | gn 0.38 | 284 img/s
+epoch  54/200 | train mse 0.13234 (EV 0.7605) | val mse 0.42000 (EV 0.2506) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2231, +30min 0.1981, +45min 0.2839, +60min 0.2698
+  new best (val MSE 0.42000, EV 0.2506) -> reg_best.pt
+  ep55 step 10/16 | mse 0.1263 (win 0.1263) | EV 0.771 (win 0.771) | lr 2.50e-04 | gn 0.29 | 287 img/s
+epoch  55/200 | train mse 0.12863 (EV 0.7672) | val mse 0.41820 (EV 0.2538) | 2s | 290 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2257, +30min 0.2016, +45min 0.2870, +60min 0.2732
+  new best (val MSE 0.41820, EV 0.2538) -> reg_best.pt
+  ep56 step 10/16 | mse 0.1190 (win 0.1190) | EV 0.785 (win 0.785) | lr 2.48e-04 | gn 0.30 | 281 img/s
+epoch  56/200 | train mse 0.12553 (EV 0.7728) | val mse 0.41648 (EV 0.2568) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2281, +30min 0.2051, +45min 0.2899, +60min 0.2764
+  new best (val MSE 0.41648, EV 0.2568) -> reg_best.pt
+  ep57 step 10/16 | mse 0.1263 (win 0.1263) | EV 0.771 (win 0.771) | lr 2.46e-04 | gn 0.37 | 281 img/s
+epoch  57/200 | train mse 0.12508 (EV 0.7736) | val mse 0.41476 (EV 0.2599) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2306, +30min 0.2085, +45min 0.2928, +60min 0.2796
+  new best (val MSE 0.41476, EV 0.2599) -> reg_best.pt
+  ep58 step 10/16 | mse 0.1202 (win 0.1202) | EV 0.782 (win 0.782) | lr 2.44e-04 | gn 0.38 | 283 img/s
+epoch  58/200 | train mse 0.12290 (EV 0.7776) | val mse 0.41315 (EV 0.2628) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2330, +30min 0.2118, +45min 0.2955, +60min 0.2826
+  new best (val MSE 0.41315, EV 0.2628) -> reg_best.pt
+  ep59 step 10/16 | mse 0.1206 (win 0.1206) | EV 0.782 (win 0.782) | lr 2.43e-04 | gn 0.39 | 279 img/s
+epoch  59/200 | train mse 0.12018 (EV 0.7825) | val mse 0.41159 (EV 0.2656) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2353, +30min 0.2149, +45min 0.2981, +60min 0.2855
+  new best (val MSE 0.41159, EV 0.2656) -> reg_best.pt
+  ep60 step 10/16 | mse 0.1213 (win 0.1213) | EV 0.781 (win 0.781) | lr 2.41e-04 | gn 0.34 | 277 img/s
+epoch  60/200 | train mse 0.11847 (EV 0.7856) | val mse 0.41001 (EV 0.2684) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2377, +30min 0.2181, +45min 0.3007, +60min 0.2884
+  new best (val MSE 0.41001, EV 0.2684) -> reg_best.pt
+  ep61 step 10/16 | mse 0.1164 (win 0.1164) | EV 0.789 (win 0.789) | lr 2.39e-04 | gn 0.33 | 279 img/s
+epoch  61/200 | train mse 0.11621 (EV 0.7897) | val mse 0.40853 (EV 0.2710) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2399, +30min 0.2211, +45min 0.3032, +60min 0.2911
+  new best (val MSE 0.40853, EV 0.2710) -> reg_best.pt
+  ep62 step 10/16 | mse 0.1123 (win 0.1123) | EV 0.797 (win 0.797) | lr 2.37e-04 | gn 0.28 | 283 img/s
+epoch  62/200 | train mse 0.11312 (EV 0.7952) | val mse 0.40703 (EV 0.2737) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2421, +30min 0.2241, +45min 0.3058, +60min 0.2939
+  new best (val MSE 0.40703, EV 0.2737) -> reg_best.pt
+  ep63 step 10/16 | mse 0.1122 (win 0.1122) | EV 0.797 (win 0.797) | lr 2.35e-04 | gn 0.28 | 279 img/s
+epoch  63/200 | train mse 0.11024 (EV 0.8005) | val mse 0.40570 (EV 0.2761) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2441, +30min 0.2269, +45min 0.3080, +60min 0.2963
+  new best (val MSE 0.40570, EV 0.2761) -> reg_best.pt
+  ep64 step 10/16 | mse 0.1110 (win 0.1110) | EV 0.799 (win 0.799) | lr 2.33e-04 | gn 0.34 | 283 img/s
+epoch  64/200 | train mse 0.10860 (EV 0.8034) | val mse 0.40438 (EV 0.2784) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2462, +30min 0.2296, +45min 0.3101, +60min 0.2987
+  new best (val MSE 0.40438, EV 0.2784) -> reg_best.pt
+  ep65 step 10/16 | mse 0.1064 (win 0.1064) | EV 0.807 (win 0.807) | lr 2.31e-04 | gn 0.29 | 283 img/s
+epoch  65/200 | train mse 0.10726 (EV 0.8059) | val mse 0.40305 (EV 0.2808) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2483, +30min 0.2323, +45min 0.3123, +60min 0.3012
+  new best (val MSE 0.40305, EV 0.2808) -> reg_best.pt
+  ep66 step 10/16 | mse 0.1069 (win 0.1069) | EV 0.807 (win 0.807) | lr 2.29e-04 | gn 0.44 | 279 img/s
+epoch  66/200 | train mse 0.10731 (EV 0.8058) | val mse 0.40176 (EV 0.2831) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2503, +30min 0.2350, +45min 0.3144, +60min 0.3035
+  new best (val MSE 0.40176, EV 0.2831) -> reg_best.pt
+  ep67 step 10/16 | mse 0.1076 (win 0.1076) | EV 0.805 (win 0.805) | lr 2.27e-04 | gn 0.35 | 283 img/s
+epoch  67/200 | train mse 0.10556 (EV 0.8089) | val mse 0.40058 (EV 0.2852) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2522, +30min 0.2375, +45min 0.3164, +60min 0.3056
+  new best (val MSE 0.40058, EV 0.2852) -> reg_best.pt
+  ep68 step 10/16 | mse 0.1016 (win 0.1016) | EV 0.816 (win 0.816) | lr 2.25e-04 | gn 0.36 | 281 img/s
+epoch  68/200 | train mse 0.10281 (EV 0.8139) | val mse 0.39937 (EV 0.2874) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2541, +30min 0.2399, +45min 0.3184, +60min 0.3078
+  new best (val MSE 0.39937, EV 0.2874) -> reg_best.pt
+  ep69 step 10/16 | mse 0.0974 (win 0.0974) | EV 0.824 (win 0.824) | lr 2.23e-04 | gn 0.29 | 278 img/s
+epoch  69/200 | train mse 0.10045 (EV 0.8182) | val mse 0.39825 (EV 0.2894) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2560, +30min 0.2423, +45min 0.3202, +60min 0.3098
+  new best (val MSE 0.39825, EV 0.2894) -> reg_best.pt
+  ep70 step 10/16 | mse 0.0980 (win 0.0980) | EV 0.823 (win 0.823) | lr 2.21e-04 | gn 0.34 | 284 img/s
+epoch  70/200 | train mse 0.09933 (EV 0.8202) | val mse 0.39714 (EV 0.2913) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2577, +30min 0.2447, +45min 0.3220, +60min 0.3117
+  new best (val MSE 0.39714, EV 0.2913) -> reg_best.pt
+  ep71 step 10/16 | mse 0.0959 (win 0.0959) | EV 0.826 (win 0.826) | lr 2.19e-04 | gn 0.31 | 280 img/s
+epoch  71/200 | train mse 0.09699 (EV 0.8245) | val mse 0.39612 (EV 0.2932) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2594, +30min 0.2468, +45min 0.3236, +60min 0.3136
+  new best (val MSE 0.39612, EV 0.2932) -> reg_best.pt
+  ep72 step 10/16 | mse 0.0927 (win 0.0927) | EV 0.832 (win 0.832) | lr 2.17e-04 | gn 0.33 | 279 img/s
+epoch  72/200 | train mse 0.09481 (EV 0.8284) | val mse 0.39515 (EV 0.2949) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2611, +30min 0.2488, +45min 0.3252, +60min 0.3153
+  new best (val MSE 0.39515, EV 0.2949) -> reg_best.pt
+  ep73 step 10/16 | mse 0.0938 (win 0.0938) | EV 0.830 (win 0.830) | lr 2.14e-04 | gn 0.36 | 257 img/s
+epoch  73/200 | train mse 0.09254 (EV 0.8325) | val mse 0.39415 (EV 0.2967) | 2s | 270 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2628, +30min 0.2510, +45min 0.3267, +60min 0.3170
+  new best (val MSE 0.39415, EV 0.2967) -> reg_best.pt
+  ep74 step 10/16 | mse 0.0886 (win 0.0886) | EV 0.840 (win 0.840) | lr 2.12e-04 | gn 0.27 | 278 img/s
+epoch  74/200 | train mse 0.08895 (EV 0.8390) | val mse 0.39325 (EV 0.2983) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2643, +30min 0.2529, +45min 0.3282, +60min 0.3186
+  new best (val MSE 0.39325, EV 0.2983) -> reg_best.pt
+  ep75 step 10/16 | mse 0.0973 (win 0.0973) | EV 0.824 (win 0.824) | lr 2.10e-04 | gn 0.59 | 279 img/s
+epoch  75/200 | train mse 0.09393 (EV 0.8300) | val mse 0.39236 (EV 0.2999) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2659, +30min 0.2548, +45min 0.3296, +60min 0.3202
+  new best (val MSE 0.39236, EV 0.2999) -> reg_best.pt
+  ep76 step 10/16 | mse 0.0915 (win 0.0915) | EV 0.834 (win 0.834) | lr 2.08e-04 | gn 0.40 | 281 img/s
+epoch  76/200 | train mse 0.09115 (EV 0.8350) | val mse 0.39150 (EV 0.3014) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2673, +30min 0.2565, +45min 0.3309, +60min 0.3218
+  new best (val MSE 0.39150, EV 0.3014) -> reg_best.pt
+  ep77 step 10/16 | mse 0.0862 (win 0.0862) | EV 0.844 (win 0.844) | lr 2.06e-04 | gn 0.27 | 283 img/s
+epoch  77/200 | train mse 0.08652 (EV 0.8434) | val mse 0.39070 (EV 0.3028) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2689, +30min 0.2583, +45min 0.3321, +60min 0.3231
+  new best (val MSE 0.39070, EV 0.3028) -> reg_best.pt
+  ep78 step 10/16 | mse 0.0808 (win 0.0808) | EV 0.854 (win 0.854) | lr 2.03e-04 | gn 0.25 | 281 img/s
+epoch  78/200 | train mse 0.08284 (EV 0.8501) | val mse 0.38998 (EV 0.3041) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2702, +30min 0.2599, +45min 0.3332, +60min 0.3243
+  new best (val MSE 0.38998, EV 0.3041) -> reg_best.pt
+  ep79 step 10/16 | mse 0.0791 (win 0.0791) | EV 0.857 (win 0.857) | lr 2.01e-04 | gn 0.28 | 281 img/s
+epoch  79/200 | train mse 0.08002 (EV 0.8552) | val mse 0.38926 (EV 0.3054) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2715, +30min 0.2614, +45min 0.3343, +60min 0.3256
+  new best (val MSE 0.38926, EV 0.3054) -> reg_best.pt
+  ep80 step 10/16 | mse 0.0793 (win 0.0793) | EV 0.856 (win 0.856) | lr 1.99e-04 | gn 0.26 | 280 img/s
+epoch  80/200 | train mse 0.07975 (EV 0.8557) | val mse 0.38857 (EV 0.3066) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2727, +30min 0.2629, +45min 0.3354, +60min 0.3268
+  new best (val MSE 0.38857, EV 0.3066) -> reg_best.pt
+  ep81 step 10/16 | mse 0.0796 (win 0.0796) | EV 0.856 (win 0.856) | lr 1.97e-04 | gn 0.31 | 253 img/s
+epoch  81/200 | train mse 0.07819 (EV 0.8585) | val mse 0.38791 (EV 0.3078) | 2s | 267 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2741, +30min 0.2644, +45min 0.3364, +60min 0.3278
+  new best (val MSE 0.38791, EV 0.3078) -> reg_best.pt
+  ep82 step 10/16 | mse 0.0748 (win 0.0748) | EV 0.865 (win 0.865) | lr 1.95e-04 | gn 0.23 | 282 img/s
+epoch  82/200 | train mse 0.07473 (EV 0.8647) | val mse 0.38731 (EV 0.3089) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2753, +30min 0.2657, +45min 0.3372, +60min 0.3289
+  new best (val MSE 0.38731, EV 0.3089) -> reg_best.pt
+  ep83 step 10/16 | mse 0.0724 (win 0.0724) | EV 0.869 (win 0.869) | lr 1.92e-04 | gn 0.19 | 284 img/s
+epoch  83/200 | train mse 0.07183 (EV 0.8700) | val mse 0.38675 (EV 0.3099) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2765, +30min 0.2669, +45min 0.3380, +60min 0.3298
+  new best (val MSE 0.38675, EV 0.3099) -> reg_best.pt
+  ep84 step 10/16 | mse 0.0694 (win 0.0694) | EV 0.874 (win 0.874) | lr 1.90e-04 | gn 0.24 | 283 img/s
+epoch  84/200 | train mse 0.07011 (EV 0.8731) | val mse 0.38622 (EV 0.3108) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2775, +30min 0.2682, +45min 0.3388, +60min 0.3307
+  new best (val MSE 0.38622, EV 0.3108) -> reg_best.pt
+  ep85 step 10/16 | mse 0.0708 (win 0.0708) | EV 0.872 (win 0.872) | lr 1.88e-04 | gn 0.29 | 257 img/s
+epoch  85/200 | train mse 0.06906 (EV 0.8750) | val mse 0.38576 (EV 0.3116) | 2s | 269 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2785, +30min 0.2692, +45min 0.3394, +60min 0.3315
+  new best (val MSE 0.38576, EV 0.3116) -> reg_best.pt
+  ep86 step 10/16 | mse 0.0683 (win 0.0683) | EV 0.876 (win 0.876) | lr 1.85e-04 | gn 0.27 | 278 img/s
+epoch  86/200 | train mse 0.06774 (EV 0.8774) | val mse 0.38529 (EV 0.3125) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2795, +30min 0.2702, +45min 0.3400, +60min 0.3323
+  new best (val MSE 0.38529, EV 0.3125) -> reg_best.pt
+  ep87 step 10/16 | mse 0.0657 (win 0.0657) | EV 0.881 (win 0.881) | lr 1.83e-04 | gn 0.22 | 280 img/s
+epoch  87/200 | train mse 0.06603 (EV 0.8805) | val mse 0.38484 (EV 0.3133) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2804, +30min 0.2712, +45min 0.3407, +60min 0.3330
+  new best (val MSE 0.38484, EV 0.3133) -> reg_best.pt
+  ep88 step 10/16 | mse 0.0695 (win 0.0695) | EV 0.874 (win 0.874) | lr 1.81e-04 | gn 0.36 | 283 img/s
+epoch  88/200 | train mse 0.07068 (EV 0.8721) | val mse 0.38446 (EV 0.3140) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2813, +30min 0.2721, +45min 0.3412, +60min 0.3336
+  new best (val MSE 0.38446, EV 0.3140) -> reg_best.pt
+  ep89 step 10/16 | mse 0.0748 (win 0.0748) | EV 0.865 (win 0.865) | lr 1.78e-04 | gn 0.60 | 256 img/s
+epoch  89/200 | train mse 0.07580 (EV 0.8628) | val mse 0.38409 (EV 0.3146) | 2s | 269 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2822, +30min 0.2729, +45min 0.3416, +60min 0.3342
+  new best (val MSE 0.38409, EV 0.3146) -> reg_best.pt
+  ep90 step 10/16 | mse 0.0724 (win 0.0724) | EV 0.869 (win 0.869) | lr 1.76e-04 | gn 0.49 | 279 img/s
+epoch  90/200 | train mse 0.07214 (EV 0.8694) | val mse 0.38372 (EV 0.3153) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2832, +30min 0.2737, +45min 0.3421, +60min 0.3348
+  new best (val MSE 0.38372, EV 0.3153) -> reg_best.pt
+  ep91 step 10/16 | mse 0.0648 (win 0.0648) | EV 0.883 (win 0.883) | lr 1.74e-04 | gn 0.29 | 281 img/s
+epoch  91/200 | train mse 0.06567 (EV 0.8811) | val mse 0.38346 (EV 0.3158) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2840, +30min 0.2744, +45min 0.3424, +60min 0.3352
+  new best (val MSE 0.38346, EV 0.3158) -> reg_best.pt
+  ep92 step 10/16 | mse 0.0615 (win 0.0615) | EV 0.889 (win 0.889) | lr 1.71e-04 | gn 0.25 | 279 img/s
+epoch  92/200 | train mse 0.06104 (EV 0.8895) | val mse 0.38319 (EV 0.3162) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2846, +30min 0.2750, +45min 0.3427, +60min 0.3356
+  new best (val MSE 0.38319, EV 0.3162) -> reg_best.pt
+  ep93 step 10/16 | mse 0.0581 (win 0.0581) | EV 0.895 (win 0.895) | lr 1.69e-04 | gn 0.26 | 281 img/s
+epoch  93/200 | train mse 0.05811 (EV 0.8948) | val mse 0.38294 (EV 0.3167) | 2s | 270 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2853, +30min 0.2756, +45min 0.3430, +60min 0.3360
+  new best (val MSE 0.38294, EV 0.3167) -> reg_best.pt
+  ep94 step 10/16 | mse 0.0563 (win 0.0563) | EV 0.898 (win 0.898) | lr 1.67e-04 | gn 0.22 | 280 img/s
+epoch  94/200 | train mse 0.05567 (EV 0.8992) | val mse 0.38277 (EV 0.3170) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2859, +30min 0.2760, +45min 0.3431, +60min 0.3363
+  new best (val MSE 0.38277, EV 0.3170) -> reg_best.pt
+  ep95 step 10/16 | mse 0.0522 (win 0.0522) | EV 0.906 (win 0.906) | lr 1.64e-04 | gn 0.24 | 279 img/s
+epoch  95/200 | train mse 0.05370 (EV 0.9028) | val mse 0.38261 (EV 0.3173) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2863, +30min 0.2764, +45min 0.3433, +60min 0.3365
+  new best (val MSE 0.38261, EV 0.3173) -> reg_best.pt
+  ep96 step 10/16 | mse 0.0522 (win 0.0522) | EV 0.906 (win 0.906) | lr 1.62e-04 | gn 0.21 | 279 img/s
+epoch  96/200 | train mse 0.05193 (EV 0.9060) | val mse 0.38248 (EV 0.3175) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2869, +30min 0.2767, +45min 0.3434, +60min 0.3367
+  new best (val MSE 0.38248, EV 0.3175) -> reg_best.pt
+  ep97 step 10/16 | mse 0.0489 (win 0.0489) | EV 0.911 (win 0.911) | lr 1.60e-04 | gn 0.22 | 258 img/s
+epoch  97/200 | train mse 0.05035 (EV 0.9089) | val mse 0.38236 (EV 0.3177) | 2s | 271 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2873, +30min 0.2770, +45min 0.3435, +60min 0.3368
+  new best (val MSE 0.38236, EV 0.3177) -> reg_best.pt
+  ep98 step 10/16 | mse 0.0486 (win 0.0486) | EV 0.912 (win 0.912) | lr 1.57e-04 | gn 0.18 | 283 img/s
+epoch  98/200 | train mse 0.04884 (EV 0.9116) | val mse 0.38225 (EV 0.3179) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2878, +30min 0.2772, +45min 0.3436, +60min 0.3370
+  new best (val MSE 0.38225, EV 0.3179) -> reg_best.pt
+  ep99 step 10/16 | mse 0.0472 (win 0.0472) | EV 0.915 (win 0.915) | lr 1.55e-04 | gn 0.20 | 279 img/s
+epoch  99/200 | train mse 0.04744 (EV 0.9141) | val mse 0.38220 (EV 0.3180) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2880, +30min 0.2773, +45min 0.3435, +60min 0.3371
+  new best (val MSE 0.38220, EV 0.3180) -> reg_best.pt
+  ep100 step 10/16 | mse 0.0468 (win 0.0468) | EV 0.915 (win 0.915) | lr 1.53e-04 | gn 0.20 | 282 img/s
+epoch 100/200 | train mse 0.04616 (EV 0.9164) | val mse 0.38222 (EV 0.3180) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2882, +30min 0.2774, +45min 0.3433, +60min 0.3370
+  ep101 step 10/16 | mse 0.0452 (win 0.0452) | EV 0.918 (win 0.918) | lr 1.50e-04 | gn 0.20 | 257 img/s
+epoch 101/200 | train mse 0.04489 (EV 0.9188) | val mse 0.38225 (EV 0.3179) | 2s | 270 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2885, +30min 0.2774, +45min 0.3432, +60min 0.3369
+  ep102 step 10/16 | mse 0.0434 (win 0.0434) | EV 0.921 (win 0.921) | lr 1.48e-04 | gn 0.21 | 279 img/s
+epoch 102/200 | train mse 0.04380 (EV 0.9207) | val mse 0.38233 (EV 0.3178) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2885, +30min 0.2772, +45min 0.3429, +60min 0.3368
+  ep103 step 10/16 | mse 0.0417 (win 0.0417) | EV 0.924 (win 0.924) | lr 1.45e-04 | gn 0.27 | 280 img/s
+epoch 103/200 | train mse 0.04316 (EV 0.9219) | val mse 0.38239 (EV 0.3177) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2885, +30min 0.2771, +45min 0.3426, +60min 0.3367
+  ep104 step 10/16 | mse 0.0414 (win 0.0414) | EV 0.925 (win 0.925) | lr 1.43e-04 | gn 0.24 | 282 img/s
+epoch 104/200 | train mse 0.04252 (EV 0.9230) | val mse 0.38251 (EV 0.3175) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2886, +30min 0.2769, +45min 0.3423, +60min 0.3365
+  ep105 step 10/16 | mse 0.0414 (win 0.0414) | EV 0.925 (win 0.925) | lr 1.41e-04 | gn 0.28 | 256 img/s
+epoch 105/200 | train mse 0.04212 (EV 0.9238) | val mse 0.38264 (EV 0.3172) | 2s | 269 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2885, +30min 0.2767, +45min 0.3420, +60min 0.3363
+  ep106 step 10/16 | mse 0.0414 (win 0.0414) | EV 0.925 (win 0.925) | lr 1.38e-04 | gn 0.28 | 279 img/s
+epoch 106/200 | train mse 0.04134 (EV 0.9252) | val mse 0.38282 (EV 0.3169) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2884, +30min 0.2764, +45min 0.3416, +60min 0.3359
+  ep107 step 10/16 | mse 0.0408 (win 0.0408) | EV 0.926 (win 0.926) | lr 1.36e-04 | gn 0.30 | 281 img/s
+epoch 107/200 | train mse 0.04023 (EV 0.9272) | val mse 0.38302 (EV 0.3165) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2882, +30min 0.2759, +45min 0.3412, +60min 0.3356
+  ep108 step 10/16 | mse 0.0380 (win 0.0380) | EV 0.931 (win 0.931) | lr 1.34e-04 | gn 0.32 | 278 img/s
+epoch 108/200 | train mse 0.03915 (EV 0.9291) | val mse 0.38320 (EV 0.3162) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2881, +30min 0.2755, +45min 0.3408, +60min 0.3353
+  ep109 step 10/16 | mse 0.0383 (win 0.0383) | EV 0.931 (win 0.931) | lr 1.31e-04 | gn 0.29 | 259 img/s
+epoch 109/200 | train mse 0.03823 (EV 0.9308) | val mse 0.38349 (EV 0.3157) | 2s | 271 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2878, +30min 0.2749, +45min 0.3402, +60min 0.3348
+  ep110 step 10/16 | mse 0.0372 (win 0.0372) | EV 0.933 (win 0.933) | lr 1.29e-04 | gn 0.32 | 283 img/s
+epoch 110/200 | train mse 0.03720 (EV 0.9327) | val mse 0.38380 (EV 0.3151) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2874, +30min 0.2743, +45min 0.3396, +60min 0.3342
+  ep111 step 10/16 | mse 0.0352 (win 0.0352) | EV 0.936 (win 0.936) | lr 1.27e-04 | gn 0.23 | 280 img/s
+epoch 111/200 | train mse 0.03609 (EV 0.9347) | val mse 0.38412 (EV 0.3146) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2870, +30min 0.2736, +45min 0.3390, +60min 0.3337
+  ep112 step 10/16 | mse 0.0353 (win 0.0353) | EV 0.936 (win 0.936) | lr 1.24e-04 | gn 0.34 | 280 img/s
+epoch 112/200 | train mse 0.03527 (EV 0.9362) | val mse 0.38445 (EV 0.3140) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2865, +30min 0.2729, +45min 0.3384, +60min 0.3332
+  ep113 step 10/16 | mse 0.0339 (win 0.0339) | EV 0.939 (win 0.939) | lr 1.22e-04 | gn 0.27 | 278 img/s
+epoch 113/200 | train mse 0.03395 (EV 0.9385) | val mse 0.38480 (EV 0.3134) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2859, +30min 0.2723, +45min 0.3377, +60min 0.3326
+  ep114 step 10/16 | mse 0.0319 (win 0.0319) | EV 0.942 (win 0.942) | lr 1.20e-04 | gn 0.24 | 278 img/s
+epoch 114/200 | train mse 0.03270 (EV 0.9408) | val mse 0.38517 (EV 0.3127) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2854, +30min 0.2715, +45min 0.3371, +60min 0.3319
+  ep115 step 10/16 | mse 0.0308 (win 0.0308) | EV 0.944 (win 0.944) | lr 1.17e-04 | gn 0.21 | 278 img/s
+epoch 115/200 | train mse 0.03152 (EV 0.9429) | val mse 0.38557 (EV 0.3120) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2848, +30min 0.2706, +45min 0.3363, +60min 0.3313
+  ep116 step 10/16 | mse 0.0300 (win 0.0300) | EV 0.946 (win 0.946) | lr 1.15e-04 | gn 0.20 | 281 img/s
+epoch 116/200 | train mse 0.03035 (EV 0.9451) | val mse 0.38600 (EV 0.3112) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2842, +30min 0.2697, +45min 0.3355, +60min 0.3307
+  ep117 step 10/16 | mse 0.0294 (win 0.0294) | EV 0.947 (win 0.947) | lr 1.13e-04 | gn 0.20 | 280 img/s
+epoch 117/200 | train mse 0.02959 (EV 0.9464) | val mse 0.38651 (EV 0.3103) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2834, +30min 0.2686, +45min 0.3346, +60min 0.3298
+  ep118 step 10/16 | mse 0.0281 (win 0.0281) | EV 0.949 (win 0.949) | lr 1.10e-04 | gn 0.20 | 282 img/s
+epoch 118/200 | train mse 0.02869 (EV 0.9481) | val mse 0.38701 (EV 0.3094) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2824, +30min 0.2676, +45min 0.3337, +60min 0.3290
+  ep119 step 10/16 | mse 0.0284 (win 0.0284) | EV 0.949 (win 0.949) | lr 1.08e-04 | gn 0.21 | 278 img/s
+epoch 119/200 | train mse 0.02810 (EV 0.9491) | val mse 0.38753 (EV 0.3085) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2816, +30min 0.2665, +45min 0.3328, +60min 0.3281
+  ep120 step 10/16 | mse 0.0269 (win 0.0269) | EV 0.951 (win 0.951) | lr 1.06e-04 | gn 0.24 | 282 img/s
+epoch 120/200 | train mse 0.02750 (EV 0.9502) | val mse 0.38808 (EV 0.3075) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2806, +30min 0.2653, +45min 0.3319, +60min 0.3273
+  ep121 step 10/16 | mse 0.0269 (win 0.0269) | EV 0.951 (win 0.951) | lr 1.04e-04 | gn 0.23 | 278 img/s
+epoch 121/200 | train mse 0.02682 (EV 0.9514) | val mse 0.38860 (EV 0.3066) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2797, +30min 0.2643, +45min 0.3309, +60min 0.3264
+  ep122 step 10/16 | mse 0.0266 (win 0.0266) | EV 0.952 (win 0.952) | lr 1.01e-04 | gn 0.30 | 279 img/s
+epoch 122/200 | train mse 0.02637 (EV 0.9523) | val mse 0.38925 (EV 0.3054) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2786, +30min 0.2629, +45min 0.3298, +60min 0.3253
+  ep123 step 10/16 | mse 0.0259 (win 0.0259) | EV 0.953 (win 0.953) | lr 9.90e-05 | gn 0.23 | 282 img/s
+epoch 123/200 | train mse 0.02549 (EV 0.9539) | val mse 0.38989 (EV 0.3043) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2775, +30min 0.2615, +45min 0.3287, +60min 0.3242
+  ep124 step 10/16 | mse 0.0247 (win 0.0247) | EV 0.955 (win 0.955) | lr 9.68e-05 | gn 0.24 | 281 img/s
+epoch 124/200 | train mse 0.02564 (EV 0.9536) | val mse 0.39053 (EV 0.3031) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2762, +30min 0.2601, +45min 0.3277, +60min 0.3233
+  ep125 step 10/16 | mse 0.0257 (win 0.0257) | EV 0.953 (win 0.953) | lr 9.46e-05 | gn 0.22 | 278 img/s
+epoch 125/200 | train mse 0.02534 (EV 0.9541) | val mse 0.39118 (EV 0.3020) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2750, +30min 0.2588, +45min 0.3266, +60min 0.3222
+  ep126 step 10/16 | mse 0.0242 (win 0.0242) | EV 0.956 (win 0.956) | lr 9.24e-05 | gn 0.22 | 281 img/s
+epoch 126/200 | train mse 0.02430 (EV 0.9560) | val mse 0.39184 (EV 0.3008) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2738, +30min 0.2573, +45min 0.3255, +60min 0.3212
+  ep127 step 10/16 | mse 0.0234 (win 0.0234) | EV 0.958 (win 0.958) | lr 9.02e-05 | gn 0.19 | 281 img/s
+epoch 127/200 | train mse 0.02335 (EV 0.9577) | val mse 0.39252 (EV 0.2996) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2725, +30min 0.2559, +45min 0.3242, +60min 0.3202
+  ep128 step 10/16 | mse 0.0222 (win 0.0222) | EV 0.960 (win 0.960) | lr 8.80e-05 | gn 0.18 | 280 img/s
+epoch 128/200 | train mse 0.02268 (EV 0.9589) | val mse 0.39325 (EV 0.2983) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2712, +30min 0.2544, +45min 0.3231, +60min 0.3189
+  ep129 step 10/16 | mse 0.0228 (win 0.0228) | EV 0.959 (win 0.959) | lr 8.59e-05 | gn 0.20 | 283 img/s
+epoch 129/200 | train mse 0.02240 (EV 0.9595) | val mse 0.39398 (EV 0.2970) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2698, +30min 0.2528, +45min 0.3218, +60min 0.3178
+  ep130 step 10/16 | mse 0.0217 (win 0.0217) | EV 0.961 (win 0.961) | lr 8.38e-05 | gn 0.18 | 279 img/s
+epoch 130/200 | train mse 0.02174 (EV 0.9606) | val mse 0.39478 (EV 0.2955) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2683, +30min 0.2512, +45min 0.3205, +60min 0.3164
+  ep131 step 10/16 | mse 0.0210 (win 0.0210) | EV 0.962 (win 0.962) | lr 8.16e-05 | gn 0.16 | 281 img/s
+epoch 131/200 | train mse 0.02084 (EV 0.9623) | val mse 0.39555 (EV 0.2942) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2667, +30min 0.2495, +45min 0.3192, +60min 0.3153
+  ep132 step 10/16 | mse 0.0202 (win 0.0202) | EV 0.963 (win 0.963) | lr 7.95e-05 | gn 0.16 | 283 img/s
+epoch 132/200 | train mse 0.02001 (EV 0.9638) | val mse 0.39637 (EV 0.2927) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2651, +30min 0.2477, +45min 0.3179, +60min 0.3140
+  ep133 step 10/16 | mse 0.0199 (win 0.0199) | EV 0.964 (win 0.964) | lr 7.75e-05 | gn 0.19 | 284 img/s
+epoch 133/200 | train mse 0.01969 (EV 0.9644) | val mse 0.39719 (EV 0.2912) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2633, +30min 0.2459, +45min 0.3165, +60min 0.3128
+  ep134 step 10/16 | mse 0.0197 (win 0.0197) | EV 0.964 (win 0.964) | lr 7.54e-05 | gn 0.20 | 278 img/s
+epoch 134/200 | train mse 0.01933 (EV 0.9650) | val mse 0.39804 (EV 0.2897) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2617, +30min 0.2441, +45min 0.3151, +60min 0.3114
+  ep135 step 10/16 | mse 0.0190 (win 0.0190) | EV 0.966 (win 0.966) | lr 7.33e-05 | gn 0.21 | 283 img/s
+epoch 135/200 | train mse 0.01879 (EV 0.9660) | val mse 0.39892 (EV 0.2882) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2599, +30min 0.2422, +45min 0.3138, +60min 0.3099
+  ep136 step 10/16 | mse 0.0183 (win 0.0183) | EV 0.967 (win 0.967) | lr 7.13e-05 | gn 0.17 | 287 img/s
+epoch 136/200 | train mse 0.01829 (EV 0.9669) | val mse 0.39981 (EV 0.2866) | 2s | 290 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2581, +30min 0.2404, +45min 0.3122, +60min 0.3086
+  ep137 step 10/16 | mse 0.0176 (win 0.0176) | EV 0.968 (win 0.968) | lr 6.93e-05 | gn 0.16 | 283 img/s
+epoch 137/200 | train mse 0.01785 (EV 0.9677) | val mse 0.40070 (EV 0.2850) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2562, +30min 0.2385, +45min 0.3107, +60min 0.3072
+  ep138 step 10/16 | mse 0.0172 (win 0.0172) | EV 0.969 (win 0.969) | lr 6.73e-05 | gn 0.16 | 283 img/s
+epoch 138/200 | train mse 0.01739 (EV 0.9685) | val mse 0.40164 (EV 0.2833) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2545, +30min 0.2365, +45min 0.3093, +60min 0.3057
+  ep139 step 10/16 | mse 0.0169 (win 0.0169) | EV 0.969 (win 0.969) | lr 6.53e-05 | gn 0.16 | 282 img/s
+epoch 139/200 | train mse 0.01709 (EV 0.9691) | val mse 0.40253 (EV 0.2817) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2525, +30min 0.2345, +45min 0.3078, +60min 0.3044
+  ep140 step 10/16 | mse 0.0166 (win 0.0166) | EV 0.970 (win 0.970) | lr 6.34e-05 | gn 0.16 | 279 img/s
+epoch 140/200 | train mse 0.01693 (EV 0.9694) | val mse 0.40351 (EV 0.2800) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2504, +30min 0.2325, +45min 0.3063, +60min 0.3027
+  ep141 step 10/16 | mse 0.0160 (win 0.0160) | EV 0.971 (win 0.971) | lr 6.15e-05 | gn 0.17 | 278 img/s
+epoch 141/200 | train mse 0.01659 (EV 0.9700) | val mse 0.40447 (EV 0.2783) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2484, +30min 0.2303, +45min 0.3047, +60min 0.3014
+  ep142 step 10/16 | mse 0.0158 (win 0.0158) | EV 0.971 (win 0.971) | lr 5.96e-05 | gn 0.15 | 282 img/s
+epoch 142/200 | train mse 0.01629 (EV 0.9705) | val mse 0.40545 (EV 0.2765) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2463, +30min 0.2282, +45min 0.3031, +60min 0.2999
+  ep143 step 10/16 | mse 0.0159 (win 0.0159) | EV 0.971 (win 0.971) | lr 5.77e-05 | gn 0.18 | 279 img/s
+epoch 143/200 | train mse 0.01594 (EV 0.9712) | val mse 0.40656 (EV 0.2745) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2439, +30min 0.2260, +45min 0.3013, +60min 0.2982
+  ep144 step 10/16 | mse 0.0153 (win 0.0153) | EV 0.972 (win 0.972) | lr 5.58e-05 | gn 0.14 | 278 img/s
+epoch 144/200 | train mse 0.01558 (EV 0.9718) | val mse 0.40755 (EV 0.2728) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2419, +30min 0.2238, +45min 0.2997, +60min 0.2967
+  ep145 step 10/16 | mse 0.0151 (win 0.0151) | EV 0.973 (win 0.973) | lr 5.40e-05 | gn 0.17 | 283 img/s
+epoch 145/200 | train mse 0.01526 (EV 0.9724) | val mse 0.40863 (EV 0.2708) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2396, +30min 0.2215, +45min 0.2980, +60min 0.2949
+  ep146 step 10/16 | mse 0.0152 (win 0.0152) | EV 0.973 (win 0.973) | lr 5.22e-05 | gn 0.16 | 278 img/s
+epoch 146/200 | train mse 0.01506 (EV 0.9727) | val mse 0.40963 (EV 0.2691) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2376, +30min 0.2194, +45min 0.2964, +60min 0.2934
+  ep147 step 10/16 | mse 0.0147 (win 0.0147) | EV 0.973 (win 0.973) | lr 5.04e-05 | gn 0.15 | 277 img/s
+epoch 147/200 | train mse 0.01498 (EV 0.9729) | val mse 0.41071 (EV 0.2671) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2352, +30min 0.2171, +45min 0.2947, +60min 0.2917
+  ep148 step 10/16 | mse 0.0145 (win 0.0145) | EV 0.974 (win 0.974) | lr 4.86e-05 | gn 0.15 | 278 img/s
+epoch 148/200 | train mse 0.01453 (EV 0.9737) | val mse 0.41180 (EV 0.2652) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2327, +30min 0.2148, +45min 0.2930, +60min 0.2900
+  ep149 step 10/16 | mse 0.0141 (win 0.0141) | EV 0.974 (win 0.974) | lr 4.69e-05 | gn 0.16 | 278 img/s
+epoch 149/200 | train mse 0.01414 (EV 0.9744) | val mse 0.41296 (EV 0.2631) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2304, +30min 0.2120, +45min 0.2911, +60min 0.2883
+  ep150 step 10/16 | mse 0.0137 (win 0.0137) | EV 0.975 (win 0.975) | lr 4.52e-05 | gn 0.12 | 283 img/s
+epoch 150/200 | train mse 0.01383 (EV 0.9750) | val mse 0.41411 (EV 0.2611) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2281, +30min 0.2098, +45min 0.2891, +60min 0.2865
+  ep151 step 10/16 | mse 0.0139 (win 0.0139) | EV 0.975 (win 0.975) | lr 4.35e-05 | gn 0.19 | 282 img/s
+epoch 151/200 | train mse 0.01385 (EV 0.9749) | val mse 0.41530 (EV 0.2589) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2255, +30min 0.2072, +45min 0.2872, +60min 0.2847
+  ep152 step 10/16 | mse 0.0133 (win 0.0133) | EV 0.976 (win 0.976) | lr 4.19e-05 | gn 0.16 | 283 img/s
+epoch 152/200 | train mse 0.01368 (EV 0.9752) | val mse 0.41633 (EV 0.2571) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2230, +30min 0.2049, +45min 0.2858, +60min 0.2831
+  ep153 step 10/16 | mse 0.0136 (win 0.0136) | EV 0.975 (win 0.975) | lr 4.02e-05 | gn 0.14 | 279 img/s
+epoch 153/200 | train mse 0.01331 (EV 0.9759) | val mse 0.41751 (EV 0.2550) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2204, +30min 0.2024, +45min 0.2839, +60min 0.2813
+  ep154 step 10/16 | mse 0.0131 (win 0.0131) | EV 0.976 (win 0.976) | lr 3.86e-05 | gn 0.13 | 277 img/s
+epoch 154/200 | train mse 0.01303 (EV 0.9764) | val mse 0.41865 (EV 0.2530) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2179, +30min 0.2001, +45min 0.2820, +60min 0.2796
+  ep155 step 10/16 | mse 0.0129 (win 0.0129) | EV 0.977 (win 0.977) | lr 3.71e-05 | gn 0.14 | 279 img/s
+epoch 155/200 | train mse 0.01291 (EV 0.9766) | val mse 0.41982 (EV 0.2509) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2152, +30min 0.1977, +45min 0.2800, +60min 0.2779
+  ep156 step 10/16 | mse 0.0130 (win 0.0130) | EV 0.977 (win 0.977) | lr 3.55e-05 | gn 0.12 | 278 img/s
+epoch 156/200 | train mse 0.01274 (EV 0.9769) | val mse 0.42093 (EV 0.2489) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2128, +30min 0.1951, +45min 0.2784, +60min 0.2761
+  ep157 step 10/16 | mse 0.0123 (win 0.0123) | EV 0.978 (win 0.978) | lr 3.40e-05 | gn 0.11 | 280 img/s
+epoch 157/200 | train mse 0.01246 (EV 0.9774) | val mse 0.42211 (EV 0.2468) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2099, +30min 0.1925, +45min 0.2766, +60min 0.2744
+  ep158 step 10/16 | mse 0.0123 (win 0.0123) | EV 0.978 (win 0.978) | lr 3.25e-05 | gn 0.11 | 278 img/s
+epoch 158/200 | train mse 0.01229 (EV 0.9778) | val mse 0.42336 (EV 0.2445) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2075, +30min 0.1899, +45min 0.2744, +60min 0.2725
+  ep159 step 10/16 | mse 0.0118 (win 0.0118) | EV 0.979 (win 0.979) | lr 3.10e-05 | gn 0.10 | 281 img/s
+epoch 159/200 | train mse 0.01209 (EV 0.9781) | val mse 0.42452 (EV 0.2425) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2048, +30min 0.1874, +45min 0.2727, +60min 0.2708
+  ep160 step 10/16 | mse 0.0119 (win 0.0119) | EV 0.978 (win 0.978) | lr 2.96e-05 | gn 0.09 | 281 img/s
+epoch 160/200 | train mse 0.01195 (EV 0.9784) | val mse 0.42593 (EV 0.2400) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.2016, +30min 0.1844, +45min 0.2704, +60min 0.2687
+  ep161 step 10/16 | mse 0.0118 (win 0.0118) | EV 0.979 (win 0.979) | lr 2.82e-05 | gn 0.10 | 281 img/s
+epoch 161/200 | train mse 0.01179 (EV 0.9787) | val mse 0.42702 (EV 0.2380) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1991, +30min 0.1822, +45min 0.2686, +60min 0.2670
+  ep162 step 10/16 | mse 0.0117 (win 0.0117) | EV 0.979 (win 0.979) | lr 2.68e-05 | gn 0.10 | 283 img/s
+epoch 162/200 | train mse 0.01166 (EV 0.9789) | val mse 0.42841 (EV 0.2355) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1962, +30min 0.1791, +45min 0.2664, +60min 0.2649
+  ep163 step 10/16 | mse 0.0116 (win 0.0116) | EV 0.979 (win 0.979) | lr 2.55e-05 | gn 0.10 | 276 img/s
+epoch 163/200 | train mse 0.01157 (EV 0.9791) | val mse 0.42946 (EV 0.2337) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1936, +30min 0.1767, +45min 0.2649, +60min 0.2634
+  ep164 step 10/16 | mse 0.0116 (win 0.0116) | EV 0.979 (win 0.979) | lr 2.42e-05 | gn 0.11 | 280 img/s
+epoch 164/200 | train mse 0.01145 (EV 0.9793) | val mse 0.43078 (EV 0.2313) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1909, +30min 0.1742, +45min 0.2626, +60min 0.2613
+  ep165 step 10/16 | mse 0.0114 (win 0.0114) | EV 0.979 (win 0.979) | lr 2.29e-05 | gn 0.09 | 281 img/s
+epoch 165/200 | train mse 0.01134 (EV 0.9795) | val mse 0.43217 (EV 0.2288) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1878, +30min 0.1712, +45min 0.2604, +60min 0.2591
+  ep166 step 10/16 | mse 0.0110 (win 0.0110) | EV 0.980 (win 0.980) | lr 2.17e-05 | gn 0.09 | 278 img/s
+epoch 166/200 | train mse 0.01124 (EV 0.9797) | val mse 0.43342 (EV 0.2266) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1848, +30min 0.1684, +45min 0.2586, +60min 0.2573
+  ep167 step 10/16 | mse 0.0108 (win 0.0108) | EV 0.980 (win 0.980) | lr 2.05e-05 | gn 0.10 | 277 img/s
+epoch 167/200 | train mse 0.01115 (EV 0.9798) | val mse 0.43470 (EV 0.2243) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1818, +30min 0.1656, +45min 0.2565, +60min 0.2555
+  ep168 step 10/16 | mse 0.0111 (win 0.0111) | EV 0.980 (win 0.980) | lr 1.93e-05 | gn 0.11 | 279 img/s
+epoch 168/200 | train mse 0.01107 (EV 0.9800) | val mse 0.43596 (EV 0.2221) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1788, +30min 0.1630, +45min 0.2545, +60min 0.2536
+  ep169 step 10/16 | mse 0.0114 (win 0.0114) | EV 0.979 (win 0.979) | lr 1.81e-05 | gn 0.10 | 283 img/s
+epoch 169/200 | train mse 0.01100 (EV 0.9801) | val mse 0.43725 (EV 0.2198) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1762, +30min 0.1600, +45min 0.2526, +60min 0.2516
+  ep170 step 10/16 | mse 0.0111 (win 0.0111) | EV 0.980 (win 0.980) | lr 1.70e-05 | gn 0.08 | 278 img/s
+epoch 170/200 | train mse 0.01088 (EV 0.9803) | val mse 0.43852 (EV 0.2175) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1733, +30min 0.1574, +45min 0.2505, +60min 0.2496
+  ep171 step 10/16 | mse 0.0107 (win 0.0107) | EV 0.981 (win 0.981) | lr 1.59e-05 | gn 0.09 | 281 img/s
+epoch 171/200 | train mse 0.01078 (EV 0.9805) | val mse 0.43978 (EV 0.2153) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1703, +30min 0.1545, +45min 0.2486, +60min 0.2479
+  ep172 step 10/16 | mse 0.0105 (win 0.0105) | EV 0.981 (win 0.981) | lr 1.49e-05 | gn 0.11 | 282 img/s
+epoch 172/200 | train mse 0.01071 (EV 0.9806) | val mse 0.44109 (EV 0.2129) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1674, +30min 0.1518, +45min 0.2465, +60min 0.2459
+  ep173 step 10/16 | mse 0.0111 (win 0.0111) | EV 0.980 (win 0.980) | lr 1.39e-05 | gn 0.09 | 277 img/s
+epoch 173/200 | train mse 0.01063 (EV 0.9808) | val mse 0.44241 (EV 0.2106) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1645, +30min 0.1491, +45min 0.2441, +60min 0.2440
+  ep174 step 10/16 | mse 0.0108 (win 0.0108) | EV 0.980 (win 0.980) | lr 1.29e-05 | gn 0.08 | 283 img/s
+epoch 174/200 | train mse 0.01057 (EV 0.9809) | val mse 0.44371 (EV 0.2082) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1611, +30min 0.1463, +45min 0.2423, +60min 0.2421
+  ep175 step 10/16 | mse 0.0107 (win 0.0107) | EV 0.981 (win 0.981) | lr 1.20e-05 | gn 0.08 | 283 img/s
+epoch 175/200 | train mse 0.01050 (EV 0.9810) | val mse 0.44494 (EV 0.2061) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1585, +30min 0.1437, +45min 0.2402, +60min 0.2403
+  ep176 step 10/16 | mse 0.0104 (win 0.0104) | EV 0.981 (win 0.981) | lr 1.11e-05 | gn 0.08 | 280 img/s
+epoch 176/200 | train mse 0.01045 (EV 0.9811) | val mse 0.44633 (EV 0.2036) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1550, +30min 0.1406, +45min 0.2380, +60min 0.2383
+  ep177 step 10/16 | mse 0.0101 (win 0.0101) | EV 0.982 (win 0.982) | lr 1.02e-05 | gn 0.08 | 280 img/s
+epoch 177/200 | train mse 0.01040 (EV 0.9812) | val mse 0.44760 (EV 0.2013) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1521, +30min 0.1382, +45min 0.2361, +60min 0.2362
+  ep178 step 10/16 | mse 0.0106 (win 0.0106) | EV 0.981 (win 0.981) | lr 9.34e-06 | gn 0.08 | 278 img/s
+epoch 178/200 | train mse 0.01037 (EV 0.9812) | val mse 0.44896 (EV 0.1989) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1488, +30min 0.1353, +45min 0.2341, +60min 0.2342
+  ep179 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.982 (win 0.982) | lr 8.53e-06 | gn 0.08 | 283 img/s
+epoch 179/200 | train mse 0.01031 (EV 0.9813) | val mse 0.45035 (EV 0.1964) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1451, +30min 0.1321, +45min 0.2321, +60min 0.2323
+  ep180 step 10/16 | mse 0.0103 (win 0.0103) | EV 0.981 (win 0.981) | lr 7.76e-06 | gn 0.08 | 280 img/s
+epoch 180/200 | train mse 0.01027 (EV 0.9814) | val mse 0.45153 (EV 0.1943) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1428, +30min 0.1296, +45min 0.2300, +60min 0.2306
+  ep181 step 10/16 | mse 0.0106 (win 0.0106) | EV 0.981 (win 0.981) | lr 7.02e-06 | gn 0.07 | 278 img/s
+epoch 181/200 | train mse 0.01023 (EV 0.9815) | val mse 0.45287 (EV 0.1919) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1399, +30min 0.1268, +45min 0.2277, +60min 0.2285
+  ep182 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.982 (win 0.982) | lr 6.33e-06 | gn 0.09 | 278 img/s
+epoch 182/200 | train mse 0.01021 (EV 0.9815) | val mse 0.45424 (EV 0.1894) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1362, +30min 0.1237, +45min 0.2258, +60min 0.2266
+  ep183 step 10/16 | mse 0.0103 (win 0.0103) | EV 0.981 (win 0.981) | lr 5.66e-06 | gn 0.08 | 287 img/s
+epoch 183/200 | train mse 0.01018 (EV 0.9816) | val mse 0.45549 (EV 0.1872) | 2s | 290 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1329, +30min 0.1213, +45min 0.2239, +60min 0.2246
+  ep184 step 10/16 | mse 0.0105 (win 0.0105) | EV 0.981 (win 0.981) | lr 5.03e-06 | gn 0.09 | 283 img/s
+epoch 184/200 | train mse 0.01015 (EV 0.9816) | val mse 0.45687 (EV 0.1848) | 2s | 287 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1298, +30min 0.1183, +45min 0.2217, +60min 0.2226
+  ep185 step 10/16 | mse 0.0101 (win 0.0101) | EV 0.982 (win 0.982) | lr 4.44e-06 | gn 0.06 | 281 img/s
+epoch 185/200 | train mse 0.01011 (EV 0.9817) | val mse 0.45816 (EV 0.1825) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1271, +30min 0.1152, +45min 0.2198, +60min 0.2208
+  ep186 step 10/16 | mse 0.0100 (win 0.0100) | EV 0.982 (win 0.982) | lr 3.89e-06 | gn 0.07 | 279 img/s
+epoch 186/200 | train mse 0.01008 (EV 0.9817) | val mse 0.45937 (EV 0.1803) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1242, +30min 0.1125, +45min 0.2177, +60min 0.2192
+  ep187 step 10/16 | mse 0.0104 (win 0.0104) | EV 0.981 (win 0.981) | lr 3.37e-06 | gn 0.07 | 282 img/s
+epoch 187/200 | train mse 0.01006 (EV 0.9818) | val mse 0.46070 (EV 0.1779) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1214, +30min 0.1100, +45min 0.2155, +60min 0.2170
+  ep188 step 10/16 | mse 0.0098 (win 0.0098) | EV 0.982 (win 0.982) | lr 2.89e-06 | gn 0.07 | 278 img/s
+epoch 188/200 | train mse 0.01004 (EV 0.9818) | val mse 0.46200 (EV 0.1756) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1180, +30min 0.1072, +45min 0.2137, +60min 0.2151
+  ep189 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.982 (win 0.982) | lr 2.44e-06 | gn 0.06 | 280 img/s
+epoch 189/200 | train mse 0.01003 (EV 0.9819) | val mse 0.46317 (EV 0.1735) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1150, +30min 0.1048, +45min 0.2118, +60min 0.2134
+  ep190 step 10/16 | mse 0.0100 (win 0.0100) | EV 0.982 (win 0.982) | lr 2.04e-06 | gn 0.06 | 282 img/s
+epoch 190/200 | train mse 0.01001 (EV 0.9819) | val mse 0.46436 (EV 0.1714) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1123, +30min 0.1023, +45min 0.2099, +60min 0.2116
+  ep191 step 10/16 | mse 0.0099 (win 0.0099) | EV 0.982 (win 0.982) | lr 1.67e-06 | gn 0.06 | 279 img/s
+epoch 191/200 | train mse 0.01000 (EV 0.9819) | val mse 0.46593 (EV 0.1686) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1089, +30min 0.0987, +45min 0.2075, +60min 0.2092
+  ep192 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.982 (win 0.982) | lr 1.33e-06 | gn 0.06 | 278 img/s
+epoch 192/200 | train mse 0.00999 (EV 0.9819) | val mse 0.46728 (EV 0.1662) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1056, +30min 0.0959, +45min 0.2051, +60min 0.2075
+  ep193 step 10/16 | mse 0.0099 (win 0.0099) | EV 0.982 (win 0.982) | lr 1.04e-06 | gn 0.06 | 279 img/s
+epoch 193/200 | train mse 0.00998 (EV 0.9819) | val mse 0.46849 (EV 0.1640) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.1021, +30min 0.0936, +45min 0.2033, +60min 0.2057
+  ep194 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.981 (win 0.981) | lr 7.76e-07 | gn 0.06 | 280 img/s
+epoch 194/200 | train mse 0.00998 (EV 0.9819) | val mse 0.46982 (EV 0.1617) | 2s | 285 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0990, +30min 0.0905, +45min 0.2013, +60min 0.2039
+  ep195 step 10/16 | mse 0.0099 (win 0.0099) | EV 0.982 (win 0.982) | lr 5.54e-07 | gn 0.06 | 287 img/s
+epoch 195/200 | train mse 0.00997 (EV 0.9820) | val mse 0.47100 (EV 0.1596) | 2s | 290 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0964, +30min 0.0880, +45min 0.1996, +60min 0.2019
+  ep196 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.982 (win 0.982) | lr 3.69e-07 | gn 0.05 | 278 img/s
+epoch 196/200 | train mse 0.00996 (EV 0.9820) | val mse 0.47227 (EV 0.1573) | 2s | 284 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0929, +30min 0.0853, +45min 0.1975, +60min 0.2004
+  ep197 step 10/16 | mse 0.0099 (win 0.0099) | EV 0.982 (win 0.982) | lr 2.21e-07 | gn 0.05 | 282 img/s
+epoch 197/200 | train mse 0.00996 (EV 0.9820) | val mse 0.47347 (EV 0.1551) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0902, +30min 0.0824, +45min 0.1960, +60min 0.1984
+  ep198 step 10/16 | mse 0.0102 (win 0.0102) | EV 0.982 (win 0.982) | lr 1.11e-07 | gn 0.05 | 282 img/s
+epoch 198/200 | train mse 0.00995 (EV 0.9820) | val mse 0.47480 (EV 0.1528) | 2s | 286 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0875, +30min 0.0798, +45min 0.1934, +60min 0.1966
+  ep199 step 10/16 | mse 0.0100 (win 0.0100) | EV 0.982 (win 0.982) | lr 3.87e-08 | gn 0.05 | 278 img/s
+epoch 199/200 | train mse 0.00995 (EV 0.9820) | val mse 0.47607 (EV 0.1505) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0844, +30min 0.0769, +45min 0.1914, +60min 0.1948
+  ep200 step 10/16 | mse 0.0101 (win 0.0101) | EV 0.982 (win 0.982) | lr 3.59e-09 | gn 0.04 | 277 img/s
+epoch 200/200 | train mse 0.00995 (EV 0.9820) | val mse 0.47728 (EV 0.1483) | 2s | 283 img/s | GPU 7.8 GB
+  val EV per lead: +15min 0.0810, +30min 0.0746, +45min 0.1898, +60min 0.1928
+
+GATE-C (PASS): pooled val EV 0.3180 against threshold 0.10. sigma_data would fall 0.7407 -> 0.6117 (17.4%).
+
+completed: total 17.4 min | best val MSE 0.38220 (ep99) | DONE written -> the sbatch chain will stop

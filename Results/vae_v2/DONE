@@ -1,0 +1,9 @@
+{
+  "reason": "early-stop",
+  "epochs_run": 25,
+  "best_val_rec_w": 0.033121093966976864,
+  "best_ep": 17,
+  "best_psd": 1.0034893124390638,
+  "best_psd_ep": 20,
+  "wall_min": 1043.7
+}
