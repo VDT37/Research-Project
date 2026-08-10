@@ -441,6 +441,61 @@ def main():
         ok(f"all {len(REGIME_FLAGS)} shared regime defaults identical "
            "(--patience and --epochs excluded by design)")
 
+    print("\n[8] the HPO harness only emits flags its target scripts define")
+    # hpo_search.py builds every trial command from hpo_spaces.py: the searched
+    # parameters come from PARAMS[name]["flag"] and the fidelity flags from
+    # rung_flags(). A flag that the target trainer does not define is an argparse
+    # death at minute zero of a queued job, which on Orchid costs a queue wait to
+    # discover. Catch it here instead, statically, before anything is submitted.
+    try:
+        sys.path.insert(0, HERE)
+        import hpo_spaces as HS
+    except Exception as e:
+        ok(f"hpo_spaces.py not importable ({type(e).__name__}); HPO checks skipped")
+        HS = None
+    if HS is not None:
+        defined = {f: add_argument_flags(t) for f, t in TREES.items()}
+        bad = []
+        for arm, meta in HS.ARMS.items():
+            script = meta["script"]
+            if script not in defined:
+                bad.append(f"{arm} arm targets {script}, which is not in FILES")
+                continue
+            for rung in HS.RUNGS[arm]:
+                for flag in HS.rung_flags(arm, rung, HS.INCUMBENT):
+                    if flag not in defined[script]:
+                        bad.append(f"{arm} rung {rung['name']} emits {flag}, "
+                                   f"which {script} does not define")
+        for sname, sp in HS.SPACES.items():
+            script = HS.ARMS[sp["arm"]]["script"]
+            names = set(sp.get("axes", {}))
+            for b in sp.get("blocks", []):
+                names |= set(b["axes"])
+            for n in sorted(names):
+                if n not in HS.PARAMS:
+                    bad.append(f"space {sname} searches '{n}', which is not in "
+                               "hpo_spaces.PARAMS")
+                    continue
+                fl = HS.PARAMS[n]["flag"]
+                if script in defined and fl not in defined[script]:
+                    bad.append(f"space {sname} searches {fl}, which {script} "
+                               "does not define")
+        # Every attention/depth pair a grid can produce must be constructible.
+        for sname, sp in HS.SPACES.items():
+            for attn in sp.get("axes", {}).get("attn", []):
+                for mults in sp.get("axes", {}).get("mults", [HS.INCUMBENT["mults"]]):
+                    if not HS.valid_attn(attn, mults):
+                        bad.append(f"space {sname} pairs attn {attn} with mults "
+                                   f"{mults}, whose deepest resolution cannot "
+                                   "reach it")
+        if bad:
+            for m in bad:
+                fail(m)
+        else:
+            n_sp = len(HS.SPACES)
+            ok(f"all {n_sp} search spaces and every rung flag resolve to a real "
+               "argparse option in their target script")
+
     print(f"\n{'FAILED: ' + str(len(FAIL)) + ' problem(s)' if FAIL else 'ALL CHECKS PASSED'}")
     for m in FAIL:
         print(f"  - {m}")
