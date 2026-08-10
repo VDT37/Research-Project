@@ -86,6 +86,7 @@ Then: python hpo_report.py --study <out>
 """
 
 import argparse
+import glob
 import hashlib
 import itertools
 import json
@@ -450,6 +451,23 @@ def flagify(name, value):
     spec = S.PARAMS.get(name)
     flag = spec["flag"] if spec else "--" + name.replace("_", "-")
     return flag, value
+
+
+def default_python(executor):
+    """Which interpreter a trial command should name.
+
+    On Slurm the answer is the BARE WORD "python", never sys.executable. Trials
+    run through gpu.sbatch, which does `conda activate nowcast` and then executes
+    its arguments, so a bare `python` resolves inside the activated environment
+    while an absolute path bypasses it entirely. Naming sys.executable here means
+    the login node's /usr/bin/python is baked into every job and every trial dies
+    on `import torch` in about two seconds. That is exactly what happened on the
+    first real run of this harness, so the default is now chosen per executor
+    rather than assumed.
+
+    Locally there is no wrapper and no activation step, so the interpreter
+    running this file is the right one."""
+    return "python" if executor == "slurm" else sys.executable
 
 
 def build_cmd(arm, script_dir, params, rung, trial_dir, passthrough, seed,
@@ -839,6 +857,22 @@ class Study:
         return tot
 
 
+def failure_tail(trial, n=12):
+    """The last few meaningful lines a failed trial printed, so the cause is
+    visible in the harness log instead of only in a Slurm file nobody opens."""
+    cands = sorted(glob.glob(os.path.join(trial["dir"], "slurm-*.out")),
+                   key=os.path.getmtime, reverse=True)
+    path = cands[0] if cands else os.path.join(trial["dir"], "trial.out")
+    if not os.path.exists(path):
+        return None
+    try:
+        with open(path, errors="replace") as fh:
+            lines = [ln.rstrip() for ln in fh.read().splitlines() if ln.strip()]
+    except Exception:
+        return None
+    return lines[-n:] if lines else None
+
+
 def trial_done(arm, trial):
     if S.ARMS[arm]["kind"] == "infer":
         return os.path.exists(trial["eval_json"])
@@ -994,7 +1028,11 @@ def main():
     ap.add_argument("--gpu-sbatch", default="~/dissertation/gpu.sbatch")
     ap.add_argument("--sbatch-extra", default="",
                     help="extra sbatch flags, e.g. '--qos=orchid --account=orchid'")
-    ap.add_argument("--python", default=None, help="interpreter for trial commands")
+    ap.add_argument("--python", default=None,
+                    help="interpreter for trial commands. Default: the bare word "
+                         "'python' under --exec slurm, so gpu.sbatch's activated "
+                         "conda environment resolves it, and sys.executable "
+                         "otherwise. Only override if you know why.")
     ap.add_argument("--script-dir", default=HERE,
                     help="where the stage scripts live (default: next to this "
                          "file; override when the scripts are deployed flat "
@@ -1005,6 +1043,8 @@ def main():
     args = ap.parse_args()
 
     passthrough = [a for a in args.passthrough if a != "--"]
+    if args.python is None:
+        args.python = default_python(args.executor)
     space = S.SPACES[args.space]
     arm = space["arm"]
     meta = S.ARMS[arm]
@@ -1171,6 +1211,7 @@ def main():
 
     survivors = list(range(len(cells)))
     ranking = []
+    n_finished = n_ok = 0          # study-wide, for the fail-fast guard
     for rung, n_keep in schedule:
         survivors = survivors[:n_keep]
         log(f"\n---- rung {rung['name']} ({rung['rows']} rows x {rung['epochs']} "
@@ -1259,9 +1300,35 @@ def main():
                         f"{('%.5f' % obj) if obj is not None else '   n/a':>10} "
                         f"gate {'pass' if gate else 'FAIL':<4} "
                         f"{t['wall_min']:.1f} min")
+                    # An INCOMPLETE trial means the command itself failed, and the
+                    # reason is sitting in the job's stdout. Surface it here rather
+                    # than making the reader go and find it: the first real run of
+                    # this harness lost nine trials to a wrong interpreter that one
+                    # line of traceback would have named immediately.
+                    if not ok and not t.get("pruned"):
+                        for line in (failure_tail(t) or ["(no output captured)"]):
+                            log(f"      | {line}")
+                    n_finished += 1
+                    n_ok += 1 if ok else 0
                 else:
                     still.append(t)
             inflight = still
+            # Fail fast on a systematically broken command. If the first two
+            # trials of a study both produced nothing, every later trial will fail
+            # the same way, and continuing just spends the queue on it.
+            if n_finished >= 2 and n_ok == 0:
+                for u in inflight:
+                    ex.kill(u)
+                raise SystemExit(
+                    f"\nERROR: the first {n_finished} trials produced no metrics, so the "
+                    "trial command is broken rather than the configurations being bad. "
+                    "The lines above are that command's own output. Common causes: the "
+                    "interpreter cannot import torch (check --python; under --exec slurm "
+                    "it must be the bare word 'python' so gpu.sbatch's conda activation "
+                    "resolves it), a --latents-dir or --mu-dir that does not exist on the "
+                    "compute node, or a missing gpu.sbatch wrapper. Nothing is lost: fix "
+                    "the cause and re-run the identical command, and completed trials are "
+                    "skipped.")
 
         scored = []
         for t in trials:
