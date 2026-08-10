@@ -86,6 +86,7 @@ Then: python hpo_report.py --study <out>
 """
 
 import argparse
+import ast
 import glob
 import hashlib
 import itertools
@@ -451,6 +452,74 @@ def flagify(name, value):
     spec = S.PARAMS.get(name)
     flag = spec["flag"] if spec else "--" + name.replace("_", "-")
     return flag, value
+
+
+PATH_PASSTHROUGH = ("--vae", "--ckpt", "--latents-dir", "--mu-dir", "--reg",
+                    "--ridge-gate", "--resume")
+
+
+def valueless_flags(script_path):
+    """Flags of the target script that legitimately take no value, read from its
+    own argparse rather than hardcoded, so this cannot drift when a script gains
+    a new store_true option."""
+    try:
+        tree = ast.parse(open(script_path, encoding="utf-8").read())
+    except Exception:
+        return set()
+    out = set()
+    for node in ast.walk(tree):
+        if not (isinstance(node, ast.Call)
+                and getattr(node.func, "attr", None) == "add_argument"):
+            continue
+        action = None
+        for kw in node.keywords:
+            if kw.arg == "action" and isinstance(kw.value, ast.Constant):
+                action = kw.value.value
+        if action in ("store_true", "store_false", "count", "help", "version"):
+            for a in node.args:
+                if isinstance(a, ast.Constant) and isinstance(a.value, str):
+                    out.add(a.value)
+    return out
+
+
+def preflight(passthrough, script_path):
+    """Validate the pass-through arguments before a single job is submitted.
+
+    Two checks, both for mistakes that cost real queue time on this project.
+
+    A flag with no value. `--vae $VAE17` where VAE17 is unset expands to a bare
+    `--vae`, the shell drops the empty word entirely, and argparse then consumes
+    the NEXT flag as its value and dies. This happens whenever a command is
+    pasted into a fresh tmux pane that never sourced the exports, and the failure
+    surfaces only after the jobs have queued and started. Value-less flags are
+    read from the target script's own argparse so genuine store_true options are
+    not flagged.
+
+    A path that does not exist. A mistyped --latents-dir or a --vae pointing at a
+    checkpoint that was never copied to this machine fails identically on every
+    trial. Checked from the submitting host, which shares the filesystem with the
+    compute nodes here.
+    """
+    ok_bare = valueless_flags(script_path)
+    problems = []
+    for i, a in enumerate(passthrough):
+        if not a.startswith("--") or a in ok_bare:
+            continue
+        nxt = passthrough[i + 1] if i + 1 < len(passthrough) else None
+        if nxt is None or nxt.startswith("--"):
+            problems.append(
+                f"{a} was given no value (the next token is "
+                f"{'end of command' if nxt is None else nxt}). This is almost "
+                "always an unset shell variable: check the exports in THIS shell, "
+                "not the one the command was written in.")
+    for i, a in enumerate(passthrough[:-1]):
+        if a in PATH_PASSTHROUGH:
+            v = passthrough[i + 1]
+            if v.startswith("--") or v == "auto":
+                continue
+            if not os.path.exists(os.path.expanduser(v)):
+                problems.append(f"{a} points at {v}, which does not exist here.")
+    return problems
 
 
 def default_python(executor):
@@ -1055,6 +1124,15 @@ def main():
     if missing and args.executor != "dry":
         raise SystemExit(f"ERROR: the {arm} arm requires {', '.join(missing)}; pass "
                          f"them after a bare -- on the command line.")
+
+    bad_args = preflight(passthrough, os.path.join(args.script_dir, meta["script"]))
+    if bad_args:
+        log("\nPRE-FLIGHT FAILED. Nothing was submitted.")
+        for p in bad_args:
+            log(f"  - {p}")
+        log("\nThe pass-through arguments as this shell expanded them:")
+        log("  " + " ".join(shlex.quote(a) for a in passthrough))
+        raise SystemExit(1)
 
     obj_name = args.objective or S.DEFAULT_OBJECTIVE[arm]
     gate_name = args.gate or S.DEFAULT_GATE[arm]
