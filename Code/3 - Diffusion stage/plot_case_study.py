@@ -26,28 +26,23 @@ sweep is a few minutes. This is what makes the per-epoch figure affordable.
     conda activate nowcast
     export DISS_SCRATCH=/work/scratch-nopw2/$USER/dissertation
 
-    # one model, one timestamp: obs | advection | ens mean | two members
-    python plot_case_study.py --latents-dir $DISS_SCRATCH/latents_ml_ep17 \
-        --split test --lead 60 --frame 202606151200 \
-        --ckpt $ML/ckpt_ep025.pt --vae $VAE17 --out ~/dissertation_outputs/figures
+    # TWO ARMS IN ONE FIGURE, on the UK basemap, panels labelled by model name.
+    # --mu-dir is handed only to checkpoints that declare hr_mean_cond, so one
+    # flag serves a mixed set of LDM and CorrDiff arms.
+    python plot_case_study.py --latents-dir $DISS_SCRATCH/latents_ml_ep17         --split test --lead 60 --frame 202606151200         --arm "ml_v2=$ML/ckpt_ep025.pt"         --arm "CorrDiff=$CD/ckpt_ep025.pt"         --mu-dir $DISS_SCRATCH/latents_ml_ep17_mu_delta         --vae $VAE17 --grid-shape 2175,1725         --domain-json ~/dissertation_outputs/figures/uk_domain.json         --tag arms --out ~/dissertation_outputs/figures
 
-    # the epoch sweep: one row per checkpoint, showing the over-smoothing
-    python plot_case_study.py --latents-dir $DISS_SCRATCH/latents_ml_ep17 \
-        --split test --lead 60 --frame 202606151200 \
-        --ckpt-glob "$ML/ckpt_ep0*.pt" --vae $VAE17 \
-        --out ~/dissertation_outputs/figures --tag mlv2
+    # the epoch sweep: every checkpoint becomes its own labelled arm
+    python plot_case_study.py --latents-dir $DISS_SCRATCH/latents_ml_ep17         --split test --lead 60 --frame 202606151200         --ckpt-glob "$ML/ckpt_ep0*.pt" --vae $VAE17 --grid-shape 2175,1725         --domain-json ~/dissertation_outputs/figures/uk_domain.json         --ncol 4 --tag mlv2_epochs --out ~/dissertation_outputs/figures
 
-    # CorrDiff needs its frozen-mean pack, exactly as the evaluator does
-    python plot_case_study.py --latents-dir $DISS_SCRATCH/latents_ml_ep17 \
-        --mu-dir $DISS_SCRATCH/latents_ml_ep17_mu_delta \
-        --split test --lead 60 --frame 202606151200 \
-        --ckpt $CD/ckpt_ep025.pt --vae $VAE17 --out ~/dissertation_outputs/figures
+MUST be submitted through gpu.sbatch. The login VM has no CUDA, so running it
+bare falls back to CPU and takes tens of minutes instead of about ten seconds.
 
 Outputs into --out:
-    case_{tag}_{frame}_L{lead}.png        obs / advection / mean / members
-    case_{tag}_{frame}_L{lead}_epochs.png one row per checkpoint (--ckpt-glob)
-    case_{tag}_{frame}_L{lead}.json       which tiles were used, and per-panel
-                                          MAE and wet-area against the observation
+    case_{tag}_{frame}_L{lead}.png    observation and advection as reference
+                                      panels, then an ensemble-mean and a
+                                      single-member panel per named arm
+    case_{tag}_{frame}_L{lead}.json   per-arm MAE and wet area against the
+                                      observation, plus the baselines
 """
 
 import argparse
@@ -119,7 +114,16 @@ def main():
     ap.add_argument("--frame", required=True, help="YYYYMMDDHHMM (the TARGET time)")
     ap.add_argument("--ckpt", default=None)
     ap.add_argument("--ckpt-glob", default=None,
-                    help="sample every matching checkpoint and stack them as rows")
+                    help="sample every matching checkpoint, one panel pair each")
+    ap.add_argument("--arm", action="append", default=None, metavar="LABEL=CKPT",
+                    help="a named model to include, e.g. --arm \"ml_v2=$ML/ckpt_ep025.pt\" "
+                         "--arm \"CorrDiff=$CD/ckpt_ep025.pt\". Repeat to put several "
+                         "models in ONE figure. Panels are labelled with the name.")
+    ap.add_argument("--domain-json", default=None,
+                    help="figures/uk_domain.json, which supplies the projection "
+                         "and grid origin so panels are drawn on a UK basemap "
+                         "with coastlines and the pysteps intensity scale")
+    ap.add_argument("--ncol", type=int, default=4, help="panels per row")
     ap.add_argument("--vae", required=True)
     ap.add_argument("--mu-dir", default=None, help="CorrDiff frozen-mean pack")
     ap.add_argument("--members", type=int, default=8)
@@ -140,12 +144,24 @@ def main():
     ap.add_argument("--allow-vae-mismatch", action="store_true")
     args = ap.parse_args()
 
-    if not args.ckpt and not args.ckpt_glob:
-        raise SystemExit("ERROR: pass --ckpt or --ckpt-glob.")
-    ckpts = ([args.ckpt] if args.ckpt
-             else sorted(glob.glob(os.path.expanduser(args.ckpt_glob))))
-    if not ckpts:
-        raise SystemExit(f"ERROR: --ckpt-glob matched nothing: {args.ckpt_glob}")
+    if not (args.ckpt or args.ckpt_glob or args.arm):
+        raise SystemExit("ERROR: pass --arm, --ckpt or --ckpt-glob.")
+    arms = []
+    for spec in (args.arm or []):
+        if "=" not in spec:
+            raise SystemExit(f"ERROR: --arm must be LABEL=CKPT, got {spec!r}")
+        lab, ck = spec.split("=", 1)
+        ck = os.path.expanduser(ck)
+        if not os.path.exists(ck):
+            raise SystemExit(f"ERROR: --arm {lab!r} checkpoint not found: {ck}")
+        arms.append((lab, ck))
+    if args.ckpt_glob:
+        hits = sorted(glob.glob(os.path.expanduser(args.ckpt_glob)))
+        if not hits:
+            raise SystemExit(f"ERROR: --ckpt-glob matched nothing: {args.ckpt_glob}")
+        arms += [(os.path.basename(h).replace(".pt", ""), h) for h in hits]
+    if args.ckpt:
+        arms.append((args.tag, os.path.expanduser(args.ckpt)))
     os.makedirs(args.out, exist_ok=True)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     if device == "cpu":
@@ -198,45 +214,55 @@ def main():
     per_m = mosaic(list(P), places, shape)
     val_m = mosaic([v.astype("float32") for v in V], places, shape) > 0.5
 
-    panels, report = [], {"frame": args.frame, "split": args.split,
-                          "lead": args.lead, "n_tiles": len(sel),
-                          "tiles": [f"r{r - MARGIN:04d}_c{c - MARGIN:04d}"
-                                    for r, c in places],
-                          "grid": {"H": H, "W": W}, "checkpoints": []}
-    panels.append(("observation", obs_m))
-    panels.append(("advection (pysteps)", adv_m))
-    panels.append(("persistence", per_m))
+    report = {"frame": args.frame, "split": args.split, "lead": args.lead,
+              "n_tiles": len(sel),
+              "tiles": [f"r{r - MARGIN:04d}_c{c - MARGIN:04d}" for r, c in places],
+              "grid": {"H": H, "W": W}, "arms": []}
 
+    # ---- sample every arm ---------------------------------------------------
+    # mu is only handed to a checkpoint that actually declares hr_mean_cond, so
+    # one --mu-dir can serve a mixed set of ml_v2 and CorrDiff arms without the
+    # LDM arms being fed a conditioning stack they were not trained with.
     rowsets = []
-    for ck in ckpts:
+    for label, ck in arms:
         den, ck_meta, cond_mode, ck_leads, hr_mean_cond = load_denoiser(ck, device)
-        check_corrdiff_pairing(ck_meta, args.mu_dir)
+        if hr_mean_cond:
+            check_corrdiff_pairing(ck_meta, args.mu_dir)
+            if mu is None:
+                raise SystemExit(
+                    f"ERROR: {label} ({os.path.basename(ck)}) was trained with "
+                    "hr_mean_cond on and needs --mu-dir. Pass the frozen-mean "
+                    "pack that matches its regression checkpoint.")
         lead_idx = resolve_lead_idx(ck_leads, args.lead)
         ens = sample_ensemble(
             den, vae, rows, cond_mode, latent_scale, mean, std,
             members=args.members, steps=args.steps, guidance=args.guidance,
             churn=args.churn, seed=args.seed, device=device,
-            lead_idx=lead_idx, mu=mu, hr_mean_cond=hr_mean_cond)
-        ens = np.asarray(ens)                       # (K, members, 256, 256)
+            lead_idx=lead_idx, mu=(mu if hr_mean_cond else None),
+            hr_mean_cond=hr_mean_cond)
+        ens = np.asarray(ens)
         mean_m = mosaic(list(ens.mean(axis=1)), places, shape)
         mem_m = mosaic(list(ens[:, 0]), places, shape)
         ep = ck_meta.get("epoch")
-        rowsets.append((os.path.basename(ck), ep, mean_m, mem_m))
-        report["checkpoints"].append({
-            "ckpt": ck, "epoch": ep,
-            "ens_mean": scores(mean_m, obs_m, val_m),
-            "member_0": scores(mem_m, obs_m, val_m)})
-        print(f"  {os.path.basename(ck)} (ep{ep}): "
-              f"mean MAE {report['checkpoints'][-1]['ens_mean']['mae']:.4f} | "
-              f"member MAE {report['checkpoints'][-1]['member_0']['mae']:.4f}")
+        rowsets.append({"label": label, "epoch": ep, "mean": mean_m,
+                        "member": mem_m, "corrdiff": bool(hr_mean_cond)})
+        sc_mean = scores(mean_m, obs_m, val_m)
+        sc_mem = scores(mem_m, obs_m, val_m)
+        report["arms"].append({"label": label, "ckpt": ck, "epoch": ep,
+                               "hr_mean_cond": bool(hr_mean_cond),
+                               "ens_mean": sc_mean, "member_0": sc_mem})
+        print(f"  {label:<22} ep{ep:<4} mean MAE {sc_mean['mae']:.4f} | "
+              f"member MAE {sc_mem['mae']:.4f}")
         del den
         if device == "cuda":
             torch.cuda.empty_cache()
 
-    report["baselines"] = {"advection": scores(adv_m, obs_m, val_m),
-                           "persistence": scores(per_m, obs_m, val_m),
-                           "observation_wet_area": scores(obs_m, obs_m, val_m)["wet_area"]}
+    report["baselines"] = {
+        "advection": scores(adv_m, obs_m, val_m),
+        "persistence": scores(per_m, obs_m, val_m),
+        "observation_wet_area": scores(obs_m, obs_m, val_m)["wet_area"]}
 
+    # ---- figure -------------------------------------------------------------
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -245,56 +271,90 @@ def main():
         print(f"matplotlib unavailable ({e}); scores written, no figure.")
         plt = None
 
-    r0, r1, c0, c1 = bbox(places, shape) if args.tight else (0, H, 0, W)
-
-    def show(ax, field, title):
-        m = np.where(val_m, field, np.nan)[r0:r1, c0:c1]
-        im = ax.imshow(m, origin="upper", cmap="viridis", vmin=0, vmax=args.vmax,
-                       interpolation="nearest")
-        ax.set_title(title, fontsize=9)
-        ax.set_xticks([]); ax.set_yticks([])
-        return im
-
     if plt is not None:
-        # ---- single-row figure, using the last checkpoint -------------------
-        name, ep, mean_m, mem_m = rowsets[-1]
-        cols = [("observation", obs_m), ("advection", adv_m),
-                (f"ensemble mean (ep{ep})", mean_m), (f"member 1 (ep{ep})", mem_m)]
-        fig, axes = plt.subplots(1, len(cols), figsize=(4.0 * len(cols), 4.4))
-        for ax, (t, f) in zip(np.atleast_1d(axes), cols):
-            im = show(ax, f, t)
-        fig.colorbar(im, ax=list(np.atleast_1d(axes)), shrink=0.75, pad=0.01,
-                     label="rain rate (mm/h)")
-        fig.suptitle(f"{args.frame}  |  +{args.lead} min  |  {args.split} split  |  "
-                     f"{len(sel)} tiles", fontsize=11)
+        # Geometry for the basemap. Taken from uk_domain.json so no HDF5 needs
+        # opening; without it the panels fall back to a plain array plot.
+        crs = cmap = norm = None
+        extent = None
+        if args.domain_json and os.path.exists(args.domain_json):
+            dj = json.load(open(args.domain_json))
+            geo = dj.get("geo", {})
+            org = dj.get("projected_origin")
+            if org and geo.get("projdef"):
+                try:
+                    from pysteps.visualization.utils import proj4_to_cartopy
+                    from pysteps.visualization.precipfields import get_colormap
+                    import cartopy.feature as cfeature
+                    crs = proj4_to_cartopy(geo["projdef"])
+                    cmap, norm, _clevs, _cstr = get_colormap(
+                        "intensity", "mm/h", "pysteps")
+                    x0, y0 = float(org[0]), float(org[1])
+                    extent = (x0, x0 + W * float(geo["xscale"]),
+                              y0, y0 + H * float(geo["yscale"]))
+                except Exception as e:
+                    print(f"note: basemap unavailable ({type(e).__name__}: {e}); "
+                          "drawing plain panels instead.")
+                    crs = None
+        if crs is None and not args.domain_json:
+            print("note: no --domain-json given, so panels are plain array plots. "
+                  "Pass figures/uk_domain.json for a proper UK basemap.")
+
+        panels = [("observation", obs_m, None), ("advection (pysteps)", adv_m, None)]
+        for rs in rowsets:
+            tail = " [CorrDiff]" if rs["corrdiff"] else ""
+            panels.append((f"{rs['label']}{tail}\nensemble mean (ep{rs['epoch']})",
+                           rs["mean"], rs["label"]))
+            panels.append((f"{rs['label']}{tail}\nsingle member (ep{rs['epoch']})",
+                           rs["member"], rs["label"]))
+
+        ncol = min(args.ncol, len(panels))
+        nrow = int(np.ceil(len(panels) / ncol))
+        fig = plt.figure(figsize=(4.2 * ncol, 5.0 * nrow))
+        last_im = None
+        for i, (title, field, _lab) in enumerate(panels):
+            shown = np.where(val_m, field, np.nan)
+            if crs is not None:
+                ax = fig.add_subplot(nrow, ncol, i + 1, projection=crs)
+                last_im = ax.imshow(shown, origin="upper", extent=extent,
+                                    cmap=cmap, norm=norm, transform=crs,
+                                    interpolation="nearest", zorder=3)
+                ax.add_feature(cfeature.OCEAN, facecolor="#a8b8c8", zorder=0)
+                ax.add_feature(cfeature.LAND, facecolor="#efe9dc", zorder=1)
+                ax.add_feature(cfeature.COASTLINE, linewidth=0.5,
+                               edgecolor="0.25", zorder=4)
+                ax.add_feature(cfeature.BORDERS, linewidth=0.35,
+                               edgecolor="0.45", zorder=4)
+                if args.tight:
+                    # A map extent, not an array crop, so the projection and the
+                    # aspect ratio stay correct.
+                    r0, r1, c0, c1 = bbox(places, shape, pad=CROP // 4)
+                    ax.set_extent(
+                        [extent[0] + c0 * float(geo["xscale"]),
+                         extent[0] + c1 * float(geo["xscale"]),
+                         extent[2] + (H - r1) * float(geo["yscale"]),
+                         extent[2] + (H - r0) * float(geo["yscale"])], crs=crs)
+            else:
+                ax = fig.add_subplot(nrow, ncol, i + 1)
+                r0, r1, c0, c1 = (bbox(places, shape) if args.tight
+                                  else (0, H, 0, W))
+                last_im = ax.imshow(shown[r0:r1, c0:c1], origin="upper",
+                                    cmap="viridis", vmin=0, vmax=args.vmax,
+                                    interpolation="nearest")
+                ax.set_xticks([]); ax.set_yticks([])
+            ax.set_title(title, fontsize=9.5)
+        if last_im is not None:
+            cb = fig.colorbar(last_im, ax=fig.axes, shrink=0.62, pad=0.015,
+                              extend="max")
+            cb.set_label("precipitation intensity (mm/h)")
+        fig.suptitle(
+            f"{args.frame}  |  +{args.lead} min  |  {args.split} split  |  "
+            f"{len(sel)} of 42 tiles  |  {args.members} members, {args.steps} steps",
+            fontsize=12, y=0.995)
         p1 = os.path.join(args.out,
                           f"case_{args.tag}_{args.frame}_L{args.lead}.png")
         fig.savefig(p1, dpi=args.dpi, bbox_inches="tight")
         plt.close(fig)
         print(f"wrote {p1}")
-
-        # ---- epoch sweep ----------------------------------------------------
-        if len(rowsets) > 1:
-            nrow = len(rowsets)
-            fig, axes = plt.subplots(nrow, 4, figsize=(14, 3.5 * nrow),
-                                     squeeze=False)
-            for i, (name, ep, mean_m, mem_m) in enumerate(rowsets):
-                show(axes[i][0], obs_m, "observation" if i == 0 else "")
-                show(axes[i][1], adv_m, "advection" if i == 0 else "")
-                show(axes[i][2], mean_m, "ensemble mean" if i == 0 else "")
-                im = show(axes[i][3], mem_m, "member 1" if i == 0 else "")
-                axes[i][0].set_ylabel(f"epoch {ep}", fontsize=10)
-            fig.colorbar(im, ax=axes.ravel().tolist(), shrink=0.6, pad=0.01,
-                         label="rain rate (mm/h)")
-            fig.suptitle(f"{args.tag}: sampled field against epoch  |  "
-                         f"{args.frame}  +{args.lead} min  |  {len(sel)} tiles",
-                         fontsize=12)
-            p2 = os.path.join(
-                args.out, f"case_{args.tag}_{args.frame}_L{args.lead}_epochs.png")
-            fig.savefig(p2, dpi=args.dpi, bbox_inches="tight")
-            plt.close(fig)
-            print(f"wrote {p2}")
-
     p3 = os.path.join(args.out, f"case_{args.tag}_{args.frame}_L{args.lead}.json")
     tmp = p3 + ".tmp"
     with open(tmp, "w") as fh:
