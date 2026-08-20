@@ -168,21 +168,25 @@ def scan_crops(prior_dir, max_files=None):
             n, n_files, bad)
 
 
-def try_cartopy(geo):
-    """Return (crs, feature_module) if a projection can be built, else (None, None)."""
-    projdef = geo.get("projdef")
-    if not projdef:
-        return None, None
+def true_origin(geo):
+    """Projected coordinates of the grid's lower-left corner.
+
+    The ODIM /where group gives corner LATITUDES and LONGITUDES, not projected
+    coordinates, so an extent of (0, W*xscale, 0, H*yscale) is offsets from the
+    array corner and NOT British National Grid eastings. Labelling it as easting
+    would be a false claim on a figure. With pyproj the true origin is one
+    forward transform; without it the axes are labelled as distances instead."""
+    if "LL_lat" not in geo or "LL_lon" not in geo or not geo.get("projdef"):
+        return None
     try:
-        import cartopy.crs as ccrs
-        import cartopy.feature as cfeature
-        import pyproj                                  # noqa: F401
-        crs = ccrs.Projection(projdef)
-        return crs, cfeature
+        from pyproj import Transformer
+        tr = Transformer.from_crs("EPSG:4326", geo["projdef"], always_xy=True)
+        x0, y0 = tr.transform(geo["LL_lon"], geo["LL_lat"])
+        return float(x0), float(y0)
     except Exception as e:
-        print(f"note: coastlines unavailable ({type(e).__name__}); plotting in "
-              "projection coordinates instead. This is cosmetic.")
-        return None, None
+        print(f"note: pyproj unavailable ({type(e).__name__}); axes will show "
+              "distance across the composite rather than projected coordinates.")
+        return None
 
 
 def main():
@@ -196,13 +200,19 @@ def main():
     ap.add_argument("--max-files", type=int, default=None,
                     help="cap the filename scan; the cap is reported, never silent")
     ap.add_argument("--list-events", type=int, default=0, metavar="N",
-                    help="rank timestamps by how many crops they contributed, "
-                         "read the frames of the top N, and print their rain "
-                         "statistics so a case study can be chosen. Prints and "
-                         "exits; draws nothing.")
+                    help="open N frames, evenly spaced through the record, score "
+                         "their rain statistics and print convective and frontal "
+                         "shortlists. Use 0 for every timestamp in the split. "
+                         "Prints and exits; draws nothing.")
     ap.add_argument("--events-split", default=None,
                     help="restrict --list-events to one split, e.g. test")
-    ap.add_argument("--vmax", type=float, default=8.0, help="colour cap, mm/h")
+    ap.add_argument("--style", default="pysteps", choices=["pysteps", "plain"],
+                    help="pysteps draws coastlines, borders and the standard "
+                         "discrete log intensity scale; plain is a raw array "
+                         "plot and always works")
+    ap.add_argument("--vmax", type=float, default=8.0,
+                    help="colour cap for --style plain, mm/h (pysteps uses its "
+                         "own log scale)")
     ap.add_argument("--dpi", type=int, default=150)
     args = ap.parse_args()
 
@@ -236,58 +246,136 @@ def main():
     print(f"  by split: {dict(per_split)}")
 
     if args.list_events:
-        cands = [(t, c) for t, c in per_time.items()
-                 if args.events_split is None or time_split.get(t) == args.events_split]
-        cands.sort(key=lambda tc: -tc[1])
-        cands = cands[:args.list_events]
-        print(f"\nTop {len(cands)} timestamps by accepted crops"
+        # Ranking by accepted-crop count does not work on this domain: only 12
+        # of the 42 candidate tiles ever pass the filter, so the count saturates
+        # at 12 for any timestamp with widespread rain and the ordering becomes
+        # arbitrary. Worse, convective cells are LOCALISED, so a crop count
+        # would rank them below frontal rain, which is the opposite of what a
+        # case study wants. So the frames are actually opened and ranked on
+        # their own rain statistics.
+        stamps = sorted(t for t in per_time
+                        if args.events_split is None
+                        or time_split.get(t) == args.events_split)
+        if not stamps:
+            raise SystemExit(f"ERROR: no timestamps in split "
+                             f"{args.events_split!r}.")
+        want = args.list_events if args.list_events > 0 else len(stamps)
+        if want >= len(stamps):
+            pick = stamps
+        else:
+            # Evenly spaced through the record, so the sample spans the whole
+            # period rather than clustering in whichever month sorts first.
+            step = len(stamps) / float(want)
+            pick = [stamps[min(len(stamps) - 1, int(i * step))] for i in range(want)]
+            pick = sorted(set(pick))
+        print(f"\n{len(stamps)} timestamps available"
               + (f" in split '{args.events_split}'" if args.events_split else "")
-              + ". Higher crop counts mean more widespread rain; the rain\n"
-              "columns separate widespread drizzle from intense convection.\n")
-        print(f"  {'timestamp':<14}{'split':>7}{'crops':>7}{'wet%':>8}"
-              f"{'mean':>8}{'p99.9':>9}{'max':>8}  frame")
-        rows = []
-        for t, cnt in cands:
+              + f"; opening {len(pick)} of them (evenly spaced).")
+        print("Reading frames. Each is a full composite, so this is I/O bound; "
+              "expect roughly 0.1 to 0.3 s each.\n")
+
+        rows, misses = [], 0
+        for i, t in enumerate(pick, 1):
+            if i % 100 == 0 or i == len(pick):
+                print(f"  {i}/{len(pick)} frames read ({misses} not cached)",
+                      flush=True)
             try:
                 fp = find_frame(args.frames_dir, t)
                 Rt, _g = read_odim(fp)
             except SystemExit:
-                print(f"  {t:<14}{time_split.get(t,''):>7}{cnt:>7}"
-                      f"{'':>8}{'':>8}{'':>9}{'':>8}  (frame not cached)")
+                misses += 1
+                continue
+            except Exception:
+                misses += 1
                 continue
             fin = np.isfinite(Rt)
-            wet = float(np.mean(Rt[fin] >= 0.1)) if fin.any() else float("nan")
-            mean = float(np.mean(Rt[fin])) if fin.any() else float("nan")
-            p999 = float(np.percentile(Rt[fin], 99.9)) if fin.any() else float("nan")
-            mx = float(np.nanmax(Rt)) if fin.any() else float("nan")
-            rows.append((t, cnt, wet, mean, p999, mx))
-            print(f"  {t:<14}{time_split.get(t,''):>7}{cnt:>7}{100*wet:>7.1f}%"
-                  f"{mean:>8.3f}{p999:>9.2f}{mx:>8.1f}  {os.path.basename(fp)}")
+            if not fin.any():
+                continue
+            v = Rt[fin]
+            wet = float(np.mean(v >= 0.1))
+            heavy = float(np.mean(v >= 8.0))
+            mean = float(np.mean(v))
+            p99 = float(np.percentile(v, 99.0))
+            p999 = float(np.percentile(v, 99.9))
+            mx = float(np.max(v))
+            # Concentration of intensity: high when a lot of rain falls in a
+            # small fraction of the domain (convection), low when moderate rain
+            # is spread widely (frontal). Guarded against a zero wet fraction.
+            conc = p999 / max(wet * 100.0, 1e-6)
+            rows.append(dict(timestamp=t, split=time_split.get(t, ""),
+                             n_crops=per_time[t], wet=wet, heavy=heavy,
+                             mean=mean, p99=p99, p999=p999, mx=mx, conc=conc))
+
+        if not rows:
+            raise SystemExit("ERROR: no frames could be read. Check --frames-dir "
+                             "and that the cache still holds these timestamps.")
+
         os.makedirs(args.out, exist_ok=True)
         csvp = os.path.join(args.out, "uk_events.csv")
         with open(csvp, "w") as fh:
-            fh.write("timestamp,split,n_crops,wet_fraction,mean_mmh,"
-                     "p99_9_mmh,max_mmh\n")
-            for t, cnt, wet, mean, p999, mx in rows:
-                fh.write(f"{t},{time_split.get(t, '')},{cnt},{wet:.6f},"
-                         f"{mean:.4f},{p999:.3f},{mx:.2f}\n")
-        print(f"\nwrote {csvp} ({len(rows)} rows)")
+            fh.write("timestamp,split,n_crops,wet_fraction,heavy_fraction,"
+                     "mean_mmh,p99_mmh,p99_9_mmh,max_mmh,concentration\n")
+            for r in sorted(rows, key=lambda r: r["timestamp"]):
+                fh.write(f"{r['timestamp']},{r['split']},{r['n_crops']},"
+                         f"{r['wet']:.6f},{r['heavy']:.8f},{r['mean']:.4f},"
+                         f"{r['p99']:.3f},{r['p999']:.3f},{r['mx']:.2f},"
+                         f"{r['conc']:.4f}\n")
+        print(f"\nwrote {csvp} ({len(rows)} frames, {misses} not cached)")
 
-        print("\nPick one and pass it as --frame. For a talk, prefer a high p99.9 "
-              "(intense, convective) over a merely high wet% (widespread drizzle),")
-        print("and prefer split 'test' so the case study sits on held-out 2026 data.")
+        def table(title, sel, note):
+            print(f"\n{title}")
+            print(f"  {note}")
+            print(f"  {'timestamp':<14}{'split':>6}{'wet%':>7}{'heavy%':>8}"
+                  f"{'mean':>7}{'p99':>7}{'p99.9':>8}{'max':>7}{'conc':>7}")
+            for r in sel:
+                print(f"  {r['timestamp']:<14}{r['split']:>6}{100*r['wet']:>6.1f}%"
+                      f"{100*r['heavy']:>7.3f}%{r['mean']:>7.3f}{r['p99']:>7.2f}"
+                      f"{r['p999']:>8.2f}{r['mx']:>7.1f}{r['conc']:>7.2f}")
+
+        n_show = max(5, min(15, len(rows) // 4))
+        conv = sorted(rows, key=lambda r: -r["conc"])[:n_show]
+        table("CONVECTIVE candidates (intensity concentrated in a small area)",
+              "ranked by concentration = p99.9 / wet%. These are where advection "
+              "fails and the model should show its value.", conv)
+        # Frontal: widespread, and deliberately excluding anything that also has
+        # a convective signature, so the two shortlists are genuinely different.
+        conv_cut = sorted((r["conc"] for r in rows), reverse=True)
+        conv_cut = conv_cut[max(0, len(conv_cut) // 2)] if conv_cut else 0.0
+        front = sorted((r for r in rows if r["conc"] <= conv_cut),
+                       key=lambda r: -r["wet"])[:n_show]
+        table("FRONTAL / STRATIFORM candidates (widespread, low peak intensity)",
+              "widest rain among the less concentrated half. Advection is already "
+              "good here, which is the honest contrast case.", front)
+
+        print("\nHow to choose. For the convective panel take a high p99.9 with a "
+              "modest wet%, and check max is not a single bright pixel by "
+              "comparing p99.9 against max.")
+        print("For the frontal panel take a high wet% with a low p99.9. Prefer "
+              "split 'test' for both, so the case study sits on held-out 2026 data.")
+        print("Every scanned frame is in the CSV, so a different rule can be "
+              "applied to it without re-reading anything.")
         return
 
     # Extent in projection metres, with the array's origin at the top-left.
     ex = W * geo["xscale"]
     ey = H * geo["yscale"]
-    extent = (0.0, ex, 0.0, ey)
+    origin = true_origin(geo)
+    if origin is not None:
+        x0, y0 = origin
+        extent = (x0, x0 + ex, y0, y0 + ey)
+        axis_x, axis_y = "easting (m, British National Grid)", "northing (m, BNG)"
+        print(f"  projected origin (lower-left): {x0:.0f}, {y0:.0f} m")
+    else:
+        x0 = y0 = 0.0
+        extent = (0.0, ex, 0.0, ey)
+        axis_x = "distance east across the composite (m, not BNG easting)"
+        axis_y = "distance north across the composite (m, not BNG northing)"
 
     def rect_xy(r, c, size):
         """Array (row, col) to plot (x, y) of the lower-left corner. Row 0 is
         the northern edge in ODIM, so y is measured from the bottom."""
-        x = c * geo["xscale"]
-        y = (H - r - size) * geo["yscale"]
+        x = x0 + c * geo["xscale"]
+        y = y0 + (H - r - size) * geo["yscale"]
         return x, y, size * geo["xscale"], size * geo["yscale"]
 
     try:
@@ -301,77 +389,87 @@ def main():
               "no figures written.")
         return
 
-    crs, cfeature = try_cartopy(geo)
+    # ---- basemap helper ----------------------------------------------------
+    # pysteps already knows how to draw a UK radar composite properly: coastlines,
+    # borders, land and ocean shading, and the standard discrete log-spaced
+    # intensity colour scale that every nowcasting paper uses. It is a hard
+    # dependency of this project, so there is no reason to hand-roll a raw
+    # imshow. It needs the grid corners in PROJECTION coordinates, which is why
+    # true_origin() exists; without pyproj those corners are unknown and the
+    # plain fallback is used instead.
+    def basemap(title, field=None, vmax=None):
+        """Return (fig, ax, in_projection_coords). Draws the composite if a
+        field is given, otherwise an empty basemap to place patches on."""
+        if args.style != "plain" and origin is not None:
+            try:
+                from pysteps.visualization import plot_precip_field
+                geodata = {"projection": geo["projdef"],
+                           "x1": extent[0], "x2": extent[1],
+                           "y1": extent[2], "y2": extent[3],
+                           "yorigin": "upper"}
+                fig = plt.figure(figsize=(9, 10))
+                base = field if field is not None else np.full_like(R, np.nan)
+                ax = plot_precip_field(base, geodata=geodata, units="mm/h",
+                                       title=title, colorbar=field is not None,
+                                       map_kwargs={"drawlonlatlines": False,
+                                                   "scale": "50m"})
+                return fig, ax, True
+            except Exception as e:
+                print(f"note: pysteps map plotting unavailable "
+                      f"({type(e).__name__}: {e}); falling back to a plain "
+                      "array plot. Pass --style plain to silence this.")
+        fig, ax = plt.subplots(figsize=(9, 10))
+        if field is not None:
+            im = ax.imshow(field, origin="upper", extent=extent, cmap="viridis",
+                           vmin=0.0, vmax=vmax or args.vmax,
+                           interpolation="nearest")
+            ax.imshow(np.where(np.isfinite(field), np.nan, 1.0), origin="upper",
+                      extent=extent, cmap="Greys", vmin=0, vmax=1.6,
+                      interpolation="nearest")
+            cb = fig.colorbar(im, ax=ax, shrink=0.7, pad=0.02)
+            cb.set_label("rain rate (mm/h)")
+        ax.set_title(title, fontsize=11)
+        ax.set_xlabel(axis_x)
+        ax.set_ylabel(axis_y)
+        return fig, ax, False
 
     # ---- Figure 1: the domain, the tiling, and which tiles were used --------
-    subplot_kw = {"projection": crs} if crs is not None else {}
-    fig, ax = plt.subplots(figsize=(9, 10), subplot_kw=subplot_kw)
-    shown = np.where(np.isfinite(R), R, np.nan)
-    im = ax.imshow(shown, origin="upper", extent=extent, cmap="viridis",
-                   vmin=0.0, vmax=args.vmax, interpolation="nearest",
-                   **({"transform": crs} if crs is not None else {}))
-    # Out-of-range radar as a light grey wash, so coverage is visible.
-    ax.imshow(np.where(np.isfinite(R), np.nan, 1.0), origin="upper", extent=extent,
-              cmap="Greys", vmin=0, vmax=1.6, interpolation="nearest",
-              **({"transform": crs} if crs is not None else {}))
-    if crs is not None and cfeature is not None:
-        ax.add_feature(cfeature.COASTLINE, linewidth=0.6, edgecolor="white")
-        ax.add_feature(cfeature.BORDERS, linewidth=0.4, edgecolor="white")
-
     used = set(per_tile)
+    fig, ax, mapped = basemap(
+        f"UK radar composite and the {CROP} km crop tiling\n"
+        f"{os.path.basename(frame)[:12]}  |  red = tiles that passed the quality "
+        f"filter ({len(used)} of {len(tiles_all)})", field=R)
     for (r, c) in tiles_all:
         x, y, w, h = rect_xy(r + MARGIN, c + MARGIN, CROP)
         on = (r, c) in used
         ax.add_patch(Rectangle((x, y), w, h, fill=False,
-                               edgecolor=("red" if on else "0.6"),
-                               lw=(1.4 if on else 0.5),
-                               ls=("-" if on else ":"),
-                               **({"transform": crs} if crs is not None else {})))
-    ax.set_title(f"UK radar composite and the {CROP} km crop tiling\n"
-                 f"{os.path.basename(frame)[:12]}  |  red = tiles that passed the "
-                 f"quality filter ({len(used)} of {len(tiles_all)})", fontsize=11)
-    if crs is None:
-        ax.set_xlabel("projection easting (m)")
-        ax.set_ylabel("projection northing (m)")
-        if corners:
-            ax.text(0.01, 0.01,
-                    "corners: " + ", ".join(f"{k} {v:.2f}" for k, v in sorted(corners.items())),
-                    transform=ax.transAxes, fontsize=6, color="0.3", va="bottom")
-    cb = fig.colorbar(im, ax=ax, shrink=0.7, pad=0.02)
-    cb.set_label("rain rate (mm/h)")
-    fig.tight_layout()
+                               edgecolor=("red" if on else "0.55"),
+                               lw=(1.6 if on else 0.5),
+                               ls=("-" if on else ":"), zorder=5))
+    if not mapped and corners:
+        ax.text(0.01, 0.01,
+                "corners: " + ", ".join(f"{k} {v:.2f}" for k, v in sorted(corners.items())),
+                transform=ax.transAxes, fontsize=6, color="0.3", va="bottom")
     p1 = os.path.join(args.out, "uk_domain.png")
     fig.savefig(p1, dpi=args.dpi, bbox_inches="tight")
     plt.close(fig)
     print(f"wrote {p1}")
 
     # ---- Figure 2: where the training data actually comes from -------------
-    fig, ax = plt.subplots(figsize=(9, 10), subplot_kw=subplot_kw)
-    ax.imshow(np.where(np.isfinite(R), 0.0, np.nan), origin="upper", extent=extent,
-              cmap="Greys", vmin=0, vmax=1, interpolation="nearest",
-              **({"transform": crs} if crs is not None else {}))
-    if crs is not None and cfeature is not None:
-        ax.add_feature(cfeature.COASTLINE, linewidth=0.6, edgecolor="0.3")
-    vmax = max(per_tile.values()) if per_tile else 1
+    fig, ax, mapped = basemap(
+        f"Where the training data comes from\n{n:,} accepted crops "
+        f"across {len(per_tile)} tiles", field=None)
+    vmax_t = max(per_tile.values()) if per_tile else 1
     cmap = plt.get_cmap("magma")
     for (r, c), cnt in sorted(per_tile.items()):
         x, y, w, h = rect_xy(r + MARGIN, c + MARGIN, CROP)
-        ax.add_patch(Rectangle((x, y), w, h, facecolor=cmap(cnt / vmax),
-                               edgecolor="white", lw=0.6, alpha=0.85,
-                               **({"transform": crs} if crs is not None else {})))
+        ax.add_patch(Rectangle((x, y), w, h, facecolor=cmap(cnt / vmax_t),
+                               edgecolor="white", lw=0.6, alpha=0.85, zorder=5))
         ax.text(x + w / 2, y + h / 2, f"{cnt:,}", ha="center", va="center",
-                fontsize=7, color="white",
-                **({"transform": crs} if crs is not None else {}))
-    sm = plt.cm.ScalarMappable(cmap=cmap,
-                               norm=plt.Normalize(vmin=0, vmax=vmax))
+                fontsize=7, color="white", zorder=6)
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=plt.Normalize(vmin=0, vmax=vmax_t))
     cb = fig.colorbar(sm, ax=ax, shrink=0.7, pad=0.02)
     cb.set_label("accepted crops per tile")
-    ax.set_title(f"Where the training data comes from\n{n:,} accepted crops "
-                 f"across {len(per_tile)} tiles", fontsize=11)
-    if crs is None:
-        ax.set_xlabel("projection easting (m)")
-        ax.set_ylabel("projection northing (m)")
-    fig.tight_layout()
     p2 = os.path.join(args.out, "uk_crop_density.png")
     fig.savefig(p2, dpi=args.dpi, bbox_inches="tight")
     plt.close(fig)
@@ -380,6 +478,7 @@ def main():
     meta = {"frame": frame, "grid": {"H": H, "W": W}, "geo": geo,
             "crop": CROP, "margin": MARGIN, "context": CONTEXT, "stride": STRIDE,
             "n_candidate_tiles": len(tiles_all), "n_used_tiles": len(used),
+            "projected_origin": origin,
             "n_crops_unique": n, "n_files_scanned": n_files, "scan_capped": bool(args.max_files and n_files >= args.max_files),
             "by_split": dict(per_split),
             "per_tile": {f"r{r:04d}_c{c:04d}": cnt for (r, c), cnt in sorted(per_tile.items())},
