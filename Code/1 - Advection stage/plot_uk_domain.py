@@ -199,7 +199,7 @@ def main():
     ap.add_argument("--out", default="figures")
     ap.add_argument("--max-files", type=int, default=None,
                     help="cap the filename scan; the cap is reported, never silent")
-    ap.add_argument("--list-events", type=int, default=0, metavar="N",
+    ap.add_argument("--list-events", type=int, default=None, metavar="N",
                     help="open N frames, evenly spaced through the record, score "
                          "their rain statistics and print convective and frontal "
                          "shortlists. Use 0 for every timestamp in the split. "
@@ -245,7 +245,9 @@ def main():
           f"across {len(per_tile)} tiles ({bad} unparsable names)")
     print(f"  by split: {dict(per_split)}")
 
-    if args.list_events:
+    # Guard on "is not None", not truthiness: --list-events 0 is a legitimate
+    # value meaning "every timestamp", and a plain truth test silently skips it.
+    if args.list_events is not None:
         # Ranking by accepted-crop count does not work on this domain: only 12
         # of the 42 candidate tiles ever pass the filter, so the count saturates
         # at 12 for any timestamp with widespread rain and the ordering becomes

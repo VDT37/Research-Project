@@ -118,7 +118,27 @@ def load_study(study_dir):
                          "an hpo_search.py output directory.")
     ranking = (maybe("ranking.json") or {}).get("trials", [])
     plan = maybe("plan.json") or {}
-    baselines = maybe("baselines.json") or {}
+    # hpo_baselines.py writes one file per ARM, and writes it beside the study
+    # directories rather than inside any one of them, because several studies
+    # share an arm's baselines. Look in the study dir first, then beside it, and
+    # try the arm-suffixed name at both, so a report never silently drops its
+    # baseline table just because of where the file landed.
+    def maybe_up(name):
+        p = os.path.join(os.path.dirname(os.path.abspath(study_dir)), name)
+        if os.path.exists(p):
+            try:
+                return json.load(open(p))
+            except Exception:
+                return None
+        return None
+
+    _arm = (spec or {}).get("arm")
+    _cands = ([("baselines_%s.json" % _arm)] if _arm else []) + ["baselines.json"]
+    baselines = {}
+    for _c in _cands:
+        baselines = maybe(_c) or maybe_up(_c) or {}
+        if baselines:
+            break
     events = []
     ep = os.path.join(study_dir, "trials.jsonl")
     if os.path.exists(ep):
@@ -290,9 +310,11 @@ def write_markdown(path, spec, rows, effects, trans, plan, baselines, top):
           "must agree to float noise. Disagreement means the crop sets diverged "
           "and no paired comparison in this study is valid.\n")
     else:
-        a("No `baselines.json` in this study directory, so the persistence "
-          "columns below are absent. Run `hpo_baselines.py` and re-run the "
-          "report.\n")
+        a("No baselines file was found in this study directory or beside it, "
+          "so the per-rung baseline table is omitted. The persistence and "
+          "advection COLUMNS in the leaderboard below are unaffected: those "
+          "come from each trial's own record, not from this file. Run "
+          "`hpo_baselines.py` and re-run the report to restore the table.\n")
 
     a("## Leaderboard\n")
     a("Ordered by fidelity rung first (deepest rung, and therefore the most "

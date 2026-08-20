@@ -244,10 +244,11 @@ def main():
         mean_m = mosaic(list(ens.mean(axis=1)), places, shape)
         mem_m = mosaic(list(ens[:, 0]), places, shape)
         ep = ck_meta.get("epoch")
-        rowsets.append({"label": label, "epoch": ep, "mean": mean_m,
-                        "member": mem_m, "corrdiff": bool(hr_mean_cond)})
         sc_mean = scores(mean_m, obs_m, val_m)
         sc_mem = scores(mem_m, obs_m, val_m)
+        rowsets.append({"label": label, "epoch": ep, "mean": mean_m,
+                        "member": mem_m, "corrdiff": bool(hr_mean_cond),
+                        "sc_mean": sc_mean, "sc_mem": sc_mem})
         report["arms"].append({"label": label, "ckpt": ck, "epoch": ep,
                                "hr_mean_cond": bool(hr_mean_cond),
                                "ens_mean": sc_mean, "member_0": sc_mem})
@@ -299,13 +300,19 @@ def main():
             print("note: no --domain-json given, so panels are plain array plots. "
                   "Pass figures/uk_domain.json for a proper UK basemap.")
 
-        panels = [("observation", obs_m, None), ("advection (pysteps)", adv_m, None)]
+        adv_mae = report["baselines"]["advection"]["mae"]
+        panels = [("observation\n(ground truth)", obs_m, None),
+                  (f"advection (pysteps)\nMAE {adv_mae:.4f}", adv_m, None)]
         for rs in rowsets:
-            tail = " [CorrDiff]" if rs["corrdiff"] else ""
-            panels.append((f"{rs['label']}{tail}\nensemble mean (ep{rs['epoch']})",
-                           rs["mean"], rs["label"]))
-            panels.append((f"{rs['label']}{tail}\nsingle member (ep{rs['epoch']})",
-                           rs["member"], rs["label"]))
+            tail = ("" if (not rs["corrdiff"]
+                           or "corrdiff" in rs["label"].lower())
+                    else " [CorrDiff]")
+            panels.append(
+                (f"{rs['label']}{tail}\nensemble mean (ep{rs['epoch']}), "
+                 f"MAE {rs['sc_mean']['mae']:.4f}", rs["mean"], rs["label"]))
+            panels.append(
+                (f"{rs['label']}{tail}\nsingle member (ep{rs['epoch']}), "
+                 f"MAE {rs['sc_mem']['mae']:.4f}", rs["member"], rs["label"]))
 
         ncol = min(args.ncol, len(panels))
         nrow = int(np.ceil(len(panels) / ncol))
