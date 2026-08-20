@@ -407,12 +407,20 @@ def main():
                            "x1": extent[0], "x2": extent[1],
                            "y1": extent[2], "y2": extent[3],
                            "yorigin": "upper"}
-                fig = plt.figure(figsize=(9, 10))
+                # Do NOT pre-create a figure. plot_precip_field makes its own
+                # GeoAxes, and a figure created first leaves a stray normalised
+                # 0-1 axes frame showing through behind the map. Let pysteps
+                # build it, then take the figure it actually drew on.
                 base = field if field is not None else np.full_like(R, np.nan)
                 ax = plot_precip_field(base, geodata=geodata, units="mm/h",
-                                       title=title, colorbar=field is not None,
+                                       title=None, colorbar=field is not None,
                                        map_kwargs={"drawlonlatlines": False,
                                                    "scale": "50m"})
+                fig = ax.figure
+                fig.set_size_inches(9, 10)
+                # pysteps places its own title tight against the axes, which
+                # clips a two-line one. Set it afterwards with padding instead.
+                ax.set_title(title, fontsize=11, pad=14)
                 return fig, ax, True
             except Exception as e:
                 print(f"note: pysteps map plotting unavailable "
