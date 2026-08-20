@@ -156,9 +156,26 @@ def changed(params, incumbent=None):
     return ", ".join(f"{k}={v}" for k, v in sorted(d.items())) or "(incumbent)"
 
 
+# Validation-log keys, in preference order, with the axis label each implies.
+# train_ldm.py emits loss_w; train_regression.py emits mse. A study is scanned
+# for whichever its trainer actually wrote.
+VAL_KEYS = (("loss_w", "validation loss (weighted, EMA)"),
+            ("mse", "validation MSE (latent space)"))
+
+
 def learning_curves(study_dir):
-    """Per-trial validation curves, read from each trainer's own train_log.json."""
-    out = {}
+    """Per-trial validation curves, read from each trainer's own train_log.json.
+
+    The trainers do NOT share a validation-log schema: train_ldm.py writes
+    `val.loss_w` (weighted EMA loss) and train_regression.py writes `val.mse`
+    (latent-space MSE). Assuming one of them crashes the report for the other
+    arm, so the key is discovered per study rather than hardcoded.
+
+    Returns (curves, ylabel). ylabel is None when no trial carried a usable key,
+    in which case the caller should skip the curves figure rather than draw an
+    unlabelled one.
+    """
+    out, ylabel = {}, None
     for name in sorted(os.listdir(study_dir)):
         d = os.path.join(study_dir, name)
         lp = os.path.join(d, "train_log.json")
@@ -168,8 +185,17 @@ def learning_curves(study_dir):
             log = json.load(open(lp))
         except Exception:
             continue
-        out[name] = [(r["epoch"], r["val"]["loss_w"]) for r in log if r.get("val")]
-    return out
+        if not isinstance(log, list):
+            continue
+        for key, lab in VAL_KEYS:
+            pts = [(r["epoch"], r["val"][key]) for r in log
+                   if isinstance(r, dict) and "epoch" in r
+                   and isinstance(r.get("val"), dict) and key in r["val"]]
+            if pts:
+                out[name] = pts
+                ylabel = ylabel or lab
+                break
+    return out, ylabel
 
 
 # ----------------------------------------------------------------------------
@@ -410,8 +436,8 @@ def figures(study_dir, spec, rows, effects, trans):
     made = []
 
     # -- learning curves, coloured by whether the trial survived its rung ------
-    curves = learning_curves(study_dir)
-    if curves:
+    curves, curve_label = learning_curves(study_dir)
+    if curves and curve_label:
         best = {r["trial"]: r["objective"] for r in rows if r["objective"] is not None}
         fig, ax = plt.subplots(figsize=(8, 5))
         vals = [v for v in best.values()]
@@ -424,7 +450,7 @@ def figures(study_dir, spec, rows, effects, trans):
             ax.plot([e for e, _ in c], [v for _, v in c],
                     color=plt.cm.viridis(frac), alpha=0.85, lw=1.4)
         ax.set_xlabel("epoch")
-        ax.set_ylabel("validation loss (weighted, EMA)")
+        ax.set_ylabel(curve_label)
         ax.set_title(f"{spec.get('space')}: per-trial validation curves\n"
                      "(colour = objective, dark low to bright high)")
         ax.grid(alpha=0.3)
