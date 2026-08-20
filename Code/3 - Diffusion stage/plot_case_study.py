@@ -60,6 +60,8 @@ sys.path.insert(0, HERE)
 from sample_diffusion import (load_denoiser, load_codec, sample_ensemble,     # noqa: E402
                               read_truth, open_split, resolve_lead_idx,
                               check_corrdiff_pairing)
+from train_ldm import ZC                                                     # noqa: E402
+from train_vae_v2 import from_dbr                                            # noqa: E402
 
 CROP, MARGIN, CONTEXT = 256, 64, 384
 NAME_RE = re.compile(r"^(\d{12})_r(\d{4})_c(\d{4})(?:_L(\d{2}))?\.npz$")
@@ -97,6 +99,28 @@ def bbox(places, shape, pad=CROP // 2):
     return r0, r1, c0, c1
 
 
+def decode_regression_mean(vae, rows, mu, latent_scale, mean, std, device,
+                           decode_batch=32):
+    """CorrDiff's frozen stage-one forecast, as a field.
+
+    This is the deterministic conditional mean the diffusion stage learns a
+    residual against: the regression network's mu added to the advection anchor
+    in latent space, decoded through the same codec. It is exactly
+    sample_ensemble with the sampled delta held at zero, so it needs no denoiser
+    forward pass, only a VAE decode, and costs a fraction of one member.
+
+    The mu pack is a property of the regression checkpoint, not of any diffusion
+    arm, so this panel is drawn once as a reference column rather than per arm.
+    """
+    zA = rows[:, 4 * ZC:5 * ZC].to(device)
+    lat = (zA + mu.to(device)) / latent_scale
+    dec = []
+    for s in range(0, lat.shape[0], decode_batch):
+        dec.append(vae.decode(lat[s:s + decode_batch]).float().cpu())
+    y_dbr = torch.cat(dec)[:, 0].numpy() * std + mean
+    return from_dbr(y_dbr)
+
+
 def scores(panel, obs, valid):
     m = valid & np.isfinite(panel) & np.isfinite(obs)
     if not m.any():
@@ -127,6 +151,14 @@ def main():
     ap.add_argument("--vae", required=True)
     ap.add_argument("--mu-dir", default=None, help="CorrDiff frozen-mean pack")
     ap.add_argument("--members", type=int, default=8)
+    ap.add_argument("--show-members", type=int, default=1, metavar="N",
+                    help="how many individual ensemble members to draw per arm "
+                         "(default 1). Members are draws, not rankings, so N>1 "
+                         "shows the spread the ensemble mean hides.")
+    ap.add_argument("--regression-mean", action="store_true",
+                    help="draw CorrDiff's frozen stage-one conditional mean as a "
+                         "reference panel. Needs --mu-dir. Costs one VAE decode, "
+                         "no denoiser pass.")
     ap.add_argument("--steps", type=int, default=25)
     ap.add_argument("--guidance", type=float, default=1.0)
     ap.add_argument("--churn", type=float, default=0.0)
@@ -146,6 +178,12 @@ def main():
 
     if not (args.ckpt or args.ckpt_glob or args.arm):
         raise SystemExit("ERROR: pass --arm, --ckpt or --ckpt-glob.")
+    if args.show_members < 1 or args.show_members > args.members:
+        raise SystemExit(f"ERROR: --show-members must be between 1 and "
+                         f"--members ({args.members}), got {args.show_members}.")
+    if args.regression_mean and not args.mu_dir:
+        raise SystemExit("ERROR: --regression-mean needs --mu-dir, the frozen "
+                         "mean pack that matches the regression checkpoint.")
     arms = []
     for spec in (args.arm or []):
         if "=" not in spec:
@@ -242,26 +280,41 @@ def main():
             hr_mean_cond=hr_mean_cond)
         ens = np.asarray(ens)
         mean_m = mosaic(list(ens.mean(axis=1)), places, shape)
-        mem_m = mosaic(list(ens[:, 0]), places, shape)
+        mems = [mosaic(list(ens[:, k]), places, shape)
+                for k in range(args.show_members)]
         ep = ck_meta.get("epoch")
         sc_mean = scores(mean_m, obs_m, val_m)
-        sc_mem = scores(mem_m, obs_m, val_m)
+        sc_mems = [scores(m, obs_m, val_m) for m in mems]
         rowsets.append({"label": label, "epoch": ep, "mean": mean_m,
-                        "member": mem_m, "corrdiff": bool(hr_mean_cond),
-                        "sc_mean": sc_mean, "sc_mem": sc_mem})
-        report["arms"].append({"label": label, "ckpt": ck, "epoch": ep,
-                               "hr_mean_cond": bool(hr_mean_cond),
-                               "ens_mean": sc_mean, "member_0": sc_mem})
+                        "members": mems, "corrdiff": bool(hr_mean_cond),
+                        "sc_mean": sc_mean, "sc_mems": sc_mems})
+        arm_rec = {"label": label, "ckpt": ck, "epoch": ep,
+                   "hr_mean_cond": bool(hr_mean_cond), "ens_mean": sc_mean}
+        for k, sc in enumerate(sc_mems):
+            arm_rec[f"member_{k}"] = sc
+        report["arms"].append(arm_rec)
         print(f"  {label:<22} ep{ep:<4} mean MAE {sc_mean['mae']:.4f} | "
-              f"member MAE {sc_mem['mae']:.4f}")
+              + " | ".join(f"member {k} MAE {sc['mae']:.4f}"
+                           for k, sc in enumerate(sc_mems)))
         del den
         if device == "cuda":
             torch.cuda.empty_cache()
+
+    reg_m = None
+    if args.regression_mean:
+        reg_fields = decode_regression_mean(vae, rows, mu, latent_scale,
+                                            mean, std, device)
+        reg_m = mosaic(list(reg_fields), places, shape)
 
     report["baselines"] = {
         "advection": scores(adv_m, obs_m, val_m),
         "persistence": scores(per_m, obs_m, val_m),
         "observation_wet_area": scores(obs_m, obs_m, val_m)["wet_area"]}
+    if reg_m is not None:
+        report["baselines"]["regression_mean"] = scores(reg_m, obs_m, val_m)
+        print(f"  {'regression mean':<22} {'':<6} MAE "
+              f"{report['baselines']['regression_mean']['mae']:.4f} "
+              f"(frozen stage one, no denoiser pass)")
 
     # ---- figure -------------------------------------------------------------
     try:
@@ -303,6 +356,11 @@ def main():
         adv_mae = report["baselines"]["advection"]["mae"]
         panels = [("observation\n(ground truth)", obs_m, None),
                   (f"advection (pysteps)\nMAE {adv_mae:.4f}", adv_m, None)]
+        if reg_m is not None:
+            panels.append(
+                (f"regression mean\n(frozen stage one), MAE "
+                 f"{report['baselines']['regression_mean']['mae']:.4f}",
+                 reg_m, None))
         for rs in rowsets:
             tail = ("" if (not rs["corrdiff"]
                            or "corrdiff" in rs["label"].lower())
@@ -310,9 +368,15 @@ def main():
             panels.append(
                 (f"{rs['label']}{tail}\nensemble mean (ep{rs['epoch']}), "
                  f"MAE {rs['sc_mean']['mae']:.4f}", rs["mean"], rs["label"]))
-            panels.append(
-                (f"{rs['label']}{tail}\nsingle member (ep{rs['epoch']}), "
-                 f"MAE {rs['sc_mem']['mae']:.4f}", rs["member"], rs["label"]))
+            n = len(rs["members"])
+            for k, (m, sc) in enumerate(zip(rs["members"], rs["sc_mems"])):
+                # Members are independent draws, not a ranking, so they are
+                # numbered from 1 for a reader and the ensemble size is stated.
+                name = ("single member" if n == 1
+                        else f"member {k + 1} of {args.members}")
+                panels.append(
+                    (f"{rs['label']}{tail}\n{name} (ep{rs['epoch']}), "
+                     f"MAE {sc['mae']:.4f}", m, rs["label"]))
 
         ncol = min(args.ncol, len(panels))
         nrow = int(np.ceil(len(panels) / ncol))

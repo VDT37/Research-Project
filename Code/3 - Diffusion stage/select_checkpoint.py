@@ -42,9 +42,9 @@ No GPU, no torch, no network. Reads JSON and prints a table.
 USAGE
 
     python select_checkpoint.py \
-        --arm "ml_v2=analysis_bundle/dissertation_outputs/diffusion_ml_v2/train_log.json" \
-        --arm "CorrDiff=analysis_bundle/dissertation_outputs/diffusion_corrdiff_v1/train_log.json" \
-        --out analysis_bundle/dissertation_outputs/checkpoint_selection
+        --arm "ml_v2=dissertation_outputs/diffusion_ml_v2/train_log.json" \
+        --arm "CorrDiff=dissertation_outputs/diffusion_corrdiff_v1/train_log.json" \
+        --out dissertation_outputs/checkpoint_selection
 
 Writes `<out>.json` and `<out>.md`. Exit status is 1 if any arm has no
 gate-passing checkpoint, so this can be used as a check in a pipeline.
