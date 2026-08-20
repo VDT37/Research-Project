@@ -263,6 +263,16 @@ def main():
             rows.append((t, cnt, wet, mean, p999, mx))
             print(f"  {t:<14}{time_split.get(t,''):>7}{cnt:>7}{100*wet:>7.1f}%"
                   f"{mean:>8.3f}{p999:>9.2f}{mx:>8.1f}  {os.path.basename(fp)}")
+        os.makedirs(args.out, exist_ok=True)
+        csvp = os.path.join(args.out, "uk_events.csv")
+        with open(csvp, "w") as fh:
+            fh.write("timestamp,split,n_crops,wet_fraction,mean_mmh,"
+                     "p99_9_mmh,max_mmh\n")
+            for t, cnt, wet, mean, p999, mx in rows:
+                fh.write(f"{t},{time_split.get(t, '')},{cnt},{wet:.6f},"
+                         f"{mean:.4f},{p999:.3f},{mx:.2f}\n")
+        print(f"\nwrote {csvp} ({len(rows)} rows)")
+
         print("\nPick one and pass it as --frame. For a talk, prefer a high p99.9 "
               "(intense, convective) over a merely high wet% (widespread drizzle),")
         print("and prefer split 'test' so the case study sits on held-out 2026 data.")
