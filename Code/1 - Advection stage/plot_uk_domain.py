@@ -123,6 +123,12 @@ def scan_crops(prior_dir, max_files=None):
     per_tile = collections.Counter()        # unique (time, tile), lead-deduplicated
     per_split = collections.Counter()
     tile_split = collections.defaultdict(collections.Counter)
+    # A crop is only cached if it is >=90% in radar range AND >=5% wet, so the
+    # number of accepted crops at a timestamp is a free proxy for how widespread
+    # the rain was. Ranking timestamps by it finds candidate case studies without
+    # opening a single HDF5 file.
+    per_time = collections.Counter()
+    time_split = {}
     seen = set()                             # (stamp, r, c) already counted
     n, n_files, bad = 0, 0, 0
     for split in sorted(os.listdir(prior_dir)):
@@ -149,13 +155,17 @@ def scan_crops(prior_dir, max_files=None):
                     if key in seen:
                         continue
                     seen.add(key)
+                    per_time[m.group(1)] += 1
+                    time_split[m.group(1)] = split
                     per_tile[(r, c)] += 1
                     per_split[split] += 1
                     tile_split[(r, c)][split] += 1
                     n += 1
                     if max_files and n_files >= max_files:
-                        return per_tile, per_split, tile_split, n, n_files, bad
-    return per_tile, per_split, tile_split, n, n_files, bad
+                        return (per_tile, per_split, tile_split, per_time, time_split,
+                                n, n_files, bad)
+    return (per_tile, per_split, tile_split, per_time, time_split,
+            n, n_files, bad)
 
 
 def try_cartopy(geo):
@@ -185,6 +195,13 @@ def main():
     ap.add_argument("--out", default="figures")
     ap.add_argument("--max-files", type=int, default=None,
                     help="cap the filename scan; the cap is reported, never silent")
+    ap.add_argument("--list-events", type=int, default=0, metavar="N",
+                    help="rank timestamps by how many crops they contributed, "
+                         "read the frames of the top N, and print their rain "
+                         "statistics so a case study can be chosen. Prints and "
+                         "exits; draws nothing.")
+    ap.add_argument("--events-split", default=None,
+                    help="restrict --list-events to one split, e.g. test")
     ap.add_argument("--vmax", type=float, default=8.0, help="colour cap, mm/h")
     ap.add_argument("--dpi", type=int, default=150)
     args = ap.parse_args()
@@ -209,14 +226,47 @@ def main():
     print(f"  candidate tiling: {len(tiles_all)} windows of {CONTEXT}px "
           f"at stride {STRIDE}")
 
-    per_tile, per_split, tile_split, n, n_files, bad = scan_crops(
-        args.prior_dir, args.max_files)
+    (per_tile, per_split, tile_split, per_time, time_split,
+     n, n_files, bad) = scan_crops(args.prior_dir, args.max_files)
     if args.max_files and n_files >= args.max_files:
         print(f"  NOTE: filename scan capped at {args.max_files} files; counts "
               "below are a partial sample, not the whole cache.")
     print(f"  files scanned: {n_files} -> {n} unique crops (lead-deduplicated) "
           f"across {len(per_tile)} tiles ({bad} unparsable names)")
     print(f"  by split: {dict(per_split)}")
+
+    if args.list_events:
+        cands = [(t, c) for t, c in per_time.items()
+                 if args.events_split is None or time_split.get(t) == args.events_split]
+        cands.sort(key=lambda tc: -tc[1])
+        cands = cands[:args.list_events]
+        print(f"\nTop {len(cands)} timestamps by accepted crops"
+              + (f" in split '{args.events_split}'" if args.events_split else "")
+              + ". Higher crop counts mean more widespread rain; the rain\n"
+              "columns separate widespread drizzle from intense convection.\n")
+        print(f"  {'timestamp':<14}{'split':>7}{'crops':>7}{'wet%':>8}"
+              f"{'mean':>8}{'p99.9':>9}{'max':>8}  frame")
+        rows = []
+        for t, cnt in cands:
+            try:
+                fp = find_frame(args.frames_dir, t)
+                Rt, _g = read_odim(fp)
+            except SystemExit:
+                print(f"  {t:<14}{time_split.get(t,''):>7}{cnt:>7}"
+                      f"{'':>8}{'':>8}{'':>9}{'':>8}  (frame not cached)")
+                continue
+            fin = np.isfinite(Rt)
+            wet = float(np.mean(Rt[fin] >= 0.1)) if fin.any() else float("nan")
+            mean = float(np.mean(Rt[fin])) if fin.any() else float("nan")
+            p999 = float(np.percentile(Rt[fin], 99.9)) if fin.any() else float("nan")
+            mx = float(np.nanmax(Rt)) if fin.any() else float("nan")
+            rows.append((t, cnt, wet, mean, p999, mx))
+            print(f"  {t:<14}{time_split.get(t,''):>7}{cnt:>7}{100*wet:>7.1f}%"
+                  f"{mean:>8.3f}{p999:>9.2f}{mx:>8.1f}  {os.path.basename(fp)}")
+        print("\nPick one and pass it as --frame. For a talk, prefer a high p99.9 "
+              "(intense, convective) over a merely high wet% (widespread drizzle),")
+        print("and prefer split 'test' so the case study sits on held-out 2026 data.")
+        return
 
     # Extent in projection metres, with the array's origin at the top-left.
     ex = W * geo["xscale"]
