@@ -324,7 +324,11 @@ def main():
                          f"{r['conc']:.4f}\n")
         print(f"\nwrote {csvp} ({len(rows)} frames, {misses} not cached)")
 
-        def table(title, sel, note):
+        # Signature order matches the call sites: title, then the caption, then
+        # the rows. It was (title, sel, note) while both callers passed
+        # (title, note, sel), so the row list printed as the caption and the
+        # caption was then iterated as if it were rows.
+        def table(title, note, sel):
             print(f"\n{title}")
             print(f"  {note}")
             print(f"  {'timestamp':<14}{'split':>6}{'wet%':>7}{'heavy%':>8}"
