@@ -99,6 +99,7 @@ def bbox(places, shape, pad=CROP // 2):
     return r0, r1, c0, c1
 
 
+@torch.no_grad()
 def decode_regression_mean(vae, rows, mu, latent_scale, mean, std, device,
                            decode_batch=32):
     """CorrDiff's frozen stage-one forecast, as a field.
